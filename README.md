@@ -1,4 +1,5 @@
 # A CI/CD pipeline
+[![Build Status](https://jenkins-gl.bluecom.dev/buildStatus/icon?job=final-project%2Fdev)](https://jenkins-gl.bluecom.dev/job/final-project/job/dev/)
 
 This is part of a DevOps academy I am taking part in. A simple project with a pipeline to go with it.
 
