@@ -12,13 +12,7 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - id: check
-        continue-on-error: true
-        uses: deepakputhraya/action-pr-title@v1.0.2
+      - uses: deepakputhraya/action-pr-title@v1.0.2
         with:
           regex: 'pr-[\dA-Za-z_]{1,100}'
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      - if: steps.check.outcome == 'failure'
-        run: |
-          echo '::error::The PR title does not match pr-[\dA-Za-z_]{1,100}'
-          exit 1
