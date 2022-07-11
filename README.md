@@ -3,7 +3,7 @@
 This is part of a DevOps academy I am taking part in. A simple project with a pipeline to go with it.
 
 [nginx + mariadb : some kind of simple web app with a database]  
-github push to dev > jenkins  
+- [x] github push to dev > jenkins  
 jenkins (branch dev)  
   build : terraform > dockerhub (signing)  
   deploy canary : kubernetes  
