@@ -18,5 +18,5 @@ jobs:
         with:
           regex: 'pr-[\dA-Za-z_]{1,100}'
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      - if: steps.check.outcome == failure
+      - if: steps.check.outcome == 'failure'
         run: echo '::set-failed::The PR title does not match pr-[\dA-Za-z_]{1,100}'
