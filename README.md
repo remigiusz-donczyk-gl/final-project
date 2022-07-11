@@ -18,5 +18,3 @@ This is part of a DevOps academy I am taking part in. A simple project with a pi
 - [ ] jenkins (branch prod)
   - [ ] deploy prod env
   - [ ] monitor health
-
-whatever edit to test actions
