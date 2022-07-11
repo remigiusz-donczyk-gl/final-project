@@ -9,7 +9,7 @@ on:
       - synchronize
       - reopened
 jobs:
-  main:
+  pr-title-check:
     runs-on: ubuntu-latest
     steps:
       - uses: deepakputhraya/action-pr-title@v1.0.2
