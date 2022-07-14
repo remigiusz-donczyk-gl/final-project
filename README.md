@@ -3,7 +3,7 @@
 
 This is part of a DevOps academy I am taking part in. A simple project with a pipeline to go with it.
 
-[simple webapp with db]
+- [ ] [simple webapp with db]
 - [x] github push to dev > jenkins hook
 - [ ] jenkins (branch dev)
   - [ ] build
