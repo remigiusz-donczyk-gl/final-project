@@ -5,7 +5,9 @@ pipeline {
   }
   stages {
     stage('test-version-env') {
-      sh 'echo $VERSION'
+      steps {
+        sh 'echo $VERSION'
+      }
     }
     /*
     stage('dev-dockerize') {
