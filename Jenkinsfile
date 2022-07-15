@@ -8,7 +8,9 @@ pipeline {
     stage('dev-build') {
       when { branch 'dev' }
       steps {
-        sh 'docker version'
+        dir('website') {
+          sh 'docker build --tag remigiusz-donczyk/website .'
+        }
       }
     }
     stage('prod-placeholder') {
