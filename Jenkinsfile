@@ -8,7 +8,7 @@ pipeline {
     VERSION="1.0.$BUILD_NUMBER"
   }
   stages {
-    stage('dev-build') {
+    stage('dev-dockerize') {
       when { branch 'dev' }
       steps {
         dir('website') {
@@ -18,16 +18,23 @@ pipeline {
         withCredentials([usernamePassword(credentialsId: 'docker-account', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
           sh 'echo $PASS | docker login -u $USER --password-stdin'
         }
-        sh 'docker push remigiuszdonczyk/final-project'
         sh 'docker push remigiuszdonczyk/final-project:$VERSION'
+        sh 'docker push remigiuszdonczyk/final-project'
         sh 'docker logout'
+        sh 'docker image rm remigiuszdonczyk/final-project:$VERSION'
         sh 'docker image rm remigiuszdonczyk/final-project'
+      }
+    }
+    stage('dev-terraform') {
+      when { branch 'dev' }
+      steps {
+        echo 'Let there be light!'
       }
     }
     stage('prod-placeholder') {
       when { branch 'prod' }
       steps {
-        echo 'Do something'
+        echo 'Hello, World!'
       }
     }
   }
