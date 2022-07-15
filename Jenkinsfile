@@ -11,6 +11,9 @@ pipeline {
         dir('website') {
           sh 'docker build --no-cache --tag remigiuszdonczyk/final-project:latest .'
         }
+        withCredentials([usernamePassword(credentialsId: 'docker-account', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+          sh 'echo $PASS | docker login -u $USER --password-stdin'
+        }
         sh 'docker push remigiuszdonczyk/final-project'
         sh 'docker image rm remigiuszdonczyk/final-project'
       }
