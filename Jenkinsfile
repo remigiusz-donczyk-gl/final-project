@@ -1,14 +1,13 @@
 pipeline {
   agent any
-  tools {
-    dockerTool '19.3'
-    terraform '1.2.5'
-  }
   environment {
     VERSION="1.0.$BUILD_NUMBER"
   }
   stages {
     stage('dev-dockerize') {
+      tools {
+        dockerTool '19.3'
+      }
       when { branch 'dev' }
       steps {
         dir('website') {
@@ -25,8 +24,12 @@ pipeline {
         sh 'docker image rm remigiuszdonczyk/final-project'
       }
     }
+    /* TODO
     stage('dev-terraform') {
       when { branch 'dev' }
+      tools {
+        terraform '1.2.5'
+      }
       steps {
         echo 'Let there be light!'
       }
@@ -37,5 +40,6 @@ pipeline {
         echo 'Hello, World!'
       }
     }
+    */
   }
 }
