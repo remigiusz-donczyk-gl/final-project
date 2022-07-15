@@ -1,7 +1,8 @@
 pipeline {
   agent any
   tools {
-    docker '20.10'
+    dockerTool '20.10'
+    terraform '1.2.5'
   }
   environment {
     DOCKER_CERT_PATH = credentials('')
