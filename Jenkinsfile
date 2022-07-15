@@ -1,16 +1,16 @@
 pipeline {
   agent any
   stages {
-    stage('dev-hello') {
+    stage('dev-build') {
       when { branch 'dev' }
       steps {
-        echo 'Hello World'
+        sh 'docker version'
       }
     }
-    stage('prod-hello') {
+    stage('prod-placeholder') {
       when { branch 'prod' }
       steps {
-        echo 'Hello World'
+        echo 'Do something'
       }
     }
   }
