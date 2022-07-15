@@ -1,9 +1,13 @@
 pipeline {
   agent any
   environment {
-    VERSION="1.0.$BUILD_NUMBER"
+    VERSION = "1.0.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 2')}"
   }
   stages {
+    stage('test-version-env') {
+      sh 'echo $VERSION'
+    }
+    /*
     stage('dev-dockerize') {
       tools {
         dockerTool '19.3'
@@ -24,7 +28,7 @@ pipeline {
         sh 'docker image rm remigiuszdonczyk/final-project'
       }
     }
-    /* TODO
+    TODO
     stage('dev-terraform') {
       when { branch 'dev' }
       tools {
