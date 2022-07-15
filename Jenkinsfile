@@ -1,7 +1,7 @@
 pipeline {
   agent any
   tools {
-    dockerTool '20.10'
+    dockerTool '19.3'
     terraform '1.2.5'
   }
   stages {
