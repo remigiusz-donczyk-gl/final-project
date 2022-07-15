@@ -1,14 +1,14 @@
 pipeline {
   agent any
   environment {
-    VERSION = "1.0.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 0')}"
+    VERSION = "0.9.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 0')}"
   }
   stages {
     stage('dev-dockerize') {
+      when { branch 'dev' }
       tools {
         dockerTool '19.3'
       }
-      when { branch 'dev' }
       steps {
         dir('website') {
           sh 'docker build --no-cache --tag remigiuszdonczyk/final-project .'
@@ -24,7 +24,6 @@ pipeline {
         sh 'docker image rm remigiuszdonczyk/final-project'
       }
     }
-    /* TODO
     stage('dev-terraform') {
       when { branch 'dev' }
       tools {
@@ -34,6 +33,7 @@ pipeline {
         echo 'Let there be light!'
       }
     }
+    /* TODO
     stage('prod-placeholder') {
       when { branch 'prod' }
       steps {
