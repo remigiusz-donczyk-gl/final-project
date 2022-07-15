@@ -11,16 +11,17 @@ pipeline {
     stage('dev-build') {
       when { branch 'dev' }
       steps {
-        sh 'echo $VERSION'
         dir('website') {
-          sh 'docker build --no-cache --tag remigiuszdonczyk/final-project:latest .'
+          sh 'docker build --no-cache --tag remigiuszdonczyk/final-project .'
         }
+        sh 'docker tag remigiuszdonczyk/final-project remigiuszdonczyk/final-project:$VERSION'
         withCredentials([usernamePassword(credentialsId: 'docker-account', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
           sh 'echo $PASS | docker login -u $USER --password-stdin'
         }
-        sh 'docker push remigiuszdonczyk/final-project:latest'
+        sh 'docker push remigiuszdonczyk/final-project'
+        sh 'docker push remigiuszdonczyk/final-project:$VERSION'
         sh 'docker logout'
-        sh 'docker image rm remigiuszdonczyk/final-project:latest'
+        sh 'docker image rm remigiuszdonczyk/final-project'
       }
     }
     stage('prod-placeholder') {
