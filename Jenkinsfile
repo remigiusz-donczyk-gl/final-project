@@ -9,7 +9,7 @@ pipeline {
   }
   stages {
     stage('dev-build') {
-      when { branch 'dev' }
+      //when { branch 'dev' }
       steps {
         sh 'docker version'
       }
