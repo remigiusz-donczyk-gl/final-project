@@ -4,7 +4,7 @@
 This is part of a DevOps academy I am taking part in. A simple project with a pipeline to go with it.
 
 - [x] placeholder app
-- [ ] [simple webapp with db]
+- [ ] simple webapp with db
 - [x] github push to dev
   - [x] jenkins (branch dev)
     - [x] build
@@ -19,3 +19,4 @@ This is part of a DevOps academy I am taking part in. A simple project with a pi
 - [ ] jenkins (branch prod)
   - [ ] deploy prod env
   - [ ] monitor health?
+
