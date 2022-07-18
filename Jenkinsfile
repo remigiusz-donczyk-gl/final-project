@@ -30,7 +30,8 @@ pipeline {
         terraform '1.2.5'
       }
       steps {
-        echo 'Let there be light!'
+        sh 'terraform init'
+        sh 'terraform plan'
       }
     }
     /* TODO
