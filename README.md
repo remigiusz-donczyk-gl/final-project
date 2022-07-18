@@ -14,8 +14,8 @@ This is part of a DevOps academy I am taking part in. A simple project with a pi
     - [ ] test
       - [ ] auto tests
       - [ ] remove test env
-      - [ ] docker image > dockerhub (:stable) (signing)
+      - [ ] dockerhub (:stable) (signing?)
       - [ ] github merge to prod
-        - [x] jenkins (branch prod)
-          - [ ] deploy prod env
-          - [ ] monitor health
+- [ ] jenkins (branch prod)
+  - [ ] deploy prod env
+  - [ ] monitor health?
