@@ -35,13 +35,15 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
       }
       steps {
-        sh '''
-          terraform init
-          terraform plan -out=.plan.lock
-          terraform apply ".plan.lock"
-          kubectl get pods -A --kubeconfig .kubeconfig
-          terraform destroy --auto-approve
-        '''
+        dir('terraform') {
+          sh '''
+            terraform init
+            terraform plan -out=.plan.lock
+            terraform apply ".plan.lock"
+            kubectl get pods -A --kubeconfig .kubeconfig
+            terraform destroy --auto-approve
+          '''
+        }
       }
     }
   }
