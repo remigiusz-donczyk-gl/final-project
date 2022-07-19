@@ -13,34 +13,37 @@ pipeline {
         dir('website') {
           sh 'docker build --no-cache --tag remigiuszdonczyk/final-project .'
         }
-        sh 'docker tag remigiuszdonczyk/final-project remigiuszdonczyk/final-project:$VERSION'
         withCredentials([usernamePassword(credentialsId: 'docker-account', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
           sh 'echo $PASS | docker login -u $USER --password-stdin'
         }
-        sh 'docker push remigiuszdonczyk/final-project:$VERSION'
-        sh 'docker push remigiuszdonczyk/final-project'
-        sh 'docker logout'
-        sh 'docker image rm remigiuszdonczyk/final-project:$VERSION'
-        sh 'docker image rm remigiuszdonczyk/final-project'
+        sh '''
+          docker tag remigiuszdonczyk/final-project remigiuszdonczyk/final-project:$VERSION
+          docker push remigiuszdonczyk/final-project:$VERSION
+          docker push remigiuszdonczyk/final-project
+          docker logout
+          docker image rm remigiuszdonczyk/final-project:$VERSION
+          docker image rm remigiuszdonczyk/final-project
+        '''
       }
     }
-    stage('dev-terraform') {
-      when { branch 'dev' }
+    stage('terraform') {
       tools {
         terraform '1.2.5'
       }
+      environment {
+        AWS_ACCESS_KEY_ID = credentials('aws-access-key')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
+      }
       steps {
-        sh 'terraform init'
-        sh 'terraform plan'
+        sh '''
+          terraform init
+          terraform plan -out=.plan.lock
+          terraform apply ".plan.lock"
+          kubectl get pods -A --kubeconfig .kubeconfig
+          terraform destroy --auto-approve
+        '''
       }
     }
-    /* TODO
-    stage('prod-placeholder') {
-      when { branch 'prod' }
-      steps {
-        echo 'Hello, World!'
-      }
-    }
-    */
   }
 }
+
