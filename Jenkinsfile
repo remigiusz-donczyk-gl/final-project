@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('test-cp') {
       steps {
-        sh 'cp -p kube.yml /tf/'
+        sh 'cp -p Jenkinsfile /tf/'
         sh 'ls /tf'
       }
     }
