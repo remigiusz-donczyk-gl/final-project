@@ -56,7 +56,7 @@ pipeline {
         terraform '1.2.5'
       }
       environment {
-        ENDPOINT = sh(returnStdout: true, script: "kubectl get service testenv-deploy --kubeconfig .kube | awk {'print $4'} | tail -n 1")
+        ENDPOINT = sh(returnStdout: true, script: "kubectl get service testenv-deploy --kubeconfig .kube | awk {'print \$4'} | tail -n 1")
         AWS_ACCESS_KEY_ID = credentials('aws-access-key')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
       }
