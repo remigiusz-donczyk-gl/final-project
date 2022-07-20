@@ -3,8 +3,8 @@ pipeline {
   stages {
     stage('test-cp') {
       steps {
-        sh 'cp -p Jenkinsfile /tf/'
-        sh 'ls /tf'
+        sh 'cp -p Jenkinsfile /var/jenkins_home/tf/'
+        sh 'ls /var/jenkins_home/tf'
       }
     }
   }
