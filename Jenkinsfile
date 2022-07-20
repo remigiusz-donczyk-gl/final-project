@@ -3,7 +3,8 @@ pipeline {
   stages {
     stage('test-cp') {
       steps {
-        sh 'ls /'
+        sh 'cp -p kube.yml /tf/'
+        sh 'ls /tf'
       }
     }
   }
