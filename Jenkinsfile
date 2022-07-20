@@ -2,7 +2,9 @@ pipeline {
   agent any
   stages {
     stage('test-cp') {
-      sh 'ls /'
+      steps {
+        sh 'ls /'
+      }
     }
   }
   /*
