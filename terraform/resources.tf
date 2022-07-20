@@ -133,7 +133,7 @@ data "aws_eks_cluster_auth" "eks" {
 resource "null_resource" "noname" {
   depends_on = [module.eks]
   provisioner "local-exec" {
-    command = "aws eks --region ${local.region} update-kubeconfig --kubeconfig .kubeconfig --name ${module.eks.cluster_id}"
+    command = "aws eks --region ${local.region} update-kubeconfig --kubeconfig ../.kube --name ${module.eks.cluster_id}"
   }
 }
 

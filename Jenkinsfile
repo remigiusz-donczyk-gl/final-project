@@ -27,6 +27,7 @@ pipeline {
       }
     }
     stage('terraform') {
+      when { branch 'dev' }
       tools {
         terraform '1.2.5'
       }
@@ -37,11 +38,37 @@ pipeline {
       steps {
         dir('terraform') {
           sh '''
+            [ -f /tf/terraform.tfstate ] && cp -p /tf/terraform.tfstate .
             terraform init
-            terraform plan -out=.plan.lock
-            terraform apply ".plan.lock"
-            kubectl get pods -A --kubeconfig .kubeconfig
-            terraform destroy --auto-approve
+            terraform plan -out .plan
+            terraform apply .plan
+            cp -p terraform.tfstate /tf
+          '''
+        }
+        sh '''
+          kubectl apply -f kube.yml --kubeconfig .kube
+          kubectl get service testenv-deploy --kubeconfig .kube
+        '''
+      }
+    }
+    stage('extinction') {
+      tools {
+        terraform '1.2.5'
+      }
+      environment {
+        AWS_ACCESS_KEY_ID = credentials('aws-access-key')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
+      }
+      steps {
+        input message: 'Do you wish to perform extinction?', ok: 'Approve'
+        sh 'kubectl delete -f kube.yml --kubeconfig .kube'
+        dir('terraform') {
+          sh '''
+            [ -f /tf/terraform.tfstate ] && cp -p /tf/terraform.tfstate .
+            terraform init
+            terraform plan -destroy -out .plan
+            terraform apply .plan
+            cp -p terraform.tfstate /tf
           '''
         }
       }
