@@ -1,15 +1,5 @@
 pipeline {
   agent any
-  stages {
-    stage('test-cp') {
-      steps {
-        sh 'whoami'
-        sh 'cp -p Jenkinsfile /var/tf/'
-        sh 'ls /var/tf'
-      }
-    }
-  }
-  /*
   environment {
     VERSION = "0.9.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 0')}"
   }
@@ -48,9 +38,11 @@ pipeline {
       steps {
         dir('terraform') {
           sh '''
+            cp -p /var/tf/terraform.tfstate . || true
             terraform init
             terraform apply .plan
             terraform plan -out .plan
+            cp -p terraform.tfstate /var/tf/
           '''
         }
         sh '''
@@ -74,14 +66,15 @@ pipeline {
         sh 'kubectl delete -f kube.yml --kubeconfig .kube'
         dir('terraform') {
           sh '''
+            cp -p /var/tf/terraform.tfstate . || true
             terraform init
             terraform plan -destroy -out .plan
             terraform apply .plan
+            cp -p terraform.tfstate /var/tf/
           '''
         }
       }
     }
   }
-  */
 }
 
