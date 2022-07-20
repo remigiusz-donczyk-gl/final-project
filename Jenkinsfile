@@ -52,6 +52,7 @@ pipeline {
       }
     }
     stage('extinction') {
+      when { branch 'dev' }
       tools {
         terraform '1.2.5'
       }
