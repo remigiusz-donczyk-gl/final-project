@@ -38,10 +38,10 @@ pipeline {
       steps {
         dir('terraform') {
           sh '''
-            [ -f /var/tf/terraform.tfstate ] && cp -p /var/tf/terraform.tfstate .
+            cp -p /var/tf/terraform.tfstate . || true
             terraform init
-            terraform apply .plan
             terraform plan -out .plan
+            terraform apply .plan
             cp -p terraform.tfstate /var/tf/
           '''
         }
@@ -66,7 +66,7 @@ pipeline {
         sh 'kubectl delete -f kube.yml --kubeconfig .kube'
         dir('terraform') {
           sh '''
-            [ -f /var/tf/terraform.tfstate ] && cp -p /var/tf/terraform.tfstate .
+            cp -p /var/tf/terraform.tfstate . || true
             terraform init
             terraform plan -destroy -out .plan
             terraform apply .plan
