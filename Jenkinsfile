@@ -26,6 +26,7 @@ pipeline {
         '''
       }
     }
+    /* Terraform isn't working for now
     stage('terraform') {
       when { branch 'dev' }
       tools {
@@ -74,6 +75,7 @@ pipeline {
         }
       }
     }
+    */
   }
 }
 
