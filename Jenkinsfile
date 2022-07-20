@@ -1,5 +1,11 @@
 pipeline {
   agent any
+  stages {
+    stage('test-cp') {
+      sh 'ls /'
+    }
+  }
+  /*
   environment {
     VERSION = "0.9.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 0')}"
   }
@@ -38,11 +44,9 @@ pipeline {
       steps {
         dir('terraform') {
           sh '''
-            [ -f /tf/terraform.tfstate ] && cp -p /tf/terraform.tfstate .
             terraform init
-            terraform plan -out .plan
             terraform apply .plan
-            cp -p terraform.tfstate /tf
+            terraform plan -out .plan
           '''
         }
         sh '''
@@ -56,23 +60,24 @@ pipeline {
         terraform '1.2.5'
       }
       environment {
+        ENDPOINT = sh(returnStdout: true, script: "kubectl get service testenv-deploy --kubeconfig .kube | awk {'print $4'} | tail -n 1")
         AWS_ACCESS_KEY_ID = credentials('aws-access-key')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
       }
       steps {
+        echo "$ENDPOINT"
         input message: 'Do you wish to perform extinction?', ok: 'Approve'
         sh 'kubectl delete -f kube.yml --kubeconfig .kube'
         dir('terraform') {
           sh '''
-            [ -f /tf/terraform.tfstate ] && cp -p /tf/terraform.tfstate .
             terraform init
             terraform plan -destroy -out .plan
             terraform apply .plan
-            cp -p terraform.tfstate /tf
           '''
         }
       }
     }
   }
+  */
 }
 
