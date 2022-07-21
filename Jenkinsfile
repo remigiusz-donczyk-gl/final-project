@@ -37,13 +37,13 @@ pipeline {
       }
       steps {
         dir('terraform') {
-          # cp -p /var/tf/terraform.tfstate . || true
+          // cp -p /var/tf/terraform.tfstate . || true
           sh '''
             terraform init
             terraform plan -out .plan
             terraform apply .plan
           '''
-          # cp -p terraform.tfstate /var/tf/
+          // cp -p terraform.tfstate /var/tf/
         }
         sh '''
           kubectl apply -f kube.yml --kubeconfig .kube
@@ -64,13 +64,13 @@ pipeline {
         input message: 'Do you wish to perform extinction?', ok: 'Approve'
         sh 'kubectl delete -f kube.yml --kubeconfig .kube'
         dir('terraform') {
-          # cp -p /var/tf/terraform.tfstate . || true
+          // cp -p /var/tf/terraform.tfstate . || true
           sh '''
             terraform init
             terraform plan -destroy -out .plan
             terraform apply .plan
           '''
-          # cp -p terraform.tfstate /var/tf/
+          // cp -p terraform.tfstate /var/tf/
         }
       }
     }
