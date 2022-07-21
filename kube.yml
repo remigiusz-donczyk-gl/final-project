@@ -4,18 +4,17 @@ kind: Pod
 metadata:
   name: testenv
   labels:
-    environment: test
     app: website
 spec:
   containers:
   - name: website
     image: remigiuszdonczyk/final-project:latest
-    volumeMounts:
-    - mountPath: /var/lib/mysql
-      name: persistent-db
-  volumes:
-  - name: persistent-db
-    emptyDir: {}
+#    volumeMounts:
+#    - mountPath: /var/lib/mysql
+#      name: persistent-db
+#  volumes:
+#  - name: persistent-db
+#    emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
@@ -29,3 +28,4 @@ spec:
   - protocol: TCP
     port: 80
     targetPort: 80
+

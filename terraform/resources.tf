@@ -22,58 +22,58 @@ module "vpc" {
   }
 }
 
-resource "aws_iam_role" "cluster" {
-  name               = "eks_role"
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "eks.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-POLICY
-}
+#resource "aws_iam_role" "cluster" {
+#  name               = "eks_role"
+#  assume_role_policy = <<POLICY
+#{
+#  "Version": "2012-10-17",
+#  "Statement": [
+#    {
+#      "Effect": "Allow",
+#      "Principal": {
+#        "Service": "eks.amazonaws.com"
+#      },
+#      "Action": "sts:AssumeRole"
+#    }
+#  ]
+#}
+#POLICY
+#}
 
-resource "aws_iam_role_policy_attachment" "clusterClusterPolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.cluster.name
-}
+#resource "aws_iam_role_policy_attachment" "clusterClusterPolicy" {
+#  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+#  role       = aws_iam_role.cluster.name
+#}
 
-resource "aws_iam_role_policy_attachment" "clusterServicePolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
-  role       = aws_iam_role.cluster.name
-}
+#resource "aws_iam_role_policy_attachment" "clusterServicePolicy" {
+#  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+#  role       = aws_iam_role.cluster.name
+#}
 
-resource "aws_security_group" "secgrp" {
-  name   = "cluster_secgrp"
-  vpc_id = module.vpc.vpc_id
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
+#resource "aws_security_group" "secgrp" {
+#  name   = "cluster_secgrp"
+#  vpc_id = module.vpc.vpc_id
+#  egress {
+#    from_port   = 0
+#    to_port     = 0
+#    protocol    = "-1"
+#    cidr_blocks = ["0.0.0.0/0"]
+#  }
+#}
 
-resource "aws_security_group_rule" "secrule" {
-  security_group_id = aws_security_group.secgrp.id
-  type              = "ingress"
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-  cidr_blocks = [
-    "10.0.0.0/8",
-    "172.16.0.0/12",
-    "192.168.0.0/16",
-    "192.55.109.97/32"
-  ]
-}
+#resource "aws_security_group_rule" "secrule" {
+#  security_group_id = aws_security_group.secgrp.id
+#  type              = "ingress"
+#  from_port         = 443
+#  to_port           = 443
+#  protocol          = "tcp"
+#  cidr_blocks = [
+#    "10.0.0.0/8",
+#    "172.16.0.0/12",
+#    "192.168.0.0/16",
+#    "192.55.109.97/32"
+#  ]
+#}
 
 module "eks" {
   source                          = "terraform-aws-modules/eks/aws"
@@ -122,13 +122,13 @@ module "eks" {
   }
 }
 
-data "aws_eks_cluster" "eks" {
-  name = module.eks.cluster_id
-}
+#data "aws_eks_cluster" "eks" {
+#  name = module.eks.cluster_id
+#}
 
-data "aws_eks_cluster_auth" "eks" {
-  name = module.eks.cluster_id
-}
+#data "aws_eks_cluster_auth" "eks" {
+#  name = module.eks.cluster_id
+#}
 
 resource "null_resource" "noname" {
   depends_on = [module.eks]

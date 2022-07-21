@@ -32,12 +32,12 @@ pipeline {
         terraform '1.2.5'
       }
       environment {
-        AWS_ACCESS_KEY_ID = credentials('aws-access-key')
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
+        AWS_ACCESS_KEY_ID = credentials('aws-access')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret')
       }
       steps {
         dir('terraform') {
-          // cp -p /var/tf/terraform.tfstate . || true
+          // [ -f /var/tf/terraform.tfstate ] && cp -p /var/tf/terraform.tfstate .
           sh '''
             terraform init
             terraform plan -out .plan
@@ -51,20 +51,21 @@ pipeline {
         '''
       }
     }
+    /*
     stage('extinction') {
       when { branch 'dev' }
       tools {
         terraform '1.2.5'
       }
       environment {
-        AWS_ACCESS_KEY_ID = credentials('aws-access-key')
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
+        AWS_ACCESS_KEY_ID = credentials('aws-access')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret')
       }
       steps {
         input message: 'Do you wish to perform extinction?', ok: 'Approve'
         sh 'kubectl delete -f kube.yml --kubeconfig .kube'
         dir('terraform') {
-          // cp -p /var/tf/terraform.tfstate . || true
+          // [ -f /var/tf/terraform.tfstate ] && cp -p /var/tf/terraform.tfstate . || true
           sh '''
             terraform init
             terraform plan -destroy -out .plan
@@ -74,6 +75,7 @@ pipeline {
         }
       }
     }
+    */
   }
 }
 
