@@ -5,18 +5,17 @@ This is part of a DevOps academy I am taking part in. A simple project with a pi
 
 - [x] placeholder app
 - [ ] simple webapp with db
-- [x] github push to dev
-  - [x] jenkins (branch dev)
-    - [x] build
-      - [x] make docker image > dockerhub
-      - [ ] terraform aws kubernetes
-      - [ ] deploy test env
-    - [ ] test
-      - [ ] auto tests
-      - [ ] remove test env
-      - [ ] dockerhub (:stable) (signing?)
-      - [ ] github merge to prod
+- [ ] jenkins (branch dev)
+  - [x] build
+    - [x] make docker image > dockerhub
+    - [x] terraform aws kubernetes
+    - [x] deploy test env
+  - [ ] test
+    - [ ] auto tests
+    - [ ] remove test env
+    - [ ] dockerhub (:stable) (signing?)
+    - [ ] github merge to prod
 - [ ] jenkins (branch prod)
   - [ ] deploy prod env
-  - [ ] monitor health?
+  - [ ] monitor health
 

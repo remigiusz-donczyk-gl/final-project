@@ -1,3 +1,39 @@
+terraform {
+  required_version = ">= 1.2.5"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "4.22.0"
+    }
+    cloudinit = {
+      source  = "hashicorp/cloudinit"
+      version = "2.2.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "2.12.1"
+    }
+    null = {
+      source  = "hashicorp/null"
+      version = "3.1.1"
+    }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "3.4.0"
+    }
+  }
+}
+
+locals {
+  region = "us-east-1"
+}
+
+provider "aws" {
+  region = local.region
+}
+
+data "aws_availability_zones" "available" {}
+
 module "vpc" {
   source               = "terraform-aws-modules/vpc/aws"
   version              = "3.14.2"
@@ -67,7 +103,7 @@ module "eks" {
 resource "null_resource" "noname" {
   depends_on = [module.eks]
   provisioner "local-exec" {
-    command = "aws eks --region ${local.region} update-kubeconfig --kubeconfig ../.kube --name ${module.eks.cluster_id}"
+    command = "aws eks --region ${local.region} update-kubeconfig --kubeconfig .kube --name ${module.eks.cluster_id}"
   }
 }
 

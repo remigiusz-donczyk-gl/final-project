@@ -28,9 +28,9 @@ pipeline {
             docker tag remigiuszdonczyk/final-project remigiuszdonczyk/final-project:$VERSION
             docker push remigiuszdonczyk/final-project:$VERSION
             docker push remigiuszdonczyk/final-project
-            docker logout
             docker image rm remigiuszdonczyk/final-project:$VERSION
             docker image rm remigiuszdonczyk/final-project
+            docker logout
           '''
         }
       }
@@ -45,15 +45,12 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret')
       }
       steps {
-        dir('terraform') {
-          sh '''
-            terraform init
-            terraform plan -out .plan
-            terraform apply .plan
-          '''
-        }
         sh '''
+          terraform init
+          terraform plan -out .plan
+          terraform apply .plan
           kubectl apply -f kube.yml --kubeconfig .kube
+          sleep 30
           kubectl get service testenv-deploy --kubeconfig .kube
         '''
       }
@@ -69,14 +66,12 @@ pipeline {
       }
       steps {
         input message: 'Do you wish to perform extinction?', ok: 'Approve'
-        sh 'kubectl delete -f kube.yml --kubeconfig .kube'
-        dir('terraform') {
-          sh '''
-            terraform init
-            terraform plan -destroy -out .plan
-            terraform apply .plan
-          '''
-        }
+        sh '''
+          kubectl delete -f kube.yml --kubeconfig .kube
+          terraform init
+          terraform plan -destroy -out .plan
+          terraform apply .plan
+        '''
       }
     }
   }
