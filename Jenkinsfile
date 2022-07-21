@@ -13,26 +13,26 @@ pipeline {
         checkout scm
       }
     }
-    stage('dev-dockerize') {
+    stage('dockerize') {
       when { branch 'dev' }
       tools {
         dockerTool '19.3'
       }
       steps {
         dir('website') {
-          sh 'docker build --no-cache --tag remigiuszdonczyk/final-project .'
+          withCredentials([usernamePassword(credentialsId: 'docker-account', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+            sh 'echo $PASS | docker login -u $USER --password-stdin'
+          }
+          sh '''
+            docker build --no-cache --tag remigiuszdonczyk/final-project .
+            docker tag remigiuszdonczyk/final-project remigiuszdonczyk/final-project:$VERSION
+            docker push remigiuszdonczyk/final-project:$VERSION
+            docker push remigiuszdonczyk/final-project
+            docker logout
+            docker image rm remigiuszdonczyk/final-project:$VERSION
+            docker image rm remigiuszdonczyk/final-project
+          '''
         }
-        withCredentials([usernamePassword(credentialsId: 'docker-account', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-          sh 'echo $PASS | docker login -u $USER --password-stdin'
-        }
-        sh '''
-          docker tag remigiuszdonczyk/final-project remigiuszdonczyk/final-project:$VERSION
-          docker push remigiuszdonczyk/final-project:$VERSION
-          docker push remigiuszdonczyk/final-project
-          docker logout
-          docker image rm remigiuszdonczyk/final-project:$VERSION
-          docker image rm remigiuszdonczyk/final-project
-        '''
       }
     }
     stage('terraform') {
@@ -45,14 +45,15 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret')
       }
       steps {
+        dir('terraform') {
+          sh '''
+            terraform init
+            terraform plan -out .plan
+            terraform apply .plan
+          '''
+        }
         sh '''
-          [ -f /var/tf/terraform.tfstate ] && cp -p /var/tf/terraform.tfstate .
-          terraform init
-          terraform plan -out .plan
-          terraform apply .plan
           kubectl apply -f kube.yml --kubeconfig .kube
-          cp -p terraform.tfstate /var/tf/
-          sleep 5
           kubectl get service testenv-deploy --kubeconfig .kube
         '''
       }
@@ -68,14 +69,14 @@ pipeline {
       }
       steps {
         input message: 'Do you wish to perform extinction?', ok: 'Approve'
-        sh '''
-          [ -f /var/tf/terraform.tfstate ] && cp -p /var/tf/terraform.tfstate .
-          kubectl delete -f kube.yml --kubeconfig .kube
-          terraform init
-          terraform plan -destroy -out .plan
-          terraform apply .plan
-          cp -p terraform.tfstate /var/tf/
-        '''
+        sh 'kubectl delete -f kube.yml --kubeconfig .kube'
+        dir('terraform') {
+          sh '''
+            terraform init
+            terraform plan -destroy -out .plan
+            terraform apply .plan
+          '''
+        }
       }
     }
   }
