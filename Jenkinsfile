@@ -1,9 +1,18 @@
 pipeline {
   agent any
+  options {
+    skipDefaultCheckout(true)
+  }
   environment {
     VERSION = "0.9.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 0')}"
   }
   stages {
+    stage('cleanup') {
+      steps {
+        cleanWs()
+        checkout scm
+      }
+    }
     stage('dev-dockerize') {
       when { branch 'dev' }
       tools {
@@ -76,6 +85,16 @@ pipeline {
       }
     }
     */
+  }
+  post {
+    always {
+      cleanWs(
+        cleanWhenNotBuild: false,
+        deleteDirs: true,
+        disableDeferredWipeout: true,
+        notFailBuild: true
+      )
+    }
   }
 }
 
