@@ -49,9 +49,6 @@ pipeline {
           terraform init
           terraform plan -out .plan
           terraform apply .plan
-          kubectl apply -f kube.yml --kubeconfig .kube
-          sleep 30
-          kubectl get service testenv-deploy --kubeconfig .kube
         '''
       }
     }
@@ -67,7 +64,6 @@ pipeline {
       steps {
         input message: 'Do you wish to perform extinction?', ok: 'Approve'
         sh '''
-          kubectl delete -f kube.yml --kubeconfig .kube
           terraform init
           terraform plan -destroy -out .plan
           terraform apply .plan
