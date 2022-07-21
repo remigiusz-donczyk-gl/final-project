@@ -48,8 +48,10 @@ pipeline {
         sh '''
           terraform init
           terraform plan -out .plan
-          terraform apply .plan
         '''
+        retry(2) {
+          sh 'terraform apply .plan'
+        }
       }
     }
     stage('extinction') {
@@ -66,8 +68,10 @@ pipeline {
         sh '''
           terraform init
           terraform plan -destroy -out .plan
-          terraform apply .plan
         '''
+        retry(2) {
+          sh 'terraform apply .plan
+        }
       }
     }
   }
