@@ -45,22 +45,18 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret')
       }
       steps {
-        dir('terraform') {
-          // [ -f /var/tf/terraform.tfstate ] && cp -p /var/tf/terraform.tfstate .
-          sh '''
-            terraform init
-            terraform plan -out .plan
-            terraform apply .plan
-          '''
-          // cp -p terraform.tfstate /var/tf/
-        }
         sh '''
+          [ -f /var/tf/terraform.tfstate ] && cp -p /var/tf/terraform.tfstate .
+          terraform init
+          terraform plan -out .plan
+          terraform apply .plan
           kubectl apply -f kube.yml --kubeconfig .kube
+          cp -p terraform.tfstate /var/tf/
+          sleep 5
           kubectl get service testenv-deploy --kubeconfig .kube
         '''
       }
     }
-    /*
     stage('extinction') {
       when { branch 'dev' }
       tools {
@@ -72,28 +68,15 @@ pipeline {
       }
       steps {
         input message: 'Do you wish to perform extinction?', ok: 'Approve'
-        sh 'kubectl delete -f kube.yml --kubeconfig .kube'
-        dir('terraform') {
-          // [ -f /var/tf/terraform.tfstate ] && cp -p /var/tf/terraform.tfstate . || true
-          sh '''
-            terraform init
-            terraform plan -destroy -out .plan
-            terraform apply .plan
-          '''
-          // cp -p terraform.tfstate /var/tf/
-        }
+        sh '''
+          [ -f /var/tf/terraform.tfstate ] && cp -p /var/tf/terraform.tfstate .
+          kubectl delete -f kube.yml --kubeconfig .kube
+          terraform init
+          terraform plan -destroy -out .plan
+          terraform apply .plan
+          cp -p terraform.tfstate /var/tf/
+        '''
       }
-    }
-    */
-  }
-  post {
-    always {
-      cleanWs(
-        cleanWhenNotBuilt: false,
-        deleteDirs: true,
-        disableDeferredWipeout: true,
-        notFailBuild: true
-      )
     }
   }
 }
