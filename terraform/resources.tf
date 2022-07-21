@@ -77,7 +77,7 @@ resource "aws_security_group_rule" "secrule" {
 
 module "eks" {
   source                          = "terraform-aws-modules/eks/aws"
-  version                         = "18.26.3"
+  version                         = "18.26.5"
   cluster_name                    = "cluster"
   cluster_version                 = "1.22"
   cluster_endpoint_private_access = true
