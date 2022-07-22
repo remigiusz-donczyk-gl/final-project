@@ -70,7 +70,7 @@ pipeline {
           terraform plan -destroy -out .plan
         '''
         retry(2) {
-          sh 'terraform apply .plan
+          sh 'terraform apply .plan'
         }
       }
     }

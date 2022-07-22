@@ -1,9 +1,3 @@
--- MySQL dump 10.19  Distrib 10.3.34-MariaDB, for debian-linux-gnu (x86_64)
---
--- Host: localhost    Database: website
--- ------------------------------------------------------
--- Server version	10.3.34-MariaDB-0ubuntu0.20.04.1
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -15,31 +9,29 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
--- Table structure for table `test`
---
-
-DROP TABLE IF EXISTS `test`;
+DROP TABLE IF EXISTS `memes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `test` (
+CREATE TABLE `memes` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `Text` text DEFAULT NULL,
+  `Path` text DEFAULT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `test`
---
-
-LOCK TABLES `test` WRITE;
-/*!40000 ALTER TABLE `test` DISABLE KEYS */;
-INSERT INTO `test` VALUES (1,'hello'),(2,'how'),(3,'are'),(4,'you');
-/*!40000 ALTER TABLE `test` ENABLE KEYS */;
+LOCK TABLES `memes` WRITE;
+/*!40000 ALTER TABLE `memes` DISABLE KEYS */;
+INSERT INTO `memes` VALUES
+  (1,'angery.png'),(2,'audiovideo.png'),(3,'awscharge.jpg'),(4,'awsproblem.png'),(5,'awsservice.jpg'),
+  (6,'awssleep.jpg'),(7,'badcode.png'),(8,'binary.png'),(9,'doge.jpg'),(10,'gitlab.jpg'),
+  (11,'gitops.jpg'),(12,'handshake.jpg'),(13,'harry.jpg'),(14,'it.jpg'),(15,'kubetutorial.png'),
+  (16,'kubeyaml.jpg'),(17,'meta.png'),(18,'options.jpg'),(19,'permissions.jpg'),(20,'phases.png'),
+  (21,'propagate.png'),(22,'readme.jpg'),(23,'scm.jpg'),(24,'scope.jpg'),(25,'simply.jpg'),
+  (26,'starwars.jpg'),(27,'taskfear.jpg'),(28,'undef.png'),(29,'windows8.jpg');
+/*!40000 ALTER TABLE `memes` ENABLE KEYS */;
 UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
@@ -48,4 +40,3 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-07-21 14:03:08
