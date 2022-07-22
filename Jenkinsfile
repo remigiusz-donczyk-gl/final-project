@@ -4,7 +4,7 @@ pipeline {
     skipDefaultCheckout(true)
   }
   environment {
-    VERSION = "0.9.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 0')}"
+    VERSION = "1.0.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 67')}"
   }
   stages {
     stage('cleanup') {
