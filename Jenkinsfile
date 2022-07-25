@@ -4,10 +4,9 @@ pipeline {
     skipDefaultCheckout(true)
   }
   environment {
-    VERSION = "1.0.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 67')}"
+    VERSION = "1.1.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 85')}"
   }
   stages {
-    /*
     stage('cleanup') {
       steps {
         cleanWs()
@@ -60,7 +59,6 @@ pipeline {
         }
       }
     }
-    */
     stage('test') {
       when { branch 'dev' }
       tools {
@@ -72,10 +70,8 @@ pipeline {
       }
       steps {
         sleep 60
-        sh '''
-          test $(echo $(curl -sLo /dev/null -w "%{http_code}" $(cat .endpoint)) | cut -c 1) -eq 2 || exit 1
-        '''
-        input message: 'Automatic tests passed, awaiting manual approval', ok: 'Confirm'
+        sh 'test $(echo $(curl -sLo /dev/null -w "%{http_code}" $(cat .endpoint)) | cut -c 1) -eq 2 || exit 1'
+        input message: 'Smoke test passed, awaiting manual approval', ok: 'Confirm'
         sh '''
           terraform init
           terraform plan -destroy -out .plan
@@ -85,7 +81,6 @@ pipeline {
         }
       }
     }
-    /*
     stage('begin-prod') {
       when { branch 'dev' }
       tools {
@@ -104,11 +99,11 @@ pipeline {
             docker image rm remigiuszdonczyk/final-project:stable
             docker image rm remigiuszdonczyk/final-project
             docker logout
+            git status
           '''
         }
       }
     }
-    */
   }
 }
 
