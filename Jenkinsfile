@@ -7,7 +7,6 @@ pipeline {
     VERSION = "1.0.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 67')}"
   }
   stages {
-    /*
     stage('cleanup') {
       steps {
         cleanWs()
@@ -56,7 +55,6 @@ pipeline {
         sh 'terraform output -raw kube_endpoint > .endpoint'
       }
     }
-    */
     stage('test') {
       when { branch 'dev' }
       steps {
