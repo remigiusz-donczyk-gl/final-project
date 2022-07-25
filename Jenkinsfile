@@ -41,8 +41,8 @@ pipeline {
         terraform '1.2.5'
       }
       environment {
-        AWS_ACCESS_KEY_ID = "${credentials('aws-access')}"
-        AWS_SECRET_ACCESS_KEY = "${credentials('aws-secret')}"
+        AWS_ACCESS_KEY_ID = credentials('aws-access')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret')
       }
       steps {
         sh '''
