@@ -110,6 +110,13 @@ pipeline {
     }
     stage('undeploy') {
       when { branch 'prod' }
+      tools {
+        terraform '1.2.5'
+      }
+      environment {
+        AWS_ACCESS_KEY_ID = credentials('aws-access')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret')
+      }
       steps {
         sh '''
           mv /var/jenkins_home/tf/terraform.tfstate .
