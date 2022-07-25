@@ -73,7 +73,7 @@ pipeline {
       steps {
         sleep 60
         sh '''
-          [ "$(echo $(curl -sLo /dev/null -w "%{http_code}" $(cat .endpoint)) | cut -c 1)" == "2" ] || exit 1
+          [ \"$(echo $(curl -sLo /dev/null -w "%{http_code}" $(cat .endpoint)) | cut -c 1)\" == \"2\" ] || exit 1
         '''
         input message: 'Automatic tests passed, awaiting manual approval', ok: 'Confirm'
         sh '''
