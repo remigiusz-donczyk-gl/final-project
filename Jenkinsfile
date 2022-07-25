@@ -70,7 +70,9 @@ pipeline {
       }
       steps {
         sleep 60
-        sh '[[ $(curl -s -o /dev/null -w "%{http_code}" $(cat .endpoint)) =~^[23] ]] || exit 1'
+        sh '''
+          [ "$(echo $(curl -sLo /dev/null -w "%{http_code}" $(cat .endpoint)) | cut -c 1)" == "2" ] || exit 1
+        '''
         input message: 'Automatic tests passed, awaiting manual approval', ok: 'Confirm'
         sh '''
           terraform init
