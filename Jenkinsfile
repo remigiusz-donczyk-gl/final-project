@@ -113,10 +113,10 @@ pipeline {
         cleanWs()
         checkout scm
         git branch: 'prod', credentialsId: 'github-account', url: 'https://github.com/remigiusz-donczyk/final-project'
-        sh '''
-          git merge origin/dev
-          git push origin prod
-        '''
+        sh 'git merge origin/dev'
+        withCredentials([usernamePassword(credentialsId: 'github-account', passwordVariable: 'TOKEN', usernameVariable: 'USER')]) {
+          sh "git push https://$TOKEN@github.com/$USER/final-project.git prod"
+        }
       }
     }
   }
