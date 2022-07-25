@@ -54,6 +54,16 @@ pipeline {
         }
       }
     }
+    stage('test') {
+      when { branch 'dev' }
+      environment {
+        ENDPOINT = sh(returnStdout: true, script: 'terraform output -raw kube_endpoint')
+      }
+      steps {
+        sleep 60
+        sh "curl -s -o /dev/null -w '%{http_code}' $ENDPOINT"
+      }
+    }
     stage('extinction') {
       when { branch 'dev' }
       tools {
