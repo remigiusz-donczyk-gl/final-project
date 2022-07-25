@@ -6,7 +6,7 @@ ADD nginx.conf /etc/nginx/
 ADD setup.sql /tmp/
 ADD website.db /tmp/
 ADD data /var/www/html/data
-RUN service php7.4-fpm start && service nginx start && service mariadb start && mysql </tmp/setup.sql && mysql website </tmp/website.db
+RUN service php7.4-fpm start && service nginx start && service mariadb start && mysql </tmp/setup.sql
 ADD index.php /var/www/html/
 
 EXPOSE 80

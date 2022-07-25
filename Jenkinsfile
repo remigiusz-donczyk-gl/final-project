@@ -54,7 +54,7 @@ pipeline {
           terraform init
           terraform plan -out .plan
         '''
-        retry(2) {
+        retry(1) {
           sh 'terraform apply .plan'
         }
       }
@@ -62,7 +62,7 @@ pipeline {
     stage('test') {
       when { branch 'dev' }
       steps {
-        sh 'cat .endpoint'
+        sh 'curl -s -o /dev/null -w "%{http_code}" $(cat .endpoint)'
       }
     }
     stage('extinction') {
@@ -80,7 +80,7 @@ pipeline {
           terraform init
           terraform plan -destroy -out .plan
         '''
-        retry(2) {
+        retry(1) {
           sh 'terraform apply .plan'
         }
       }
