@@ -58,6 +58,7 @@ pipeline {
         retry(1) {
           sh 'terraform apply .plan'
         }
+        sh 'cat .endpoint'
       }
     }
     stage('test') {
@@ -75,9 +76,8 @@ pipeline {
         input message: 'Smoke test passed, awaiting manual approval', ok: 'Confirm'
         sh '''
           terraform init
-          terraform plan -destroy -out .plan
-          terraform apply .plan
-          rm testenv.tf
+          terraform destroy -target kubernetes_pod.testenv -taget kubernetes_service.testenv_deploy -target local_file.test_endpoint
+          mv terraform.tfstate /var/jenkins_home/tf/
         '''
       }
     }
@@ -99,7 +99,7 @@ pipeline {
           docker image rm remigiuszdonczyk/final-project
           docker logout
         '''
-        git branch: 'prod', 'credentialsId: 'github-account', url: 'https://github.com/remigiusz-donczyk/final-project'
+        git branch: 'prod', credentialsId: 'github-account', url: 'https://github.com/remigiusz-donczyk/final-project'
         withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
           sh """
             git merge origin/dev
@@ -108,10 +108,15 @@ pipeline {
         }
       }
     }
-    stage('deploy') {
+    stage('undeploy') {
       when { branch 'prod' }
       steps {
-        echo 'Hello, world!'
+        sh '''
+          mv /var/jenkins_home/tf/terraform.tfstate .
+          terraform init
+          terraform plan -destroy -out .plan
+          terraform apply .plan
+        '''
       }
     }
   }
