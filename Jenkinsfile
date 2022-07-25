@@ -7,7 +7,6 @@ pipeline {
     VERSION = "1.1.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 85')}"
   }
   stages {
-    /*
     stage('cleanup') {
       steps {
         cleanWs()
@@ -52,6 +51,7 @@ pipeline {
       }
       steps {
         sh '''
+          cp tf-conditional/testenv.tf .
           terraform init
           terraform plan -out .plan
         '''
@@ -77,10 +77,11 @@ pipeline {
           terraform init
           terraform plan -destroy -out .plan
           terraform apply .plan
+          rm testenv.tf
         '''
       }
     }
-    stage('begin-prod') {
+    stage('merge-prod') {
       when { branch 'dev' }
       tools {
         dockerTool '19.3'
@@ -97,26 +98,20 @@ pipeline {
           docker image rm remigiuszdonczyk/final-project:stable
           docker image rm remigiuszdonczyk/final-project
           docker logout
-          git fetch
-          git checkout prod
-          git merge dev
-          git push
         '''
+        git branch: 'prod', 'credentialsId: 'github-account', url: 'https://github.com/remigiusz-donczyk/final-project'
+        withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
+          sh """
+            git merge origin/dev
+            git push https://$TOKEN@github.com/remigiusz-donczyk/final-project.git prod
+          """
+        }
       }
     }
-    */
-    stage('test-git') {
-      tools {
-        git 'Default'
-      }
+    stage('deploy') {
+      when { branch 'prod' }
       steps {
-        cleanWs()
-        checkout scm
-        git branch: 'prod', credentialsId: 'github-account', url: 'https://github.com/remigiusz-donczyk/final-project'
-        sh 'git merge origin/dev'
-        withCredentials([usernamePassword(credentialsId: 'github-account', passwordVariable: 'TOKEN', usernameVariable: 'USER')]) {
-          sh "git push https://$TOKEN@github.com/$USER/final-project.git prod"
-        }
+        echo 'Hello, world!'
       }
     }
   }

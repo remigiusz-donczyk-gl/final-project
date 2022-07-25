@@ -4,7 +4,7 @@
 This is part of a DevOps academy I am taking part in. A simple project with a pipeline to go with it.
 
 - [x] simple webapp with database
-- [ ] jenkins (branch dev)
+- [x] jenkins (branch dev)
   - [x] build
     - [x] make docker image > dockerhub
     - [x] terraform aws kubernetes
@@ -13,7 +13,7 @@ This is part of a DevOps academy I am taking part in. A simple project with a pi
     - [x] auto tests
     - [x] remove test env
     - [x] dockerhub (:stable)
-    - [ ] github merge to prod
+    - [x] github merge to prod
 - [ ] jenkins (branch prod)
   - [ ] deploy prod env
   - [ ] monitor health
