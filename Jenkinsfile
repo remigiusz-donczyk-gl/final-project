@@ -114,7 +114,7 @@ pipeline {
         checkout scm
         git branch: 'prod', credentialsId: 'github-account', url: 'https://github.com/remigiusz-donczyk/final-project'
         sh '''
-          git branch
+          git merge origin/dev
         '''
       }
     }
