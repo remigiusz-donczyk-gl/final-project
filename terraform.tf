@@ -119,8 +119,8 @@ resource "kubernetes_service" "testenv_deploy" {
   }
 }
 
-resource "local_file" "enpoint" {
-  value = kubernetes_service.testenv_deploy.status[0].load_balancer[0].ingress[0].hostname
+resource "local_file" "endpoint" {
+  content = kubernetes_service.testenv_deploy.status[0].load_balancer[0].ingress[0].hostname
   filename = ".endpoint"
 }
 
