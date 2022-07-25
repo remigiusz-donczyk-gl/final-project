@@ -7,6 +7,7 @@ pipeline {
     VERSION = "1.1.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 85')}"
   }
   stages {
+    /*
     stage('cleanup') {
       steps {
         cleanWs()
@@ -96,10 +97,23 @@ pipeline {
           docker image rm remigiuszdonczyk/final-project:stable
           docker image rm remigiuszdonczyk/final-project
           docker logout
+          git fetch
           git checkout prod
           git merge dev
           git push
         '''
+      }
+    }
+    */
+    stage('test-git') {
+      tools {
+        git 'Default'
+      }
+      steps {
+        git fetch
+        git checkout prod
+        git merge dev
+        git push
       }
     }
   }
