@@ -7,6 +7,7 @@ pipeline {
     VERSION = "1.0.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 67')}"
   }
   stages {
+    /*
     stage('cleanup') {
       steps {
         cleanWs()
@@ -59,6 +60,7 @@ pipeline {
         }
       }
     }
+    */
     stage('test') {
       when { branch 'dev' }
       tools {
@@ -83,6 +85,7 @@ pipeline {
         }
       }
     }
+    /*
     stage('begin-prod') {
       when { branch 'dev' }
       tools {
@@ -105,6 +108,7 @@ pipeline {
         }
       }
     }
+    */
   }
 }
 
