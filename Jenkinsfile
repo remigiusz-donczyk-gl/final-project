@@ -52,16 +52,13 @@ pipeline {
         retry(2) {
           sh 'terraform apply .plan'
         }
+        sh 'terraform output -raw kube_endpoint > .endpoint'
       }
     }
     stage('test') {
       when { branch 'dev' }
-      environment {
-        ENDPOINT = "${sh(returnStdout: true, script: 'terraform output -raw kube_endpoint')}"
-      }
       steps {
-        sleep 60
-        sh "curl -s -o /dev/null -w '%{http_code}' $ENDPOINT"
+        sh 'ls'
       }
     }
     stage('extinction') {
