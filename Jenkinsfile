@@ -61,12 +61,6 @@ pipeline {
     }
     stage('test') {
       when { branch 'dev' }
-      steps {
-        sh 'curl -s -o /dev/null -w "%{http_code}" $(cat .endpoint)'
-      }
-    }
-    stage('extinction') {
-      when { branch 'dev' }
       tools {
         terraform '1.2.5'
       }
@@ -75,13 +69,37 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret')
       }
       steps {
-        input message: 'Do you wish to perform extinction?', ok: 'Approve'
+        sleep 60
+        sh '[[ $(curl -s -o /dev/null -w "%{http_code}" $(cat .endpoint)) =~^[23] ]] || exit 1'
+        input message: 'Automatic tests passed, awaiting manual approval', ok: 'Confirm'
         sh '''
           terraform init
           terraform plan -destroy -out .plan
         '''
         retry(1) {
           sh 'terraform apply .plan'
+        }
+      }
+    }
+    stage('begin-prod') {
+      when { branch 'dev' }
+      tools {
+        dockerTool '19.3'
+        git 'Default'
+      }
+      steps {
+        dir('website') {
+          withCredentials([usernamePassword(credentialsId: 'docker-account', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+            sh 'echo $PASS | docker login -u $USER --password-stdin'
+          }
+          sh '''
+            docker pull remigiuszdonczyk/final-project
+            docker tag remigiuszdonczyk/final-project remigiuszdonczyk/final-project:stable
+            docker push remigiuszdonczyk/final-project:stable
+            docker image rm remigiuszdonczyk/final-project:stable
+            docker image rm remigiuszdonczyk/final-project
+            docker logout
+          '''
         }
       }
     }

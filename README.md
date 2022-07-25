@@ -9,10 +9,10 @@ This is part of a DevOps academy I am taking part in. A simple project with a pi
     - [x] make docker image > dockerhub
     - [x] terraform aws kubernetes
     - [x] deploy test env
-  - [ ] test
-    - [ ] auto tests
-    - [ ] remove test env
-    - [ ] dockerhub (:stable) (signing?)
+  - [x] test
+    - [x] auto tests
+    - [x] remove test env
+    - [x] dockerhub (:stable)
     - [ ] github merge to prod
 - [ ] jenkins (branch prod)
   - [ ] deploy prod env
