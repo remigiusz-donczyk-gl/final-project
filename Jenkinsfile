@@ -111,10 +111,7 @@ pipeline {
       }
       steps {
         sh '''
-          git fetch
-          git checkout prod
-          git merge dev
-          git push
+          git branch -r
         '''
       }
     }
