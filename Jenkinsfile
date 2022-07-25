@@ -110,10 +110,12 @@ pipeline {
         git 'Default'
       }
       steps {
-        git fetch
-        git checkout prod
-        git merge dev
-        git push
+        sh '''
+          git fetch
+          git checkout prod
+          git merge dev
+          git push
+        '''
       }
     }
   }
