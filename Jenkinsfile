@@ -75,10 +75,8 @@ pipeline {
         sh '''
           terraform init
           terraform plan -destroy -out .plan
+          terraform apply .plan
         '''
-        retry(1) {
-          sh 'terraform apply .plan'
-        }
       }
     }
     stage('begin-prod') {
@@ -88,20 +86,20 @@ pipeline {
         git 'Default'
       }
       steps {
-        dir('website') {
-          withCredentials([usernamePassword(credentialsId: 'docker-account', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-            sh 'echo $PASS | docker login -u $USER --password-stdin'
-          }
-          sh '''
-            docker pull remigiuszdonczyk/final-project
-            docker tag remigiuszdonczyk/final-project remigiuszdonczyk/final-project:stable
-            docker push remigiuszdonczyk/final-project:stable
-            docker image rm remigiuszdonczyk/final-project:stable
-            docker image rm remigiuszdonczyk/final-project
-            docker logout
-            git status
-          '''
+        withCredentials([usernamePassword(credentialsId: 'docker-account', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+          sh 'echo $PASS | docker login -u $USER --password-stdin'
         }
+        sh '''
+          docker pull remigiuszdonczyk/final-project
+          docker tag remigiuszdonczyk/final-project remigiuszdonczyk/final-project:stable
+          docker push remigiuszdonczyk/final-project:stable
+          docker image rm remigiuszdonczyk/final-project:stable
+          docker image rm remigiuszdonczyk/final-project
+          docker logout
+          git checkout prod
+          git merge dev
+          git push
+        '''
       }
     }
   }
