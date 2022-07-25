@@ -62,7 +62,7 @@ pipeline {
     stage('test') {
       when { branch 'dev' }
       steps {
-        sh 'ls'
+        sh 'cat .endpoint'
       }
     }
     stage('extinction') {

@@ -23,11 +23,11 @@ LOCK TABLES `memes` WRITE;
 /*!40000 ALTER TABLE `memes` DISABLE KEYS */;
 INSERT INTO `memes` VALUES
   (1,'angery.png'),(2,'audiovideo.png'),(3,'awscharge.jpg'),(4,'awsproblem.png'),(5,'awsservice.jpg'),
-  (6,'awssleep.jpg'),(7,'badcode.png'),(8,'binary.png'),(9,'doge.jpg'),(10,'gitlab.jpg'),
-  (11,'gitops.jpg'),(12,'handshake.jpg'),(13,'harry.jpg'),(14,'it.jpg'),(15,'kubetutorial.png'),
-  (16,'kubeyaml.jpg'),(17,'meta.png'),(18,'options.jpg'),(19,'permissions.jpg'),(20,'phases.png'),
-  (21,'propagate.png'),(22,'readme.jpg'),(23,'scm.jpg'),(24,'scope.jpg'),(25,'simply.jpg'),
-  (26,'starwars.jpg'),(27,'taskfear.jpg'),(28,'undef.png'),(29,'windows8.jpg');
+  (6,'awssleep.jpg'),(7,'badcode.png'),(8,'binary.png'),(9,'ddos.jpg'),(10,'doge.jpg'),
+  (11,'gitlab.jpg'),(12,'gitops.jpg'),(13,'handshake.jpg'),(14,'harry.jpg'),(15,'it.jpg'),
+  (16,'kubetutorial.png'),(17,'kubeyaml.jpg'),(18,'meta.png'),(19,'options.jpg'),(20,'permissions.jpg'),
+  (21,'phases.png'),(22,'propagate.png'),(23,'readme.jpg'),(24,'scm.jpg'),(25,'scope.jpg'),
+  (26,'simply.jpg'),(27,'starwars.jpg'),(28,'taskfear.jpg'),(29,'undef.png'),(30,'windows8.jpg');
 /*!40000 ALTER TABLE `memes` ENABLE KEYS */;
 UNLOCK TABLES;
 
