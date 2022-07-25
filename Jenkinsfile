@@ -14,7 +14,12 @@ pipeline {
       }
     }
     stage('dockerize') {
-      when { branch 'dev' }
+      when {
+        allOf {
+          branch 'dev';
+          changeset 'website/*'
+        }
+      }
       tools {
         dockerTool '19.3'
       }
@@ -52,7 +57,6 @@ pipeline {
         retry(2) {
           sh 'terraform apply .plan'
         }
-        sh 'terraform output -raw kube_endpoint > .endpoint'
       }
     }
     stage('test') {
