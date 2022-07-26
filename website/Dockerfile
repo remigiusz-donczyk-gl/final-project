@@ -7,7 +7,6 @@ ADD supervisord.conf /etc/supervisord.conf
 ADD php-fpm.conf /etc/php/7.4/fpm/
 ADD nginx.conf /etc/nginx/
 ADD setup.sql /tmp/
-ADD website.db /tmp/
 ADD data /var/www/html/data
 # start the database and setup
 RUN service php7.4-fpm start && service nginx start && service mariadb start && mysql </tmp/setup.sql
