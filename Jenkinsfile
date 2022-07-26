@@ -76,7 +76,7 @@ pipeline {
         input message: 'Smoke test passed, awaiting manual approval', ok: 'Confirm'
         sh '''
           terraform init
-          terraform destroy -target kubernetes_pod.testenv -target kubernetes_service.testenv_deploy -target local_file.test_endpoint
+          terraform destroy -target kubernetes_pod.testenv -target kubernetes_service.testenv_deploy -target local_file.test_endpoint -auto-approve
           mv terraform.tfstate /var/jenkins_home/tf/
         '''
       }
