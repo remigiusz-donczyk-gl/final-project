@@ -2,6 +2,7 @@
 ![Build Status](https://jenkins-gl.bluecom.dev/buildStatus/icon?job=final-project%2Fdev)
 
 This is part of a DevOps academy I am taking part in. A simple project with a pipeline to go with it.
+[Docker image](https://hub.docker.com/repository/docker/remigiuszdonczyk/final-project/tags)
 
 - [x] simple webapp with database
 - [x] jenkins (branch dev)

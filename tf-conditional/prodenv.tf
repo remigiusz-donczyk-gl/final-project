@@ -1,3 +1,4 @@
+//  create pod from stable image
 resource "kubernetes_pod" "prodenv" {
   metadata {
     name = "prodenv"
@@ -13,6 +14,7 @@ resource "kubernetes_pod" "prodenv" {
   }
 }
 
+//  deploy pod on public endpoint
 resource "kubernetes_service" "prodenv_deploy" {
   metadata {
     name = "prodenv-deploy"
@@ -29,6 +31,8 @@ resource "kubernetes_service" "prodenv_deploy" {
   }
 }
 
+//  testing - output the endpoint
 output "prod_endpoint" {
   value = kubernetes_service.prodenv_deploy.status[0].load_balancer[0].ingress[0].hostname
 }
+

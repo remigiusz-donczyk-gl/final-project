@@ -1,8 +1,10 @@
 <!doctype html>
 <html lang=en>
   <head>
+    <!-- set the charset and get a nice font -->
     <meta charset=UTF-8>
     <link href=http://fonts.cdnfonts.com/css/renogare rel=stylesheet>
+    <!-- CSS Magic -->
     <style>
       * {
         border: 0;
@@ -93,17 +95,20 @@
   </head>
   <body>
     <div id=txtcontainer>
+      <!-- roundleft and roundright are div magic to make rounded inside corners -->
       <div id=roundleft></div>
       <p>Here is your random meme</p>
       <button onclick=window.location.reload();>Give me another!</button>
       <div id=roundright></div>
     </div>
     <div id=imgcontainer>
+      <!-- access the database and fetch a random entry -->
       <?php
         $db = new mysqli("localhost", "dbuser", "123", "website");
         $res = $db->query("select * from memes");
         $chosen = rand(1, $res->num_rows);
         $meme = $db->query("select Path from memes where Id = $chosen")->fetch_array()["Path"];
+        // make an img with that entry as filename
         print "<img src=data/$meme></img>";
       ?>
     </div>

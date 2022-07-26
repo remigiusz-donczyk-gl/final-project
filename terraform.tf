@@ -1,3 +1,4 @@
+//  specify required versions explicity, update this every so often
 terraform {
   required_version = "1.2.5"
   required_providers {
@@ -24,6 +25,7 @@ terraform {
   }
 }
 
+//  get the required data values as they're needed
 data "aws_availability_zones" "available" {}
 
 data "aws_eks_cluster" "eks" {
@@ -34,6 +36,7 @@ data "aws_eks_cluster_auth" "eks" {
   name = module.eks.cluster_id
 }
 
+//  set up providers, kubernetes specifically needs to know the EKS that's going to be created
 provider "aws" {
   region = "us-east-1"
 }
@@ -44,6 +47,7 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.eks.token
 }
 
+//  create VPC, subnets, route tables, gateways & EIP
 module "vpc" {
   source               = "terraform-aws-modules/vpc/aws"
   version              = "3.14.2"
@@ -65,9 +69,10 @@ module "vpc" {
   }
 }
 
+//  create node groups, iam roles, openid provider, cluster & cloudwatch log
 module "eks" {
   source                          = "terraform-aws-modules/eks/aws"
-  version                         = "18.26.5"
+  version                         = "18.26.6"
   cluster_name                    = "cluster"
   cluster_version                 = "1.22"
   cluster_endpoint_private_access = true
