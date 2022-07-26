@@ -108,7 +108,7 @@ pipeline {
         }
       }
     }
-    stage('undeploy') {
+    stage('deploy') {
       when { branch 'prod' }
       tools {
         terraform '1.2.5'
@@ -120,6 +120,24 @@ pipeline {
       steps {
         sh '''
           mv /var/jenkins_home/tf/terraform.tfstate .
+          cp tf-conditional/prodenv.tf .
+          terraform init
+          terraform plan -out .plan
+          terraform apply .plan
+        '''
+      }
+    }
+    stage('extinction') {
+      when { branch 'prod' }
+      tools {
+        terraform '1.2.5'
+      }
+      environment {
+        AWS_ACCESS_KEY_ID = credentials('aws-access')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret')
+      }
+      steps {
+        sh '''
           terraform init
           terraform plan -destroy -out .plan
           terraform apply .plan

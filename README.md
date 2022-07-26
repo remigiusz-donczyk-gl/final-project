@@ -14,7 +14,7 @@ This is part of a DevOps academy I am taking part in. A simple project with a pi
     - [x] remove test env
     - [x] dockerhub (:stable)
     - [x] github merge to prod
-- [ ] jenkins (branch prod)
-  - [ ] deploy prod env
+- [x] jenkins (branch prod)
+  - [x] deploy prod env
   - [ ] monitor health
 

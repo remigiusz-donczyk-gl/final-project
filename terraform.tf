@@ -24,10 +24,6 @@ terraform {
   }
 }
 
-locals {
-  region = "us-east-1"
-}
-
 data "aws_availability_zones" "available" {}
 
 data "aws_eks_cluster" "eks" {
@@ -39,7 +35,7 @@ data "aws_eks_cluster_auth" "eks" {
 }
 
 provider "aws" {
-  region = local.region
+  region = "us-east-1"
 }
 
 provider "kubernetes" {
