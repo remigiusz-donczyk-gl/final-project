@@ -11,7 +11,7 @@ The core of the entire project. It contains the entire workflow as code in the J
 #### The *dev* branch
 
 This is the first part that starts whenever changes are pushed to the *dev* branch of the repository. It first creates a Docker image out of the current version of the website, assuming any changes were made since the last time it did so, the Docker image is then pushed into Dockerhub with a SEMVER-compliant version number as well as *latest* tag.
-After that is done, terraform is used to create the required architecture on the AWS cloud, the website is deployed into the test environment and tests (currently only a smoke test) are performed. If they pass, the Docker image is tagged as *stable*, and the *dev* branch is merged into *prod*.
+After that is done, terraform is used to create the required architecture on the AWS cloud, the website is deployed into the test environment and tests (currently only a smoke test) are performed. If they pass, the Docker image is tagged as *stable*, and the *dev* branch is merged into *prod*. The test environment is kept online for no-downtime purposes.
 
 #### The *prod* branch
 
@@ -23,11 +23,11 @@ The first tool used by Jenkins to complete the entire process. It depends on the
 
 ## Terraform
 
-The second, and the most important, tool that Jenkins uses. It uses the AWS tokens specified in Jenkins credentials to access AWS and set up all of the architecture needed to deploy a Docker image inside Kubernetes. It creates a total of \~50 resources within the cloud, including such highlights as the VPC, gateways, security rules, EKS and a kubernetes service that allows the website to be accessed publically.
+The second, and the most important, tool that Jenkins uses. It uses the AWS tokens specified in Jenkins credentials to access AWS and set up all of the architecture needed to deploy a Docker image inside Kubernetes. It creates a total of \~50 resources within the cloud, including such highlights as the VPC, gateways, security rules, EKS and a kubernetes service that allows the website to be accessed publicly.
 
 ## Git
 
-Honorable mentions for git, which is used within the pipeline to merge the *dev* branch into *prod* automatically.
+Honorable mentions for git, which is used within the pipeline to merge the *dev* branch into *prod* automatically. This is also the only way for the prod branch can be updated, ensuring that it can never contain an environment which is faulty.
 
 ## Planned
 

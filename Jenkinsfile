@@ -131,7 +131,6 @@ pipeline {
           terraform apply .plan
           mv terraform.tfstate /var/jenkins_home/tf/
         '''
-        // terraform destroy -target kubernetes_pod.testenv -auto-approve
       }
     }
     //  purge terraform to empty playground for the next build, would not happen in a real environment
