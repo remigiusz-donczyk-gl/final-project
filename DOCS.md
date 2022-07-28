@@ -31,9 +31,15 @@ Honorable mentions for git, which is used within the pipeline to merge the *dev*
 
 ## Planned
 
-- [ ]  Monitoring
+- Monitoring
 
-- [ ]  A bit more documentation
+- A bit more documentation
 
-- [ ]  Cloudflare Integration
+- Cloudflare integration
+
+- Static code analysis
+
+- Key Vault
+
+- Statefulness for the web app
 
