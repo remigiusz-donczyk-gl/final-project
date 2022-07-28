@@ -25,6 +25,12 @@ terraform {
   }
 }
 
+//  set the environment type
+variable "prod" {
+  type    = bool
+  default = false
+}
+
 //  get the required data values as they're needed
 data "aws_availability_zones" "available" {}
 
@@ -84,6 +90,63 @@ module "eks" {
       name          = "default"
       instance_type = "t3.small"
       desired_size  = 1
+    }
+  }
+}
+
+//  deploy website on a public endpoint
+resource "kubernetes_service" "testenv_deploy" {
+  metadata {
+    name = "testenv-deploy"
+  }
+  spec {
+    type = "LoadBalancer"
+    selector = {
+      app = "website"
+    }
+    port {
+      port        = 80
+      target_port = 80
+    }
+  }
+}
+
+//  push the endpoint to a file to be available for tests
+resource "local_file" "test_endpoint" {
+  content  = kubernetes_service.testenv_deploy.status[0].load_balancer[0].ingress[0].hostname
+  filename = ".endpoint"
+}
+
+//  create test pod from latest image if PROD environment is unset
+resource "kubernetes_pod" "testenv" {
+  count = var.prod ? 0 : 1
+  metadata {
+    name = "testenv"
+    labels = {
+      app = "website"
+    }
+  }
+  spec {
+    container {
+      name  = "website"
+      image = "remigiuszdonczyk/final-project:latest"
+    }
+  }
+}
+
+//  create pod from stable image if PROD environnment is set
+resource "kubernetes_pod" "prodenv" {
+  count = var.prod ? 1 : 0
+  metadata {
+    name = "prodenv"
+    labels = {
+      app = "website"
+    }
+  }
+  spec {
+    container {
+      name  = "website"
+      image = "remigiuszdonczyk/final-project:stable"
     }
   }
 }

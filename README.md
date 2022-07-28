@@ -4,6 +4,7 @@
 This is part of a DevOps academy I am taking part in. A simple project with a pipeline to go with it.
 [Docker image](https://hub.docker.com/repository/docker/remigiuszdonczyk/final-project/tags)
 
+Check out the documentation [here](DOCS.md)!
 - [x] simple webapp with database
 - [x] jenkins (branch dev)
   - [x] build
@@ -17,5 +18,7 @@ This is part of a DevOps academy I am taking part in. A simple project with a pi
     - [x] github merge to prod
 - [x] jenkins (branch prod)
   - [x] deploy prod env
-  - [ ] monitor health
+- [ ] Cloudflare Integration
+- [ ] monitor health
+- [ ] documentation
 
