@@ -76,8 +76,8 @@ pipeline {
       steps {
         sleep 60
         //  send a request to the generated endpoint and fail if unreachable
-        sh 'test $(echo $(curl -sLo /dev/null -w "%{http_code}" website-gl.bluecom.dev) | cut -c 1) -eq 2 || exit 1'
-        input message: 'Tests passed, awaiting manual approval for production deployment', ok: 'Deploy'
+        //  sh 'test $(echo $(curl -sLo /dev/null -w "%{http_code}" website-gl.bluecom.dev) | cut -c 1) -eq 2 || exit 1'
+        input message: 'Tests disabled, awaiting manual approval for production deployment', ok: 'Deploy'
       }
     }
     stage('merge-prod') {

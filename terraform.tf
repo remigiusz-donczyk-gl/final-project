@@ -1,6 +1,6 @@
 //  specify required versions explicity, update this every so often
 terraform {
-  required_version = "1.2.5"
+  required_version = ">= 1.2.5"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -70,11 +70,9 @@ module "vpc" {
   single_nat_gateway   = true
   enable_dns_hostnames = true
   public_subnet_tags = {
-    "kubernetes.io/cluster/cluster" = "shared"
-    "kubernetes.io/role/elb"        = "1"
+    "kubernetes.io/role/elb" = "1"
   }
   private_subnet_tags = {
-    "kubernetes.io/cluster/cluster"   = "shared"
     "kubernetes.io/role/internal-elb" = "1"
   }
 }
@@ -102,6 +100,10 @@ module "eks" {
 resource "kubernetes_service" "deploy" {
   metadata {
     name = "deploy"
+    annotations = {
+      "service.beta.kubernetes.io/aws-load-balancer-type" = "external"
+      "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "ip"
+    }
   }
   spec {
     type = "LoadBalancer"
@@ -116,12 +118,12 @@ resource "kubernetes_service" "deploy" {
 }
 
 //  create a mnemonic endpoint
-resource "cloudflare_record" "endpoint" {
-  zone_id = "70e93deae71643e370feb24d20c80862"
-  name    = "website-gl"
-  type    = "CNAME"
-  value   = kubernetes_service.deploy.status[0].load_balancer[0].ingress[0].hostname
-}
+//resource "cloudflare_record" "endpoint" {
+//  zone_id = "70e93deae71643e370feb24d20c80862"
+//  name    = "website-gl"
+//  type    = "CNAME"
+//  value   = kubernetes_service.deploy.status[0].load_balancer[0].ingress[0].hostname
+//}
 
 //  create test pod from latest image if PROD environment is unset
 resource "kubernetes_pod" "testenv" {
