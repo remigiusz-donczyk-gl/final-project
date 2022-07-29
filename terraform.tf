@@ -22,6 +22,10 @@ terraform {
       source  = "hashicorp/tls"
       version = "3.4.0"
     }
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "3.20.0"
+    }
   }
 }
 
@@ -95,9 +99,9 @@ module "eks" {
 }
 
 //  deploy website on a public endpoint
-resource "kubernetes_service" "testenv_deploy" {
+resource "kubernetes_service" "deploy" {
   metadata {
-    name = "testenv-deploy"
+    name = "deploy"
   }
   spec {
     type = "LoadBalancer"
@@ -111,10 +115,12 @@ resource "kubernetes_service" "testenv_deploy" {
   }
 }
 
-//  push the endpoint to a file to be available for tests
-resource "local_file" "test_endpoint" {
-  content  = kubernetes_service.testenv_deploy.status[0].load_balancer[0].ingress[0].hostname
-  filename = ".endpoint"
+//  create a mnemonic endpoint
+resource "cloudflare_record" "endpoint" {
+  zone_id = "70e93deae71643e370feb24d20c80862"
+  name    = "website-gl"
+  type    = "CNAME"
+  value   = kubernetes_service.deploy.status[0].load_balancer[0].ingress[0].hostname
 }
 
 //  create test pod from latest image if PROD environment is unset

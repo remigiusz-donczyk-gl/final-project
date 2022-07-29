@@ -55,6 +55,7 @@ pipeline {
       environment {
         AWS_ACCESS_KEY_ID = credentials('aws-access')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret')
+        CLOUDFLARE_API_TOKEN = credentials('cf-token')
       }
       steps {
         //  create terraform infrastructure as well as the testing environment
@@ -67,10 +68,7 @@ pipeline {
           sh 'terraform apply .plan'
         }
         //  write the endpoint to console for showcase purposes
-        sh '''
-          mv terraform.tfstate /var/jenkins_home/tf/
-          cat .endpoint
-        '''
+        sh 'mv terraform.tfstate /var/jenkins_home/tf/'
       }
     }
     stage('test') {
@@ -78,7 +76,7 @@ pipeline {
       steps {
         sleep 60
         //  send a request to the generated endpoint and fail if unreachable
-        sh 'test $(echo $(curl -sLo /dev/null -w "%{http_code}" $(cat .endpoint)) | cut -c 1) -eq 2 || exit 1'
+        sh 'test $(echo $(curl -sLo /dev/null -w "%{http_code}" website-gl.bluecom.dev) | cut -c 1) -eq 2 || exit 1'
         input message: 'Tests passed, awaiting manual approval for production deployment', ok: 'Deploy'
       }
     }
@@ -120,6 +118,7 @@ pipeline {
       environment {
         AWS_ACCESS_KEY_ID = credentials('aws-access')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret')
+        CLOUDFLARE_API_TOKEN = credentials('cf-token')
         TF_VAR_prod = true
       }
       steps {
@@ -142,6 +141,7 @@ pipeline {
       environment {
         AWS_ACCESS_KEY_ID = credentials('aws-access')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret')
+        CLOUDFLARE_API_TOKEN = credentials('cf-token')
         TF_VAR_prod = true
       }
       steps {
@@ -152,7 +152,6 @@ pipeline {
           terraform init
           terraform plan -destroy -out .plan
           terraform apply .plan
-          rm -f terraform.tfstate
         '''
       }
     }
