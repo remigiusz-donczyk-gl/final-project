@@ -5,6 +5,7 @@ This is part of a DevOps academy I am taking part in. A simple project with a pi
 [Docker image](https://hub.docker.com/repository/docker/remigiuszdonczyk/final-project/tags)
 
 Check out the documentation [here](DOCS.md)!
+
 - [x] simple webapp with database
 - [x] jenkins (branch dev)
   - [x] build
