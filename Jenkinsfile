@@ -63,7 +63,7 @@ pipeline {
           terraform init
         '''
         retry(1) {
-          sh 'terraform apply'
+          sh 'terraform apply -auto-approve'
         }
         sh '''
           mv terraform.tfstate /var/jenkins_home/tf/
@@ -125,7 +125,7 @@ pipeline {
         sh '''
           [ -f /var/jenkins_home/tf/terraform.tfstate ] && mv /var/jenkins_home/tf/terraform.tfstate .
           terraform init
-          terraform apply
+          terraform apply -auto-approve
           mv terraform.tfstate /var/jenkins_home/tf/
         '''
       }
@@ -147,7 +147,7 @@ pipeline {
         sh '''
           [ -f /var/jenkins_home/tf/terraform.tfstate ] && mv /var/jenkins_home/tf/terraform.tfstate .
           terraform init
-          terraform destroy
+          terraform destroy -auto-approve
         '''
       }
     }

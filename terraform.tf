@@ -92,17 +92,6 @@ module "eks" {
   }
 }
 
-//  deploy load balancer controller
-module "lb-controller" {
-  source       = "Young-ook/eks/aws//modules/lb-controller"
-  version      = "1.7.5"
-  cluster_name = module.eks.cluster_id
-  oidc = {
-    url = module.eks.cluster_oidc_issuer_url
-    arn = module.eks.oidc_provider_arn
-  }
-}
-
 //  deploy website on a public endpoint
 resource "kubernetes_service" "deploy" {
   depends_on = [module.lb-controller]
