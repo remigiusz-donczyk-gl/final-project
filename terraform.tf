@@ -15,7 +15,7 @@ terraform {
       version = "2.12.1"
     }
     helm = {
-      source = "hashicorp/helm"
+      source  = "hashicorp/helm"
       version = "2.6.0"
     }
     null = {
@@ -61,6 +61,14 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.eks.token
 }
 
+provider "helm" {
+  kubernetes {
+    host                   = data.aws_eks_cluster.eks.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
+    token                  = data.aws_eks_cluster_auth.eks.token
+  }
+}
+
 //  create VPC, subnets, route tables, gateways & EIP
 module "vpc" {
   source               = "terraform-aws-modules/vpc/aws"
@@ -102,11 +110,11 @@ module "eks" {
 
 //  deploy load balancer controller inside EKS
 module "eks-lb-controller" {
-  source  = "DNXLabs/eks-lb-controller/aws"
-  version = "0.6.0"
-  cluster_identity_oidc_issuer = module.eks.cluster_oidc_issuer_url
+  source                           = "DNXLabs/eks-lb-controller/aws"
+  version                          = "0.6.0"
+  cluster_identity_oidc_issuer     = module.eks.cluster_oidc_issuer_url
   cluster_identity_oidc_issuer_arn = module.eks.oidc_provider_arn
-  cluster_name = module.eks.cluster_id
+  cluster_name                     = module.eks.cluster_id
 }
 
 //  deploy website on a public endpoint

@@ -33,11 +33,12 @@ LOCK TABLES `memes` WRITE;
 INSERT INTO `memes` VALUES
   /* The actual values go here */
   (1,'angery.png'),(2,'audiovideo.png'),(3,'awscharge.jpg'),(4,'awsproblem.png'),(5,'awsservice.jpg'),
-  (6,'awssleep.jpg'),(7,'badcode.png'),(8,'binary.png'),(9,'ddos.jpg'),(10,'doge.jpg'),
-  (11,'gitlab.jpg'),(12,'gitops.jpg'),(13,'handshake.jpg'),(14,'harry.jpg'),(15,'it.jpg'),
-  (16,'kubetutorial.png'),(17,'kubeyaml.jpg'),(18,'meta.png'),(19,'options.jpg'),(20,'permissions.jpg'),
-  (21,'phases.png'),(22,'propagate.png'),(23,'readme.jpg'),(24,'scm.jpg'),(25,'scope.jpg'),
-  (26,'simply.jpg'),(27,'starwars.jpg'),(28,'taskfear.jpg'),(29,'undef.png'),(30,'windows8.jpg');
+  (6,'awssleep.jpg'),(7,'backlog.png'),(8,'badcode.png'),(9,'binary.png'),(10,'ddos.jpg'),
+  (11,'doge.jpg'),(12,'gitlab.jpg'),(13,'gitops.jpg'),(14,'handshake.jpg'),(15,'hardproblem.png'),
+  (16,'harry.jpg'),(17,'it.jpg'),(18,'juniormaster.png'),(19,'kubetutorial.png'),(20,'kubeyaml.jpg'),
+  (21,'meta.png'),(22,'options.jpg'),(23,'permissions.jpg'),(24,'phases.png'),(25,'propagate.png'),
+  (26,'readme.jpg'),(27,'scm.jpg'),(28,'scope.jpg'),(29,'simply.jpg'),(30,'starwars.jpg'),
+  (31,'taskfear.jpg'),(32,'undef.png'),(33,'windows8.jpg'),(34,'worstcode.png');
 /*!40000 ALTER TABLE `memes` ENABLE KEYS */;
 UNLOCK TABLES;
 
