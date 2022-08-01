@@ -14,10 +14,6 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = "2.12.1"
     }
-    helm = {
-      source  = "hashicorp/helm"
-      version = "2.6.0"
-    }
     null = {
       source  = "hashicorp/null"
       version = "3.1.1"
@@ -25,10 +21,6 @@ terraform {
     tls = {
       source  = "hashicorp/tls"
       version = "3.4.0"
-    }
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "3.20.0"
     }
   }
 }
@@ -59,14 +51,6 @@ provider "kubernetes" {
   host                   = data.aws_eks_cluster.eks.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.eks.token
-}
-
-provider "helm" {
-  kubernetes {
-    host                   = data.aws_eks_cluster.eks.endpoint
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
-    token                  = data.aws_eks_cluster_auth.eks.token
-  }
 }
 
 //  create VPC, subnets, route tables, gateways & EIP
@@ -108,17 +92,20 @@ module "eks" {
   }
 }
 
-//  deploy load balancer controller inside EKS
-module "eks-lb-controller" {
-  source                           = "DNXLabs/eks-lb-controller/aws"
-  version                          = "0.6.0"
-  cluster_identity_oidc_issuer     = module.eks.cluster_oidc_issuer_url
-  cluster_identity_oidc_issuer_arn = module.eks.oidc_provider_arn
-  cluster_name                     = module.eks.cluster_id
+//  deploy load balancer controller
+module "lb-controller" {
+  source       = "Young-ook/eks/aws//modules/lb-controller"
+  version      = "1.7.5"
+  cluster_name = module.eks.cluster_id
+  oidc = {
+    url = module.eks.cluster_oidc_issuer_url
+    arn = module.eks.oidc_provider_arn
+  }
 }
 
 //  deploy website on a public endpoint
 resource "kubernetes_service" "deploy" {
+  depends_on = [module.lb-controller]
   metadata {
     name = "deploy"
   }
@@ -134,48 +121,42 @@ resource "kubernetes_service" "deploy" {
   }
 }
 
-////  create a mnemonic endpoint
-////  commented out for testing
-//resource "cloudflare_record" "endpoint" {
-//  zone_id = "70e93deae71643e370feb24d20c80862"
-//  name    = "website-gl"
-//  type    = "CNAME"
-//  value   = kubernetes_service.deploy.status[0].load_balancer[0].ingress[0].hostname
-//}
+resource "local_file" "endpoint" {
+  content  = kubernetes_service.deploy.status[0].load_balancer[0].ingress[0].hostname
+  filename = ".endpoint"
+}
 
-////  create test pod from latest image if PROD environment is unset
-////  commented out for testing
-//resource "kubernetes_pod" "testenv" {
-//  count = var.prod ? 0 : 1
-//  metadata {
-//    name = "testenv"
-//    labels = {
-//      app = "website"
-//    }
-//  }
-//  spec {
-//    container {
-//      name  = "website"
-//      image = "remigiuszdonczyk/final-project:latest"
-//    }
-//  }
-//}
+//  create test pod from latest image if PROD environment is unset
+resource "kubernetes_pod" "testenv" {
+  count = var.prod ? 0 : 1
+  metadata {
+    name = "testenv"
+    labels = {
+      app = "website"
+    }
+  }
+  spec {
+    container {
+      name  = "website"
+      image = "remigiuszdonczyk/final-project:latest"
+    }
+  }
+}
 
-////  create pod from stable image if PROD environnment is set
-////  commented out for testing
-//resource "kubernetes_pod" "prodenv" {
-//  count = var.prod ? 1 : 0
-//  metadata {
-//    name = "prodenv"
-//    labels = {
-//      app = "website"
-//    }
-//  }
-//  spec {
-//    container {
-//      name  = "website"
-//      image = "remigiuszdonczyk/final-project:stable"
-//    }
-//  }
-//}
+//  create pod from stable image if PROD environnment is set
+resource "kubernetes_pod" "prodenv" {
+  count = var.prod ? 1 : 0
+  metadata {
+    name = "prodenv"
+    labels = {
+      app = "website"
+    }
+  }
+  spec {
+    container {
+      name  = "website"
+      image = "remigiuszdonczyk/final-project:stable"
+    }
+  }
+}
 

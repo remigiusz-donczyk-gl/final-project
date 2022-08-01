@@ -25,10 +25,6 @@ The first tool used by Jenkins to complete the entire process. It depends on the
 
 The second, and the most important, tool that Jenkins uses. It uses the AWS tokens specified in Jenkins credentials to access AWS and set up all of the architecture needed to deploy a Docker image inside Kubernetes. It creates a total of \~50 resources within the cloud, including such highlights as the VPC, gateways, security rules, EKS and a kubernetes service that allows the website to be accessed publicly.
 
-## CloudFlare
-
-Terraform creates architecture and exposes an endpoint, which is then converted with the CloudFlare API to a mnemonic endpoint (website-gl.bluecom.dev) for easy access. This is a minor part of the pipeline, but I think it deserves a similar amount of attention as Git (outlined below).
-
 ## Git
 
 Honorable mentions for git, which is used within the pipeline to merge the *dev* branch into *prod* automatically. This is also the only way for the prod branch can be updated, ensuring that it can never contain an environment which is faulty.
@@ -38,8 +34,6 @@ Honorable mentions for git, which is used within the pipeline to merge the *dev*
 - Monitoring
 
 - A bit more documentation
-
-- Cloudflare integration
 
 - Static code analysis
 

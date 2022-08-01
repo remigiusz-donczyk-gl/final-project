@@ -19,7 +19,6 @@ Check out the documentation [here](DOCS.md)!
     - [x] github merge to prod
 - [x] jenkins (branch prod)
   - [x] deploy prod env
-- [x] Cloudflare integration
 - [ ] monitor health
 - [ ] documentation
 
