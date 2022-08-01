@@ -94,7 +94,6 @@ module "eks" {
 
 //  deploy website on a public endpoint
 resource "kubernetes_service" "deploy" {
-  depends_on = [module.lb-controller]
   metadata {
     name = "deploy"
   }
