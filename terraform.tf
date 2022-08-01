@@ -1,10 +1,10 @@
-//  specify required versions explicity, update this every so often
+//  specify required versions explicitly, update this every so often
 terraform {
-  required_version = ">= 1.2.5"
+  required_version = "1.2.6"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "4.23.0"
+      version = "4.24.0"
     }
     cloudinit = {
       source  = "hashicorp/cloudinit"
@@ -13,6 +13,10 @@ terraform {
     kubernetes = {
       source  = "hashicorp/kubernetes"
       version = "2.12.1"
+    }
+    helm = {
+      source = "hashicorp/html"
+      version = "2.6.0"
     }
     null = {
       source  = "hashicorp/null"
@@ -46,7 +50,7 @@ data "aws_eks_cluster_auth" "eks" {
   name = module.eks.cluster_id
 }
 
-//  set up providers, kubernetes specifically needs to know the EKS that's going to be created
+//  set up providers
 provider "aws" {
   region = "us-east-1"
 }
@@ -96,14 +100,19 @@ module "eks" {
   }
 }
 
+//  deploy load balancer controller inside EKS
+module "eks-lb-controller" {
+  source  = "DNXLabs/eks-lb-controller/aws"
+  version = "0.6.0"
+  cluster_identity_oidc_issuer = module.eks.cluster_oidc_issuer_url
+  cluster_identity_oidc_issuer_arn = module.eks.oidc_provider_arn
+  cluster_name = module.eks.cluster_id
+}
+
 //  deploy website on a public endpoint
 resource "kubernetes_service" "deploy" {
   metadata {
     name = "deploy"
-    annotations = {
-      "service.beta.kubernetes.io/aws-load-balancer-type" = "external"
-      "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "ip"
-    }
   }
   spec {
     type = "LoadBalancer"
@@ -117,7 +126,8 @@ resource "kubernetes_service" "deploy" {
   }
 }
 
-//  create a mnemonic endpoint
+////  create a mnemonic endpoint
+////  commented out for testing
 //resource "cloudflare_record" "endpoint" {
 //  zone_id = "70e93deae71643e370feb24d20c80862"
 //  name    = "website-gl"
@@ -125,37 +135,39 @@ resource "kubernetes_service" "deploy" {
 //  value   = kubernetes_service.deploy.status[0].load_balancer[0].ingress[0].hostname
 //}
 
-//  create test pod from latest image if PROD environment is unset
-resource "kubernetes_pod" "testenv" {
-  count = var.prod ? 0 : 1
-  metadata {
-    name = "testenv"
-    labels = {
-      app = "website"
-    }
-  }
-  spec {
-    container {
-      name  = "website"
-      image = "remigiuszdonczyk/final-project:latest"
-    }
-  }
-}
+////  create test pod from latest image if PROD environment is unset
+////  commented out for testing
+//resource "kubernetes_pod" "testenv" {
+//  count = var.prod ? 0 : 1
+//  metadata {
+//    name = "testenv"
+//    labels = {
+//      app = "website"
+//    }
+//  }
+//  spec {
+//    container {
+//      name  = "website"
+//      image = "remigiuszdonczyk/final-project:latest"
+//    }
+//  }
+//}
 
-//  create pod from stable image if PROD environnment is set
-resource "kubernetes_pod" "prodenv" {
-  count = var.prod ? 1 : 0
-  metadata {
-    name = "prodenv"
-    labels = {
-      app = "website"
-    }
-  }
-  spec {
-    container {
-      name  = "website"
-      image = "remigiuszdonczyk/final-project:stable"
-    }
-  }
-}
+////  create pod from stable image if PROD environnment is set
+////  commented out for testing
+//resource "kubernetes_pod" "prodenv" {
+//  count = var.prod ? 1 : 0
+//  metadata {
+//    name = "prodenv"
+//    labels = {
+//      app = "website"
+//    }
+//  }
+//  spec {
+//    container {
+//      name  = "website"
+//      image = "remigiuszdonczyk/final-project:stable"
+//    }
+//  }
+//}
 

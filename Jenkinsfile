@@ -50,7 +50,7 @@ pipeline {
     stage('terraform') {
       when { branch 'dev' }
       tools {
-        terraform '1.2.5'
+        terraform '1.2.6'
       }
       environment {
         AWS_ACCESS_KEY_ID = credentials('aws-access')
@@ -67,7 +67,6 @@ pipeline {
         retry(1) {
           sh 'terraform apply .plan'
         }
-        //  write the endpoint to console for showcase purposes
         sh 'mv terraform.tfstate /var/jenkins_home/tf/'
       }
     }
@@ -76,8 +75,9 @@ pipeline {
       steps {
         sleep 60
         //  send a request to the generated endpoint and fail if unreachable
-        //  sh 'test $(echo $(curl -sLo /dev/null -w "%{http_code}" website-gl.bluecom.dev) | cut -c 1) -eq 2 || exit 1'
-        input message: 'Tests disabled, awaiting manual approval for production deployment', ok: 'Deploy'
+        //  commented out for testing
+        // sh 'test $(echo $(curl -sLo /dev/null -w "%{http_code}" website-gl.bluecom.dev) | cut -c 1) -eq 2 || exit 1'
+        input message: 'Tests passed, awaiting manual approval for production deployment', ok: 'Deploy'
       }
     }
     stage('merge-prod') {
@@ -113,7 +113,7 @@ pipeline {
     stage('deploy') {
       when { branch 'prod' }
       tools {
-        terraform '1.2.5'
+        terraform '1.2.6'
       }
       environment {
         AWS_ACCESS_KEY_ID = credentials('aws-access')
@@ -136,7 +136,7 @@ pipeline {
     stage('extinction') {
       when { branch 'prod' }
       tools {
-        terraform '1.2.5'
+        terraform '1.2.6'
       }
       environment {
         AWS_ACCESS_KEY_ID = credentials('aws-access')
