@@ -2,11 +2,11 @@
 
 This is a project that intends to show my familiarity with DevOps tools. It showcases many technologies used commonly in functional products.
 
-The main purpose is its focus on combining multiple tools into a coherent pipeline; the website being deployed (a database of DevOps memes) is only for showcase purposes, and thus of secondary importance.
+The main purpose is its focus on combining multiple tools into a coherent pipeline; the website being deployed (a stateful database of DevOps & IT memes) is only for showcase purposes, and thus of secondary importance.
 
 ## Jenkins
 
-The core of the entire project. It contains the entire workflow as code in the Jenkinsfile. Everything that the pipeline does is defined in said file, and happens as a result of a GitHub Hook that notifies Jenkins of changes to the repository. It is split into the *dev* and *prod* branches, and the entire pipeline is only run when both parts complete. The *dev* branch will automatically call the *prod* branch when it finishes successfully, so the entire process will happen automatically, assuming no errors occur.
+The core of the entire project. It contains the entire workflow as code in the Jenkinsfile. Everything that the pipeline does is defined in said file, and happens as a result of a GitHub Hook that notifies Jenkins of changes to the repository. It is split into the *dev* and *prod* branches, and the entire pipeline is only done when both parts complete. The *dev* branch will automatically call the *prod* branch when it finishes successfully, so the entire process will happen automatically, assuming no errors occur.
 
 #### The *dev* branch
 
@@ -23,7 +23,7 @@ The first tool used by Jenkins to complete the entire process. It depends on the
 
 ## Terraform
 
-The second, and the most important, tool that Jenkins uses. It uses the AWS tokens specified in Jenkins credentials to access AWS and set up all of the architecture needed to deploy a Docker image inside Kubernetes. It creates a total of \~50 resources within the cloud, including such highlights as the VPC, gateways, security rules, EKS and a kubernetes service that allows the website to be accessed publicly.
+The second, and the most important, tool that Jenkins uses. It uses the AWS tokens specified securely in Jenkins credentials to access AWS and set up all of the architecture needed to deploy a Docker image inside EKS. It creates a total of \~50 resources within the cloud, including such highlights as the VPC, gateways, security rules, EKS and a kubernetes service that allows the website to be accessed publicly.
 
 ## Git
 
@@ -36,8 +36,4 @@ Honorable mentions for git, which is used within the pipeline to merge the *dev*
 - A bit more documentation
 
 - Static code analysis
-
-- Key Vault
-
-- Statefulness for the web app
 

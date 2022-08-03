@@ -6,19 +6,21 @@ This is part of a DevOps academy I am taking part in. A simple project with a pi
 
 Check out the documentation [here](DOCS.md)!
 
-- [x] simple webapp with database
+- [x] webapp
+  - [x] database
+  - [x] frontend
+  - [x] stateful
 - [x] jenkins (branch dev)
-  - [x] build
-    - [x] make docker image > dockerhub
-    - [x] terraform aws kubernetes
-    - [x] deploy test env
-  - [x] test
-    - [x] auto tests
-    - [x] remove test env
-    - [x] dockerhub (:stable)
-    - [x] github merge to prod
+  - [x] make docker image > dockerhub
+  - [x] terraform EKS
+  - [x] deploy test env
+  - [x] smoke test
+  - [ ] static code analysis
+  - [ ] auto docs
+  - [x] dockerhub (:stable)
+  - [x] github merge to prod
 - [x] jenkins (branch prod)
   - [x] deploy prod env
-- [ ] monitor health
-- [ ] documentation
+  - [x] undeploy test env
+  - [ ] monitor health
 
