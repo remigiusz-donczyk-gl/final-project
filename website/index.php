@@ -28,8 +28,9 @@
         justify-content: center;
       }
       p {
-        font-size: 2.5rem;
+        font-size: 1.3rem;
         font-family: 'Renogare', sans-serif;
+        text-align: center;
       }
       button {
         background: #4caf50;
@@ -47,6 +48,9 @@
       img {
         max-height: 100%;
         max-width: 100%;
+      }
+      #title {
+        font-size: 2.5rem;
       }
       #txtcontainer {
         width: 40%;
@@ -92,23 +96,78 @@
          left: 0;
       }
     </style>
+    <?php
+      // helper function to count set bits in an int
+      function countSetBits($n) {
+        $count = 0;
+        while ($n) {
+          $count += $n & 1;
+          $n >>= 1;
+        }
+        return $count;
+      }
+      // helper function to get client IP
+      function getRealClient() {
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+          $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+          $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+          $ip = $_SERVER['REMOTE_ADDR'];
+        }
+        return $ip;
+      }
+    ?>
   </head>
   <body>
+    <?php
+      // connect to the database
+      $db = new mysqli("localhost", "dbuser", "Very!Strong@Password#I%Presume", "website");
+      // get user info from the database
+      $client = getRealClient();
+      $userindb = $db->query("select Seen, Tries from userdata where IP='$client'");
+      if ($userindb->num_rows == 0) {
+        // if the user does not exist, make a record for them and fetch the default value
+        $db->query("insert into userdata (IP) values ('$client')");
+        $userindb = $db->query("select Seen, Tries from userdata where IP='$client'");
+      }
+      $row = $userindb->fetch_array();
+      $seen = $row["Seen"];
+      $tries = $row["Tries"];
+      // get all available memes and choose a random one
+      $all = $db->query("select * from memes");
+      $random = rand(1, $all->num_rows);
+      // update the list of seen memes with the newly picked one and update the database
+      $newseen = $seen | (1 << ($random - 1));
+      $newtries = $tries + 1;
+      if ($newtries > 999) {
+        $newtries = 999;
+      }
+      $db->query("update userdata set Seen=$newseen, Tries=$newtries where IP='$client'");
+      // count the number of set bits in the meme list and print seen/all amount
+      if (countSetBits($newseen) == $all->num_rows) {
+        print "<p>You have seen all of the memes!<br />";
+      } else {
+        $display = countSetBits($newseen) . "/" . $all->num_rows;
+        print "<p>You have seen $display memes so far!<br />";
+      }
+      if ($tries >= 999) {
+        print "You have tried <i>too many</i> times, seriously.</p>";
+      } else {
+        print "You have tried $newtries times so far.</p>";
+      }
+    ?>
     <div id=txtcontainer>
-      <!-- roundleft and roundright are div magic to make rounded inside corners -->
+      <!-- #roundleft and #roundright elements are CSS magic to make rounded inside corners -->
       <div id=roundleft></div>
-      <p>Here is your random meme</p>
+      <p id=title>Here is your random meme</p>
       <button onclick=window.location.reload();>Give me another!</button>
       <div id=roundright></div>
     </div>
     <div id=imgcontainer>
-      <!-- access the database and fetch a random entry -->
       <?php
-        $db = new mysqli("localhost", "dbuser", "123", "website");
-        $res = $db->query("select * from memes");
-        $chosen = rand(1, $res->num_rows);
-        $meme = $db->query("select Path from memes where Id = $chosen")->fetch_array()["Path"];
-        // make an img with that entry as filename
+        // get the chosen random meme and display it
+        $meme = $db->query("select Path from memes where Id = $random")->fetch_array()["Path"];
         print "<img src=data/$meme></img>";
       ?>
     </div>
