@@ -1,13 +1,12 @@
 pipeline {
-  //  allow any worker to run
   agent any
   //  don't checkout scm declaratively
   options {
     skipDefaultCheckout(true)
   }
   environment {
-    //  set up the current SEMVER <major>.<minor>.<build-number-in-current-version>
-    VERSION = "1.3.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 130')}"
+    //  set up the current version with SEMVER <major>.<minor>.<build-number-in-current-version>
+    VERSION = "2.0.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 0')}"
   }
   stages {
     stage('cleanup') {
@@ -20,7 +19,7 @@ pipeline {
     stage('dockerize') {
       when {
         allOf {
-          //  only build on the dev branch if the website files changed
+          //  only build if the website files changed
           branch 'dev';
           changeset 'website/*'
         }
@@ -30,11 +29,11 @@ pipeline {
       }
       steps {
         dir('website') {
-          //  login into docker to be able to push
+          //  login into docker to be allowed to push
           withCredentials([usernamePassword(credentialsId: 'docker-account', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
             sh 'echo $PASS | docker login -u $USER --password-stdin'
           }
-          //  build the website and push it to $VERSION and latest tags
+          //  build the website and push it to dockerhub
           sh '''
             docker build --no-cache --tag remigiuszdonczyk/final-project .
             docker tag remigiuszdonczyk/final-project remigiuszdonczyk/final-project:$VERSION
@@ -58,13 +57,16 @@ pipeline {
       }
       steps {
         //  create terraform infrastructure as well as the testing environment
+        //  if a tfstate file exists, copy it to update the infrastructure instead of creating from scratch
         sh '''
           [ -f /var/jenkins_home/tf/terraform.tfstate ] && mv /var/jenkins_home/tf/terraform.tfstate .
           terraform init
         '''
+        //  apply sometimes times out, which causes an error but will finish correctly if given the chance
         retry(1) {
           sh 'terraform apply -auto-approve'
         }
+        //  print the endpoint for showcase purposes
         sh '''
           mv terraform.tfstate /var/jenkins_home/tf/
           cat .endpoint
@@ -75,9 +77,9 @@ pipeline {
       when { branch 'dev' }
       steps {
         sleep 60
-        //  send a request to the generated endpoint and fail if unreachable
+        //  send a request to the generated endpoint and fail if unreachable - smoke test
         sh 'test $(echo $(curl -sLo /dev/null -w "%{http_code}" $(cat .endpoint)) | cut -c 1) -eq 2 || exit 1'
-        input message: 'Tests passed, awaiting manual approval for production deployment', ok: 'Deploy'
+        input message: 'Awaiting manual approval for production deployment', ok: 'Deploy'
       }
     }
     stage('merge-prod') {
@@ -87,7 +89,7 @@ pipeline {
         git 'Default'
       }
       steps {
-        //  login to docker to be able to push
+        //  login to docker to be allowed to push
         withCredentials([usernamePassword(credentialsId: 'docker-account', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
           sh 'echo $PASS | docker login -u $USER --password-stdin'
         }
@@ -103,10 +105,10 @@ pipeline {
         //  get into the prod branch and merge dev since it is stable
         git branch: 'prod', credentialsId: 'github-account', url: 'https://github.com/remigiusz-donczyk/final-project'
         withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
-          sh """
+          sh '''
             git merge origin/dev
             git push https://$TOKEN@github.com/remigiusz-donczyk/final-project.git prod
-          """
+          '''
         }
       }
     }
@@ -121,7 +123,7 @@ pipeline {
         TF_VAR_prod = true
       }
       steps {
-        //  get the tfstate from earlier and deploy the prod env, also updates dependencies as necessary
+        //  deploy the prod env, only do changes if a tfstate exists
         sh '''
           [ -f /var/jenkins_home/tf/terraform.tfstate ] && mv /var/jenkins_home/tf/terraform.tfstate .
           terraform init
@@ -143,7 +145,6 @@ pipeline {
       }
       steps {
         input message: 'Confirm extinction?', ok: 'Send a meteor'
-        //  destroy everything
         sh '''
           [ -f /var/jenkins_home/tf/terraform.tfstate ] && mv /var/jenkins_home/tf/terraform.tfstate .
           terraform init
