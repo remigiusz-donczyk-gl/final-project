@@ -16,6 +16,19 @@ pipeline {
         checkout scm
       }
     }
+    stage('static-analysis') {
+      when {
+        branch 'dev'
+      }
+      steps {
+        withSonarQubeEnv(credentialsId: 'sonarqube-token') {
+          script {
+            def scannerHome = tool name: '4.7', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+            sh "${scannerHome}/bin/sonar-scanner"
+          }
+        }
+      }
+    }
     stage('dockerize') {
       when {
         allOf {
@@ -47,7 +60,9 @@ pipeline {
       }
     }
     stage('terraform') {
-      when { branch 'dev' }
+      when {
+        branch 'dev'
+      }
       tools {
         terraform '1.2.6'
       }
@@ -74,16 +89,20 @@ pipeline {
       }
     }
     stage('test') {
-      when { branch 'dev' }
+      when {
+        branch 'dev'
+      }
       steps {
-        sleep 60
+        sleep 30
         //  send a request to the generated endpoint and fail if unreachable - smoke test
         sh 'test $(echo $(curl -sLo /dev/null -w "%{http_code}" $(cat .endpoint)) | cut -c 1) -eq 2 || exit 1'
         input message: 'Awaiting manual approval for production deployment', ok: 'Deploy'
       }
     }
     stage('merge-prod') {
-      when { branch 'dev' }
+      when {
+        branch 'dev'
+      }
       tools {
         dockerTool '19.3'
         git 'Default'
@@ -113,7 +132,9 @@ pipeline {
       }
     }
     stage('deploy') {
-      when { branch 'prod' }
+      when {
+        branch 'prod'
+      }
       tools {
         terraform '1.2.6'
       }
@@ -134,7 +155,9 @@ pipeline {
     }
     //  purge terraform to empty playground for the next build, would not happen in a real environment
     stage('extinction') {
-      when { branch 'prod' }
+      when {
+        branch 'prod'
+      }
       tools {
         terraform '1.2.6'
       }

@@ -127,7 +127,7 @@
       $client = getRealClient();
       $userindb = $db->query("select Seen, Tries from userdata where IP='$client'");
       if ($userindb->num_rows == 0) {
-        // if the user does not exist, make a record for them and fetch the default value
+        // if the user does not exist, make a default record for them and refetch info
         $db->query("insert into userdata (IP) values ('$client')");
         $userindb = $db->query("select Seen, Tries from userdata where IP='$client'");
       }
