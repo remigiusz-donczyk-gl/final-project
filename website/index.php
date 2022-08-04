@@ -138,7 +138,7 @@
       $seen = $row["Seen"];
       $tries = $row["Tries"];
       // get all available memes and choose a random one
-      $all = $db->query("select * from memes");
+      $all = $db->query("SELECT * FROM memes");
       $random = rand(1, $all->num_rows);
       // update the list of seen memes with the newly picked one and update the database
       $newseen = $seen | (1 << ($random - 1));
