@@ -150,10 +150,10 @@
       $db->query($updatequery);
       // count the number of set bits in the meme list and print seen/all amount
       if (countSetBits($newseen) == $all->num_rows) {
-        print "<p>You have seen all of the memes!<br />";
+        print "<p>You have seen all of the memes!<br/>";
       } else {
         $display = countSetBits($newseen) . "/" . $all->num_rows;
-        print "<p>You have seen $display memes so far!<br />";
+        print "<p>You have seen $display memes so far!<br/>";
       }
       if ($tries >= 999) {
         print "You have tried <i>too many</i> times, seriously.</p>";
