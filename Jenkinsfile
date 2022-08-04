@@ -32,7 +32,6 @@ pipeline {
     stage('dockerize') {
       when {
         allOf {
-          //  only build if the website files changed
           branch 'dev';
           changeset 'website/*'
         }

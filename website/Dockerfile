@@ -5,6 +5,7 @@ RUN echo 'nameserver 192.168.0.1' > /etc/resolv.conf && apt update && apt instal
 # copy files
 ADD supervisord.conf /etc/supervisord.conf
 ADD php-fpm.conf /etc/php/7.4/fpm/
+ADD php.ini /etc/php/7.4/fpm/
 ADD nginx.conf /etc/nginx/
 ADD setup.sql /tmp/
 ADD data /var/www/html/data
@@ -14,5 +15,5 @@ RUN service php7.4-fpm start && service nginx start && service mariadb start && 
 
 # inform users of preferred values
 EXPOSE 80
-CMD ["/usr/bin/supervisord"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
 

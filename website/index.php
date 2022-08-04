@@ -4,6 +4,7 @@
     <!-- set the charset and get a nice font -->
     <meta charset=UTF-8>
     <link href=http://fonts.cdnfonts.com/css/renogare rel=stylesheet>
+    <title>Meme DB</title>
     <!-- CSS Magic -->
     <style>
       * {
@@ -122,14 +123,16 @@
   <body>
     <?php
       // connect to the database
-      $db = new mysqli("localhost", "dbuser", "Very!Strong@Password#I%Presume", "website");
+      $db = new mysqli("localhost", "dbuser", ini_get("mysqli.default_pw"), "website");
       // get user info from the database
       $client = getRealClient();
-      $userindb = $db->query("select Seen, Tries from userdata where IP='$client'");
+      $userquery = "SELECT Seen, Tries FROM userdata WHERE IP='" . $client . "'";
+      $userindb = $db->query($userquery);
       if ($userindb->num_rows == 0) {
         // if the user does not exist, make a default record for them and refetch info
-        $db->query("insert into userdata (IP) values ('$client')");
-        $userindb = $db->query("select Seen, Tries from userdata where IP='$client'");
+        $createquery = "INSERT INTO userdata (IP) VALUES ('" . $client . "')";
+        $db->query($createquery);
+        $userindb = $db->query($userquery);
       }
       $row = $userindb->fetch_array();
       $seen = $row["Seen"];
@@ -143,7 +146,8 @@
       if ($newtries > 999) {
         $newtries = 999;
       }
-      $db->query("update userdata set Seen=$newseen, Tries=$newtries where IP='$client'");
+      $updatequery = "UPDATE userdata SET Seen=" . $newseen . ", Tries=" . $newtries . " WHERE IP='" . $client . "'";
+      $db->query($updatequery);
       // count the number of set bits in the meme list and print seen/all amount
       if (countSetBits($newseen) == $all->num_rows) {
         print "<p>You have seen all of the memes!<br />";
@@ -167,7 +171,8 @@
     <div id=imgcontainer>
       <?php
         // get the chosen random meme and display it
-        $meme = $db->query("select Path from memes where Id = $random")->fetch_array()["Path"];
+        $imgquery = "SELECT Path FROM memes WHERE Id=" . $random;
+        $meme = $db->query($imgquery)->fetch_array()["Path"];
         print "<img src=data/$meme></img>";
       ?>
     </div>
