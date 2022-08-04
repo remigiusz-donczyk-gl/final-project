@@ -21,9 +21,9 @@ pipeline {
         branch 'dev'
       }
       steps {
-        withSonarQubeEnv(credentialsId: 'sonarqube-token') {
+        withSonarQubeEnv('sonarqube') {
           script {
-            def scannerHome = tool name: '4.7', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+            def scannerHome = tool type: 'hudson.plugins.sonar.SonarRunnerInstallation', name: '4.7'
             sh "${scannerHome}/bin/sonar-scanner"
           }
         }
