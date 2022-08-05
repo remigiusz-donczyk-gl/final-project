@@ -23,8 +23,8 @@ pipeline {
       steps {
         dir('website') {
           sh '''
-            phpunit --configuration tests/phpunit.xml --coverage-clover tests/coverage.xml
-            chmod +rw tests/coverage.xml
+            phpunit --configuration phpunit.xml --coverage-clover coverage.xml
+            chmod +rw coverage.xml
           '''
         }
       }
