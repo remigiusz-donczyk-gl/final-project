@@ -28,8 +28,8 @@ pipeline {
             phpunit --configuration tests/phpunit.xml --coverage-clover tests/coverage.xml
             chmod a+r coverage.xml
           '''
-          */
         }
+        */
       }
     }
     stage('static-analysis') {
