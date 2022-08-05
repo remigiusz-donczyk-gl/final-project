@@ -6,7 +6,7 @@ pipeline {
   }
   environment {
     //  set up the current version with SEMVER <major>.<minor>.<build-number-in-current-version>
-    VERSION = "2.0.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 12 || exit 0')}"
+    VERSION = "2.1.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 13 || [ $? -eq 1 ] && true')}"
   }
   stages {
     stage('cleanup') {
@@ -14,6 +14,16 @@ pipeline {
         //  clean up previous build and checkout manually
         cleanWs()
         checkout scm
+      }
+    }
+    stage('phpunit-tests') {
+      when {
+        branch 'dev'
+      }
+      steps {
+        dir('website') {
+          sh 'phpunit --configuration tests/phpunit.xml --coverage-clover tests/coverage-results.xml'
+        }
       }
     }
     stage('static-analysis') {
@@ -95,7 +105,6 @@ pipeline {
         sleep 30
         //  send a request to the generated endpoint and fail if unreachable - smoke test
         sh 'test $(echo $(curl -sLo /dev/null -w "%{http_code}" $(cat .endpoint)) | cut -c 1) -eq 2 || exit 1'
-        input message: 'Awaiting manual approval for production deployment', ok: 'Deploy'
       }
     }
     stage('merge-prod') {
