@@ -47,7 +47,10 @@ pipeline {
       when {
         allOf {
           branch 'dev';
-          changeset 'website/*'
+          anyOf {
+            changeset 'website/*';
+            changeset 'website/**/*'
+          }
         }
       }
       tools {
