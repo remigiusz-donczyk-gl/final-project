@@ -2,8 +2,6 @@
 
 class Functions {
 
-  function __construct() {}
-
   function connectToDatabase(): mysqli {
     return new mysqli("localhost", "dbuser", ini_get("mysqli.default_pw"), "website");
   }
