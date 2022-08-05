@@ -21,7 +21,6 @@ pipeline {
         branch 'dev'
       }
       steps {
-        sh 'echo placeholder'
         dir('website') {
           sh '''
             phpunit --configuration tests/phpunit.xml --coverage-clover tests/coverage.xml --log-junit tests/report.xml
