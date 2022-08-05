@@ -96,7 +96,7 @@ final class FunctionsTest extends TestCase {
       "IP"       => '127.0.0.1',
       "Seen"     => 0,
       "Tries"    => 0
-    ), $f->getClientData($db, '127.0.0.2'));
+    ), $f->getClientData($db, '127.0.0.1'));
   }
 
   /**
