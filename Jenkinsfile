@@ -6,7 +6,7 @@ pipeline {
   }
   environment {
     //  set up the current version with SEMVER <major>.<minor>.<build-number-in-current-version>
-    VERSION = "2.1.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 3 || [ $? -eq 1 ] && true')}"
+    VERSION = "2.1.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 4 || [ $? -eq 1 ] && true')}"
   }
   stages {
     stage('cleanup') {
@@ -22,14 +22,13 @@ pipeline {
       }
       steps {
         sh 'echo placeholder'
-        /*  placeholder
         dir('website') {
           sh '''
-            phpunit --configuration tests/phpunit.xml --coverage-clover tests/coverage.xml
-            chmod a+r coverage.xml
+            phpunit --configuration tests/phpunit.xml --coverage-clover tests/coverage.xml --log-junit tests/report.xml
+            chmod a+r tests/coverage.xml
+            chmod a+r tests/report.xml
           '''
         }
-        */
       }
     }
     stage('static-analysis') {

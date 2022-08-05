@@ -14,7 +14,7 @@ final class FunctionsTest extends TestCase {
   public function testCountSetBits(): void {
     $f = new Functions();
     // no chance of passing this test randomly on such a large int
-    $this->assertEquals($f->countSetBits(12750421999), 30);
+    $this->assertEquals(30, $f->countSetBits(12750421999));
   }
 
   /**
@@ -28,7 +28,7 @@ final class FunctionsTest extends TestCase {
        ->method('query')
        ->with($this->equalTo('SELECT * FROM memes'))
        ->will($this->returnValue(new MysqliResultMockOne));
-    $this->assertEquals($f->getMemeAmount($db), 2);
+    $this->assertEquals(2, $f->getMemeAmount($db));
   }
 
   /**
@@ -39,13 +39,13 @@ final class FunctionsTest extends TestCase {
     // try in the order that will override less important values
     // try the default value
     $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-    $this->assertEquals($f->getRealClientIP(), '127.0.0.1');
+    $this->assertEquals('127.0.0.1', $f->getRealClientIP());
     // try X_Forwarded_For, which overrides default
     $_SERVER['HTTP_X_FORWARDED_FOR'] = '127.0.0.2';
-    $this->assertEquals($f->getRealClientIP(), '127.0.0.2');
+    $this->assertEquals('127.0.0.2', $f->getRealClientIP());
     // try HTTP_CLIENT_IP, which overrides both
     $_SERVER['HTTP_CLIENT_IP'] = '127.0.0.3';
-    $this->assertEquals($f->getRealClientIP(), '127.0.0.3');
+    $this->assertEquals('127.0.0.3', $f->getRealClientIP());
   }
 
   /**
@@ -54,12 +54,12 @@ final class FunctionsTest extends TestCase {
   public function testCreateClientData(): void {
     $f = new Functions();
     $db = $this->createMock(mysqli::class);
-    $this->assertEquals($f->createClientData($db, '127.0.0.1'), array(
+    $this->assertEquals(array(
       "Database" => $db,
       "IP"       => '127.0.0.1',
       "Seen"     => 0,
       "Tries"    => 0
-    ));
+    ), $f->createClientData($db, '127.0.0.1'));
   }
 
   /**
@@ -84,19 +84,19 @@ final class FunctionsTest extends TestCase {
          true
        );
     // try with an existing user IP
-    $this->assertEquals($f->getClientData($db, '127.0.0.1'), array(
+    $this->assertEquals(array(
       "Database" => $db,
       "IP"       => '127.0.0.1',
       "Seen"     => 85,
       "Tries"    => 4
-    ));
+    ), $f->getClientData($db, '127.0.0.1'));
     // try without an existing user IP -> calls createClientData
-    $this->assertEquals($f->getClientData($db, '127.0.0.1'), array(
+    $this->assertEquals(array(
       "Database" => $db,
       "IP"       => '127.0.0.1',
       "Seen"     => 0,
       "Tries"    => 0
-    ));
+    ), $f->getClientData($db, '127.0.0.2'));
   }
 
   /**
@@ -118,12 +118,12 @@ final class FunctionsTest extends TestCase {
       "Seen" => 85,
       "Tries" => 4
     );
-    $this->assertEquals($f->updateClientData($data, 6), array(
+    $this->assertEquals(array(
       "Database" => $db,
       "IP" => '127.0.0.1',
       "Seen" => 117,
       "Tries" => 5
-    ));
+    ), $f->updateClientData($data, 6));
     // try with 999 or more `tries`, does not add one
     $data = array(
       "Database" => $db,
@@ -131,12 +131,12 @@ final class FunctionsTest extends TestCase {
       "Seen" => 85,
       "Tries" => 999
     );
-    $this->assertEquals($f->updateClientData($data, 4), array(
+    $this->assertEquals(array(
       "Database" => $db,
       "IP" => '127.0.0.1',
       "Seen" => 93,
       "Tries" => 999
-    ));
+    ), $f->updateClientData($data, 4));
   }
 
   /**
@@ -150,7 +150,7 @@ final class FunctionsTest extends TestCase {
        ->method('query')
        ->with($this->equalTo('SELECT Path FROM memes WHERE Id=6'))
        ->will($this->returnValue(new MysqliResultMockFour));
-    $this->assertEquals($f->getImage($db, 6), '<img src=data/test.png></img>');
+    $this->assertEquals('<img src=data/test.png></img>', $f->getImage($db, 6));
   }
 
   /**
@@ -159,9 +159,9 @@ final class FunctionsTest extends TestCase {
   public function testGetCountMessage(): void {
     $f = new Functions();
     // try without all memes seen
-    $this->assertEquals($f->getCountMessage(117, 10), '<p>You have seen 5/10 memes so far!</p>');
+    $this->assertEquals('<p>You have seen 5/10 memes so far!</p>', $f->getCountMessage(117,10));
     // try with all memes seen
-    $this->assertEquals($f->getCountMessage(1023, 10), '<p>You have seen all of the memes!</p>');
+    $this->assertEquals('<p>You have seen all of the memes!</p>', $f->getCountMessage(1023, 10));
   }
 
   /**
@@ -170,9 +170,9 @@ final class FunctionsTest extends TestCase {
   public function testGetTryMessage(): void {
     $f = new Functions();
     // try with a normal amount of tries
-    $this->assertEquals($f->getTryMessage(3), '<p>You have tried 3 times so far.</p>');
+    $this->assertEquals('<p>You have tried 3 times so far.</p>', $f->getTryMessage(3));
     // try with a stupid amount of tries (>=999) for the easter egg
-    $this->assertEquals($f->getTryMessage(999), '<p>You have tried <i>too many</i> times, seriously.</p>');
+    $this->assertEquals('<p>You have tried <i>too many</i> times, seriously.</p>', $f->getTryMessage(999));
   }
 }
 
