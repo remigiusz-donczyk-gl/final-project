@@ -110,7 +110,7 @@
       //  get the current client data and update it with the random meme
       $olddata = $fn->getClientData($db, $ip);
       $data = $fn->updateClientData($olddata, $random);
-      // print x/y memes shown and the amount of times tried
+      //  print x/y memes shown and the amount of times tried
       print $fn->getCountMessage($data["Seen"], $memes);
       print $fn->getTryMessage($data["Tries"]);
     ?>
@@ -123,7 +123,7 @@
     </div>
     <div id=imgcontainer>
      <?php
-        // get the random meme from the database
+        //  get the random meme from the database
         print $fn->getImage($db, $random);
       ?>
     </div>
