@@ -22,7 +22,7 @@ pipeline {
       }
       steps {
         sh 'echo placeholder'
-        /* placeholder
+        /*  placeholder
         dir('website') {
           sh '''
             phpunit --configuration tests/phpunit.xml --coverage-clover tests/coverage.xml
