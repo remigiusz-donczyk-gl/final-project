@@ -21,11 +21,14 @@ pipeline {
         branch 'dev'
       }
       steps {
+        sh 'echo placeholder'
+        /* placeholder
         dir('website') {
           sh '''
-            phpunit --configuration phpunit.xml --coverage-clover coverage.xml
-            chmod +rw coverage.xml
+            phpunit --configuration tests/phpunit.xml --coverage-clover tests/coverage.xml
+            chmod a+r coverage.xml
           '''
+          */
         }
       }
     }
@@ -36,7 +39,7 @@ pipeline {
       steps {
         withSonarQubeEnv('sonarqube') {
           script {
-            def scannerHome = tool type: 'hudson.plugins.sonar.SonarRunnerInstallation', name: '4.7'
+            def scannerHome = tool name: 'sonar4.7'
             sh "${scannerHome}/bin/sonar-scanner"
           }
         }
@@ -50,7 +53,7 @@ pipeline {
         }
       }
       tools {
-        dockerTool '19.3'
+        dockerTool 'docker19.3'
       }
       steps {
         dir('website') {
@@ -76,7 +79,7 @@ pipeline {
         branch 'dev'
       }
       tools {
-        terraform '1.2.6'
+        terraform 'tf1.2.6'
       }
       environment {
         AWS_ACCESS_KEY_ID = credentials('aws-access')
@@ -115,8 +118,8 @@ pipeline {
         branch 'dev'
       }
       tools {
-        dockerTool '19.3'
-        git 'Default'
+        dockerTool 'docker19.3'
+        git 'gitDefault'
       }
       steps {
         //  login to docker to be allowed to push
@@ -147,7 +150,7 @@ pipeline {
         branch 'prod'
       }
       tools {
-        terraform '1.2.6'
+        terraform 'tf1.2.6'
       }
       environment {
         AWS_ACCESS_KEY_ID = credentials('aws-access')
@@ -170,7 +173,7 @@ pipeline {
         branch 'prod'
       }
       tools {
-        terraform '1.2.6'
+        terraform 'tf1.2.6'
       }
       environment {
         AWS_ACCESS_KEY_ID = credentials('aws-access')
