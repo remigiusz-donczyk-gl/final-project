@@ -1,11 +1,11 @@
-/* create a database and its user */
+/*  create a database and its user  */
 create database website;
-/* the exposed password is fine because of containerization and least privilege */
-/* as long as it can't be guessed easily there is a low attack vector */
+/*  the exposed password is fine because of containerization and least privilege  */
+/*  as long as it can't be guessed easily there is a low attack vector  */
 create user dbuser@localhost identified by 'Very!Strong@Password#I%Presume';
 grant all on website.* to dbuser@localhost;
 
-/* load the database info */
+/*  load the database info  */
 use website;
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -22,9 +22,9 @@ DROP TABLE IF EXISTS `memes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `memes` (
-  /* Id is the entry number*/
+  /*  Id is the entry number  */
   `Id` INT(2) NOT NULL AUTO_INCREMENT,
-  /* Path is a filename in the data folder */
+  /*  Path is a filename in the data folder  */
   `Path` text NOT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
@@ -33,7 +33,7 @@ CREATE TABLE `memes` (
 LOCK TABLES `memes` WRITE;
 /*!40000 ALTER TABLE `memes` DISABLE KEYS */;
 INSERT INTO `memes` (`Path`) VALUES
-  /* The actual filenames go here */
+  /*  The actual filenames go here  */
   ('angery.png'),('audiovideo.png'),('awscharge.jpg'),('awsproblem.png'),('awsservice.jpg'),
   ('awssleep.jpg'),('backlog.png'),('badcode.png'),('binary.png'),('ddos.jpg'),
   ('doge.jpg'),('gitlab.jpg'),('gitops.jpg'),('handshake.jpg'),('hardproblem.png'),
@@ -48,11 +48,11 @@ DROP TABLE IF EXISTS `userdata`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `userdata` (
-  /* User IP to keep their data */
+  /*  User IP to keep their data  */
   `IP` VARCHAR(15) NOT NULL,
-  /* a bitwise integer storage for seen memes */
+  /*  a bitwise integer storage for seen memes  */
   `Seen` VARCHAR(11) DEFAULT 0,
-  /* how many times a meme was randomly chosen */
+  /*  how many times a meme was randomly chosen  */
   `Tries` INT(3) UNSIGNED DEFAULT 0,
   PRIMARY KEY (`IP`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -67,4 +67,3 @@ CREATE TABLE `userdata` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
-/* Modified from a sql dump */
