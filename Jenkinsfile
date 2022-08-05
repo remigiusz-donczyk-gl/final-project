@@ -6,7 +6,7 @@ pipeline {
   }
   environment {
     //  set up the current version with SEMVER <major>.<minor>.<build-number-in-current-version>
-    VERSION = "2.1.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 13 || [ $? -eq 1 ] && true')}"
+    VERSION = "2.1.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 3 || [ $? -eq 1 ] && true')}"
   }
   stages {
     stage('cleanup') {
