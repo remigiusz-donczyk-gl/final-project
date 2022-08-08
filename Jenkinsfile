@@ -28,11 +28,12 @@ pipeline {
       }
       steps {
         dir('website') {
-          sh '''
-            phpunit --configuration tests/phpunit.xml
-            chmod a+r tests/coverage.xml
-            chmod a+r tests/report.xml
-          '''
+          sh 'echo "temporarily disabled phpunit"'
+          //sh '''
+          //  phpunit --configuration tests/phpunit.xml
+          //  chmod a+r tests/coverage.xml
+          //  chmod a+r tests/report.xml
+          //'''
         }
       }
     }
@@ -50,7 +51,8 @@ pipeline {
         withSonarQubeEnv('sonarqube') {
           script {
             def scannerHome = tool name: 'sonar4.7'
-            sh "${scannerHome}/bin/sonar-scanner"
+            sh 'echo "temporarily disabled sonarqube"'
+            //sh "${scannerHome}/bin/sonar-scanner"
           }
         }
       }
@@ -69,7 +71,7 @@ pipeline {
         dockerTool 'docker19.3'
       }
       steps {
-        dir('website') {
+        dir('website/src') {
           //  login into docker to be allowed to push
           withCredentials([usernamePassword(credentialsId: 'docker-account', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
             sh 'echo $PASS | docker login -u $USER --password-stdin'
