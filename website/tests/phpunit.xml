@@ -11,10 +11,8 @@
   <testsuites>
     <testsuite
       name="all">
-      <directory
-        suffix=".php">
-        .
-      </directory>
+      <test>FunctionsTest.php</test>
+      <test>WebsiteTest.php</test>
     </testsuite>
   </testsuites>
   <coverage
@@ -22,14 +20,10 @@
     processUncoveredFiles="true"
     pathCoverage="true">
     <include>
-      <directory
-        suffix=".php">
-        .
-      </directory>
-      <directory
-        suffix=".php">
-        ..
-      </directory>
+      <file>FunctionsTest.php</file>
+      <file>../Functions.php</file>
+      <file>WebsiteTest.php</file>
+      <file>../Website.php</file>
     </include>
     <report>
       <clover outputFile="coverage.xml"/>
