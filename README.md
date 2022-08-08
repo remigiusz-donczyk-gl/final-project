@@ -14,7 +14,7 @@ Check out a more detailed description [here](DOCS.md)!
   - [x] stateful
 - [x] jenkins (branch dev)
   - [x] static code analysis
-  - [ ] php unit tests
+  - [x] php unit tests (+ coverage)
   - [x] make docker image > dockerhub
   - [x] terraform EKS
   - [x] deploy test env

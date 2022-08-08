@@ -18,7 +18,13 @@ pipeline {
     }
     stage('phpunit-tests') {
       when {
-        branch 'dev'
+        allOf {
+          branch 'dev';
+          anyOf {
+            changeset 'website/*';
+            changeset 'website/**/*'
+          }
+        }
       }
       steps {
         dir('website') {
@@ -32,7 +38,13 @@ pipeline {
     }
     stage('static-analysis') {
       when {
-        branch 'dev'
+        allOf {
+          branch 'dev';
+          anyOf {
+            changeset 'website/*';
+            changeset 'website/**/*'
+          }
+        }
       }
       steps {
         withSonarQubeEnv('sonarqube') {

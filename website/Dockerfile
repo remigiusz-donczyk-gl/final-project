@@ -11,6 +11,7 @@ ADD setup.sql /tmp/
 ADD data /var/www/html/data
 ADD Functions.php /var/www/html/
 ADD index.php /var/www/html/
+ADD style.css /var/www/html/
 # start the database and setup
 RUN service php7.4-fpm start && service nginx start && service mariadb start && mysql </tmp/setup.sql
 
