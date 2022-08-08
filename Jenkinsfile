@@ -28,10 +28,11 @@ pipeline {
       }
       steps {
         dir('website') {
-          sh 'echo "terporarily disabled" || true'
-          // phpunit --configuration tests/phpunit.xml
-          // chmod a+r tests/coverage.xml
-          // chmod a+r tests/report.xml
+          sh '''
+            phpunit --configuration tests/phpunit.xml
+            chmod a+r tests/coverage.xml
+            chmod a+r tests/report.xml
+          '''
         }
       }
     }
@@ -49,8 +50,7 @@ pipeline {
         withSonarQubeEnv('sonarqube') {
           script {
             def scannerHome = tool name: 'sonar4.7'
-            sh 'echo "temporarily disabled" || true'
-            // sh "${scannerHome}/bin/sonar-scanner"
+            sh "${scannerHome}/bin/sonar-scanner"
           }
         }
       }
