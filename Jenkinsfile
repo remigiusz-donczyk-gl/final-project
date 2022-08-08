@@ -28,12 +28,11 @@ pipeline {
       }
       steps {
         dir('website') {
-          sh 'echo "temporarily disabled phpunit"'
-          //sh '''
-          //  phpunit --configuration tests/phpunit.xml
-          //  chmod a+r tests/coverage.xml
-          //  chmod a+r tests/report.xml
-          //'''
+          sh '''
+            phpunit --configuration tests/phpunit.xml
+            chmod a+r tests/coverage.xml
+            chmod a+r tests/report.xml
+          '''
         }
       }
     }
@@ -51,19 +50,19 @@ pipeline {
         withSonarQubeEnv('sonarqube') {
           script {
             def scannerHome = tool name: 'sonar4.7'
-            sh 'echo "temporarily disabled sonarqube"'
-            //sh "${scannerHome}/bin/sonar-scanner"
+            sh "${scannerHome}/bin/sonar-scanner"
           }
         }
       }
     }
+    /*
     stage('dockerize') {
       when {
         allOf {
           branch 'dev';
           anyOf {
             changeset 'website/*';
-            changeset 'website/**/*'
+            changeset 'website/***'
           }
         }
       }
@@ -211,6 +210,7 @@ pipeline {
         '''
       }
     }
+    */
   }
 }
 

@@ -28,7 +28,7 @@
       </directory>
       <directory
         suffix=".php">
-        ../src
+        ..
       </directory>
     </include>
     <report>
