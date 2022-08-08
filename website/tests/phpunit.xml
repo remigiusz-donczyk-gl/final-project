@@ -3,10 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
   cacheResultFile=".phpunit.cache/test-results"
-  colors="true"
   convertNoticesToExceptions="false"
   defaultTestSuite="all"
-  executionOrder="depends,defects"
   forceCoversAnnotation="true"
   beStrictAboutCoversAnnotation="true"
   beStrictAboutTodoAnnotatedTests="true">
@@ -27,10 +25,10 @@
       <file>WebsiteTest.php</file>
       <file>../Website.php</file>
     </include>
+    <report>
+      <clover outputFile="coverage.xml"/>
+    </report>
   </coverage>
-  <report>
-    <clover outputFile="coverage.xml"/>
-  </report>
   <logging>
     <junit outputFile="report.xml"/>
   </logging>

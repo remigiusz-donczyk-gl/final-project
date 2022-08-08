@@ -154,6 +154,7 @@ final class FunctionsTest extends TestCase {
   }
 
   /**
+   * @uses Functions::countSetBits
    * @covers Functions::getCountMessage
    */
   public function testGetCountMessage(): void {
