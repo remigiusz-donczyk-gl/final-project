@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
-include 'Website.php';
-include 'Functions.php';
+include_once('Functions.php');
+include_once('Website.php');
 /**
  * for whatever reason phpunit needs to know that the test class
  * is using its own functions to run tests, pretty stupid
