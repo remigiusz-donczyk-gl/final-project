@@ -10,6 +10,7 @@ ADD nginx.conf /etc/nginx/
 ADD setup.sql /tmp/
 ADD data /var/www/html/data
 ADD Functions.php /var/www/html/
+ADD Website.php /var/www/html/
 ADD index.php /var/www/html/
 ADD style.css /var/www/html/
 # start the database and setup

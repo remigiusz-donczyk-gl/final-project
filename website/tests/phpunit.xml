@@ -3,29 +3,36 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
   cacheResultFile=".phpunit.cache/test-results"
+  colors="true"
+  convertNoticesToExceptions="false"
   defaultTestSuite="all"
   executionOrder="depends,defects"
   forceCoversAnnotation="true"
   beStrictAboutCoversAnnotation="true"
-  beStrictAboutOutputDuringTests="true"
-  beStrictAboutTodoAnnotatedTests="true"
-  convertDeprecationsToExceptions="true"
-  failOnRisky="true"
-  failOnWarning="true"
-  verbose="true">
+  beStrictAboutTodoAnnotatedTests="true">
   <testsuites>
     <testsuite
       name="all">
-      <directory
-        suffix=".php">.</directory>
+      <file>FunctionsTest.php</file>
+      <file>WebsiteTest.php</file>
     </testsuite>
   </testsuites>
   <coverage
     cacheDirectory=".phpunit.cache/code-coverage"
-    processUncoveredFiles="true">
+    processUncoveredFiles="true"
+    pathCoverage="true">
     <include>
-      <directory suffix=".php">.</directory>
+      <file>FunctionsTest.php</file>
+      <file>../Functions.php</file>
+      <file>WebsiteTest.php</file>
+      <file>../Website.php</file>
     </include>
   </coverage>
+  <report>
+    <clover outputFile="coverage.xml"/>
+  </report>
+  <logging>
+    <junit outputFile="report.xml"/>
+  </logging>
 </phpunit>
 
