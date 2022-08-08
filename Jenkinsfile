@@ -28,11 +28,10 @@ pipeline {
       }
       steps {
         dir('website') {
-          sh '''
-            phpunit --configuration tests/phpunit.xml --coverage-clover tests/coverage.xml --log-junit tests/report.xml
-            chmod a+r tests/coverage.xml
-            chmod a+r tests/report.xml
-          '''
+          sh 'echo "terporarily disabled" || true'
+          // phpunit --configuration tests/phpunit.xml
+          // chmod a+r tests/coverage.xml
+          // chmod a+r tests/report.xml
         }
       }
     }
@@ -50,7 +49,8 @@ pipeline {
         withSonarQubeEnv('sonarqube') {
           script {
             def scannerHome = tool name: 'sonar4.7'
-            sh "${scannerHome}/bin/sonar-scanner"
+            sh 'echo "temporarily disabled" || true'
+            // sh "${scannerHome}/bin/sonar-scanner"
           }
         }
       }
@@ -109,10 +109,8 @@ pipeline {
         retry(1) {
           sh 'terraform apply -auto-approve'
         }
-        //  print the endpoint for showcase purposes
         sh '''
           mv terraform.tfstate /var/jenkins_home/tf/
-          cat .endpoint
         '''
       }
     }
