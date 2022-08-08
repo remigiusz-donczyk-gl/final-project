@@ -6,7 +6,7 @@ pipeline {
   }
   environment {
     //  set up the current version with SEMVER <major>.<minor>.<build-number-in-current-version>
-    VERSION = "2.2.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 18 || [ $? -eq 1 ] && true')}"
+    VERSION = "2.2.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 20 || [ $? -eq 1 ] && true')}"
   }
   stages {
     stage('cleanup') {
@@ -60,7 +60,7 @@ pipeline {
         dockerTool 'docker19.3'
       }
       steps {
-        dir('website/src') {
+        dir('website') {
           //  login into docker to be allowed to push
           withCredentials([usernamePassword(credentialsId: 'docker-account', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
             sh 'echo $PASS | docker login -u $USER --password-stdin'
