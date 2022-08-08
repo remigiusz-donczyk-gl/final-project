@@ -20,10 +20,7 @@ pipeline {
       when {
         allOf {
           branch 'dev';
-          anyOf {
-            changeset 'website/*';
-            changeset 'website/**/*'
-          }
+          changeset 'website/**'
         }
       }
       steps {
@@ -40,10 +37,7 @@ pipeline {
       when {
         allOf {
           branch 'dev';
-          anyOf {
-            changeset 'website/*';
-            changeset 'website/**/*'
-          }
+          changeset 'website/**'
         }
       }
       steps {
@@ -55,15 +49,11 @@ pipeline {
         }
       }
     }
-    /*
     stage('dockerize') {
       when {
         allOf {
           branch 'dev';
-          anyOf {
-            changeset 'website/*';
-            changeset 'website/***'
-          }
+          changeset 'website/**'
         }
       }
       tools {

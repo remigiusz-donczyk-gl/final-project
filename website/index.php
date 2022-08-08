@@ -9,8 +9,8 @@
       </head>
   <body>
     <?php
-      include_once("Functions.php");
-      include_once("Website.php");
+      include_once "Functions.php";
+      include_once "Website.php";
       $f = new Functions();
       $w = new Website();
       $msg = $w->run($f);

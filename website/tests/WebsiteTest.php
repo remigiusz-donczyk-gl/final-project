@@ -1,7 +1,9 @@
 <?php declare(strict_types=1);
+
 use PHPUnit\Framework\TestCase;
 include_once("Functions.php");
 include_once("Website.php");
+
 /**
  * for whatever reason phpunit needs to know that the test class
  * is using its own functions to run tests, pretty stupid
@@ -67,7 +69,7 @@ final class WebsiteTest extends TestCase {
       ->will($this->returnValue("<p>You have tried 3 times so far.</p>"));
 
     $f->expects($this->exactly(1))
-	  ->method('getImage')
+	    ->method("getImage")
       ->with($db, $this->callback(function($random) {
         return is_int($random);
       }))

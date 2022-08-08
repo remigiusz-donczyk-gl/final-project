@@ -74,7 +74,7 @@ class Functions {
   function getImage(mysqli $db, int $n): string {
     $query = "SELECT Path FROM memes WHERE Id=" . $n;
     $img = $db->query($query)->fetch_array()["Path"];
-    return "<img src=data/$img></img>";
+    return "<img src=data/" . $img . "></img>";
   }
 
   function getCountMessage(int $seen, int $total): string {
