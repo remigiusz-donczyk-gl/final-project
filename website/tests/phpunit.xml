@@ -11,8 +11,8 @@
   <testsuites>
     <testsuite
       name="all">
-      <test>FunctionsTest.php</test>
-      <test>WebsiteTest.php</test>
+      <file>FunctionsTest.php</file>
+      <file>WebsiteTest.php</file>
     </testsuite>
   </testsuites>
   <coverage
