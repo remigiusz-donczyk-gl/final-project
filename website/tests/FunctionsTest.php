@@ -143,7 +143,7 @@ final class FunctionsTest extends TestCase {
 
   /**
    * @uses MysqliResultMockFour
-   * @covers Functions::getImage
+   * @covers Functions::getImageEmbed
    */
   public function testGetImageEmbed(): void {
     $f = new Functions();
