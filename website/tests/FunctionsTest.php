@@ -145,14 +145,14 @@ final class FunctionsTest extends TestCase {
    * @uses MysqliResultMockFour
    * @covers Functions::getImage
    */
-  public function testGetImage(): void {
+  public function testGetImageEmbed(): void {
     $f = new Functions();
     $db = $this->createMock(mysqli::class);
     $db->expects($this->once())
        ->method('query')
        ->with($this->equalTo("SELECT Path FROM memes WHERE Id=6"))
        ->will($this->returnValue(new MysqliResultMockFour));
-    $this->assertEquals("<img src=data/test.png></img>", $f->getImage($db, 6));
+    $this->assertEquals("<img src=data/test.png></img>", $f->getImageEmbed($db, 6));
   }
 
   /**

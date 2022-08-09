@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
-include_once("Functions.php");
-include_once("Website.php");
+include_once "Functions.php";
+include_once "Website.php";
 
 /**
  * for whatever reason phpunit needs to know that the test class

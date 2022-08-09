@@ -1,21 +1,29 @@
 <?php declare(strict_types=1);
 
+/**
+ * @brief The main entrypoint class, which runs all commands.
+ *
+ * The main entrypoint, meant to be directly called from the website index,
+ * which runs all necessary commands and returns a list of printable messages.
+ */
 class Website {
 
+  /**
+   * @brief The main entrypoint method.
+   * @param[in] $f  An instance of a class extending Functions.
+   * @return    msg A list of messages to be printed by the website.
+   */
   function run(Functions $f): array {
     $ip = $f->getRealClientIP();
     $db = $f->connectToDatabase();
-    //  get the total amount of memes and generate a random index
     $memes = $f->getMemeAmount($db);
     $random = rand(1, $memes);
-    //  get the current client data and update it with the random meme
     $olddata = $f->getClientData($db, $ip);
     $data = $f->updateClientData($olddata, $random);
-    //  return x/y memes shown and the amount of times tried
     return array(
       "count" => $f->getCountMessage($data["Seen"], $memes),
       "try"   => $f->getTryMessage($data["Tries"]),
-      "image" => $f->getImage($db, $random)
+      "image" => $f->getImageEmbed($db, $random)
     );
   }
 }
