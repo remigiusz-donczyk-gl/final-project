@@ -10,16 +10,16 @@ The core of the entire project. It contains the entire workflow as code in the J
 
 #### The *dev* branch
 
-This is the first part that starts whenever changes are pushed to the *dev* branch of the repository. It first performs static code analysis and tests, then creates a sonarqube report of them (with coverage); immediately after, it creates a Docker image out of the current version of the website, assuming any changes were made since the last time it did so; the Docker image is then pushed into Dockerhub with a SEMVER-compliant version number as well as *latest* tag.
-After that is done, terraform is used to create the required architecture on the AWS cloud, the website is deployed into the test environment a smoke test is performed. If it passes, the Docker image is tagged as *stable*, and the *dev* branch is merged into *prod*. The test environment is kept online for no-downtime purposes.
+This is the first part that starts whenever changes are pushed to the *dev* branch of the repository. It first performs tests and static code analysis, then creates a SonarQube report of them (with coverage); creates documentation with Doxygen; immediately after, it creates a Docker image out of the current version of the website, assuming any changes were made since the last time it did so; the Docker image is then pushed into Docker Hub with a SEMVER-compliant version number as well as *latest* tag.
+After that is done, Terraform is used to create the required architecture on the AWS cloud, the website is deployed into the test environment and a smoke test is performed. If it passes, the *dev* branch is merged into *prod*. The test environment is kept online for no-downtime purposes.
 
 #### The *prod* branch
 
-This is the second part that runs when changes are made to the *prod* branch of the repository. It deploys a stable version of the website to AWS, then undeploys the test version. For showcase purposes, it also deletes the entire architecture after manual approval is given.
+This is the second part that runs when changes are made to the *prod* branch of the repository. It tags the Docker image as *stable*, deploys a stable version of the website to AWS, then undeploys the test version. For showcase purposes, it also deletes the entire architecture after manual approval is given.
 
 ## Docker
 
-The first tool used by Jenkins to complete the entire process. It depends on the Dockerfile and other files present in the website folder to create an image based on Debian, containing supervisord, nginx, php and mariadb. It places all the files in the correct folders, and initializes the database. The completed image is then tagged and pushed into Dockerhub.
+The first tool used by Jenkins to complete the entire process. It depends on the Dockerfile and other files present in the website folder to create an image based on Debian, containing supervisord, nginx, php and mariadb. It places all the files in the correct folders, and initializes the database. The completed image is then tagged and pushed into Docker Hub.
 
 ## Terraform
 
@@ -32,6 +32,4 @@ Honorable mentions for git, which is used within the pipeline to merge the *dev*
 ## Planned
 
 - Monitoring
-
-- A bit more documentation
 
