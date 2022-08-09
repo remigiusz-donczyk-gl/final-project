@@ -54,10 +54,8 @@ pipeline {
         dir('website') {
           sh 'doxygen Doxyfile'
         }
-        publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: false, reportDir: 'website/docs', reportFiles: 'index.html', reportName: 'Documentation', reportTitles: ''])
       }
     }
-    /*
     stage('dockerize') {
       when {
         allOf {
@@ -209,7 +207,6 @@ pipeline {
         '''
       }
     }
-    */
   }
 }
 

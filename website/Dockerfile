@@ -8,7 +8,8 @@ ADD php-fpm.conf php.ini /etc/php/7.4/fpm/
 ADD nginx.conf /etc/nginx/
 ADD setup.sql /tmp/
 ADD data /var/www/html/data
-ADD Functions.php Website.php index.php style.css /var/www/html/
+ADD docs /var/www/html/docs
+ADD Functions.php Website.php index.php script.js style.css /var/www/html/
 # start the database and setup
 RUN service php7.4-fpm start && service nginx start && service mariadb start && mysql </tmp/setup.sql
 
