@@ -69,7 +69,7 @@ final class WebsiteTest extends TestCase {
       ->will($this->returnValue("<p>You have tried 3 times so far.</p>"));
 
     $f->expects($this->exactly(1))
-	    ->method("getImage")
+	    ->method("getImageEmbed")
       ->with($db, $this->callback(function($random) {
         return is_int($random);
       }))
