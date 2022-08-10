@@ -23,25 +23,6 @@ p {
   font-family: 'Renogare', sans-serif;
   text-align: center;
 }
-#refresh {
-  background: #7cb342;
-  border-radius: 1vh;
-  padding: 10px 20px;
-  display: inline-block;
-  font-size: 1.1rem;
-  text-decoration: none;
-  transition: background 0.5s;
-}
-#refresh:hover {
-  background: #4b830d;
-}
-#meme {
-  max-height: 100%;
-  max-width: 100%;
-}
-#title {
-  font-size: 2.5rem;
-}
 #txtcontainer {
   width: fit-content;
   padding: 0 20px;
@@ -57,12 +38,37 @@ p {
   border-radius: 5vh;
   height: 65%;
 }
+#title {
+  font-size: 2.5rem;
+}
+#refresh {
+  background: #7cb342;
+  border-radius: 1vh;
+  padding: 10px 20px;
+  display: inline-block;
+  font-size: 1.1rem;
+  text-decoration: none;
+  transition: background 0.5s;
+}
+#meme {
+  max-height: 100%;
+  max-width: 100%;
+}
 #roundleft, #roundright {
   height: 5vh;
   aspect-ratio: 1;
   background: inherit;
   position: absolute;
   bottom: 0;
+}
+#roundleft {
+  left: -5vh;
+}
+#roundright {
+  right: -5vh;
+}
+#refresh:hover {
+  background: #4b830d;
 }
 #roundleft::before, #roundright::before {
   content: '';
@@ -72,12 +78,6 @@ p {
   aspect-ratio: 1;
   border-radius: 50%;
   bottom: 0;
-}
-#roundleft {
-  left: -5vh;
-}
-#roundright {
-  right: -5vh;
 }
 #roundleft::before {
   right: 0;
