@@ -8,8 +8,8 @@
 <!doctype html>
 <html lang=en>
   <head>
-    <!-- set the charset and get a nice font -->
     <meta charset=UTF-8>
+    <!-- get a nice font -->
     <link rel=stylesheet href=http://fonts.cdnfonts.com/css/renogare>
     <link rel=stylesheet href=style.css>
     <title>Meme DB</title>
