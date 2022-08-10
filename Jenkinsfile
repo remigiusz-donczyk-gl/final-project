@@ -50,9 +50,18 @@ pipeline {
       }
     }
     stage('doxygen') {
+      when {
+        allOf {
+          branch 'dev';
+          changeset 'website/**'
+        }
+      }
       steps {
         dir('website') {
-          sh 'doxygen Doxyfile'
+          sh '''
+            doxygen Doxyfile
+            mv docs /var/jenkins_home/tf/
+          '''
         }
       }
     }
@@ -107,9 +116,7 @@ pipeline {
         retry(1) {
           sh 'terraform apply -auto-approve'
         }
-        sh '''
-          mv terraform.tfstate /var/jenkins_home/tf/
-        '''
+        sh 'mv terraform.tfstate /var/jenkins_home/tf/'
       }
     }
     stage('test') {
@@ -176,7 +183,7 @@ pipeline {
         TF_VAR_prod = true
       }
       steps {
-        //  deploy the prod env, only do changes if a tfstate exists
+        //  deploy the prod env, if a tfstate exists only update
         sh '''
           [ -f /var/jenkins_home/tf/terraform.tfstate ] && mv /var/jenkins_home/tf/terraform.tfstate .
           terraform init
@@ -185,7 +192,32 @@ pipeline {
         '''
       }
     }
+    stage('add-docs') {
+      when {
+        branch 'prod'
+      }
+      tools {
+        git 'gitDefault'
+      }
+      steps {
+        //  get into the docs branch and replace documentation if a new version was made
+        git branch: 'docs', credentialsId: 'github-account', url: 'https://github.com/remigiusz-donczyk/final-project'
+        withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
+          sh '''
+            if [ -d /var/jenkins_home/tf/docs ]; then
+              rm -rf **
+              cp /var/jenkins_home/tf/docs/** .
+              rm -rf /var/jenkins_home/tf/docs
+              git add .
+              git commit -m "AUTO: Updated Documentation"
+              git push https://$TOKEN@github.com/remigiusz-donczyk/final-project.git docs
+            fi
+          '''
+        }
+      }
+    }
     //  purge terraform to empty playground for the next build, would not happen in a real environment
+    //  delete this stage in the case of a real environment, terraform will be preserved between builds
     stage('extinction') {
       when {
         branch 'prod'
