@@ -9,7 +9,7 @@
 <html lang=en>
   <head>
     <meta charset=UTF-8>
-    <!-- get a nice font -->
+    <!-- use a nice font -->
     <link rel=stylesheet href=http://fonts.cdnfonts.com/css/renogare>
     <link rel=stylesheet href=style.css>
     <title>Meme DB</title>
