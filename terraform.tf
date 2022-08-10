@@ -116,6 +116,9 @@ resource "local_file" "endpoint" {
 //  create test pod from latest image if PROD environment is unset
 resource "kubernetes_pod" "testenv" {
   count = var.prod ? 0 : 1
+  depends_on = [
+    module.eks
+  ]
   metadata {
     name = "testenv"
     labels = {
@@ -133,6 +136,9 @@ resource "kubernetes_pod" "testenv" {
 //  create pod from stable image if PROD environnment is set
 resource "kubernetes_pod" "prodenv" {
   count = var.prod ? 1 : 0
+  depends_on = [
+    module.eks
+  ]
   metadata {
     name = "prodenv"
     labels = {
