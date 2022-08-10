@@ -23,18 +23,6 @@ p {
   font-family: 'Renogare', sans-serif;
   text-align: center;
 }
-#docs {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  background: #a7c0cd;
-  border-radius: 1vh;
-  padding: 7px 14px;
-  transition: background 0.3s;
-}
-#docs:hover {
-  background: #78909c;
-}
 #refresh {
   background: #7cb342;
   border-radius: 1vh;

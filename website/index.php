@@ -15,7 +15,6 @@
     <title>Meme DB</title>
   </head>
   <body>
-    <button id=docs>Documentation</button>
     <div id=txtcontainer>
       <!-- #roundleft and #roundright elements are CSS magic to make rounded inside corners -->
       <div id=roundleft></div>
