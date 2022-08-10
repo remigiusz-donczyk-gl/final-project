@@ -16,7 +16,7 @@
   </head>
   <body>
     <div id=txtcontainer>
-      <!-- #roundleft and #roundright elements are CSS magic to make rounded inside corners -->
+      <!-- #roundleft and #roundright are CSS magic to make rounded inside corners -->
       <div id=roundleft></div>
       <div id=roundright></div>
       <p id=title>Here is your random meme.</p>
