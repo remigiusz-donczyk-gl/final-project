@@ -7,8 +7,9 @@ ADD nginx.conf /etc/nginx/
 ADD setup.sql /tmp/
 ADD data /var/www/html/data
 ADD Functions.php Website.php index.php script.js style.css /var/www/html/
-# start the database and run the setup script setup
-RUN service mariadb start && mysql </tmp/setup.sql
+RUN service php7.4-fpm start && service nginx start && service mariadb start && mysql </tmp/setup.sql
+
+# inform users of preferred values
 EXPOSE 80
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
 
