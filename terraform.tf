@@ -76,7 +76,7 @@ module "vpc" {
 //  create node groups, iam roles, openid provider, cluster & cloudwatch log
 module "eks" {
   source                          = "terraform-aws-modules/eks/aws"
-  version                         = "18.26.6"
+  version                         = "18.27.1"
   cluster_name                    = "cluster"
   cluster_version                 = "1.22"
   cluster_endpoint_private_access = true

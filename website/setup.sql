@@ -1,11 +1,9 @@
 /*  create a database and its user  */
 create database website;
 /*  the exposed password is fine because of containerization and least privilege  */
-/*  as long as it can't be guessed easily there is a low attack vector  */
 create user dbuser@localhost identified by 'Very!Strong@Password#I%Presume';
 grant all on website.* to dbuser@localhost;
 
-/*  load the database info  */
 use website;
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
