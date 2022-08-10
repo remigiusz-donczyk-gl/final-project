@@ -19,7 +19,7 @@
       <!-- #roundleft and #roundright elements are CSS magic to make rounded inside corners -->
       <div id=roundleft></div>
       <div id=roundright></div>
-      <p id=title>Here is your random meme</p>
+      <p id=title>Here is your random meme.</p>
       <?php
         print $msg["count"];
         print $msg["try"];

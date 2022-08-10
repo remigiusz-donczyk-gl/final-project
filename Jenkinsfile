@@ -197,6 +197,8 @@ pipeline {
             rm -rf **
             mv /var/jenkins_home/tf/docs/** .
             rm -rf /var/jenkins_home/tf/docs
+            git config user.email "remigiusz.donczyk@globallogic.com"
+            git config user.name "Remigiusz Dończyk"
             git add .
             git commit -m "AUTO: Updated Documentation"
             git push https://$TOKEN@github.com/remigiusz-donczyk/final-project.git docs
