@@ -152,7 +152,7 @@ final class FunctionsTest extends TestCase {
        ->method('query')
        ->with($this->equalTo("SELECT Path FROM memes WHERE Id=6"))
        ->will($this->returnValue(new MysqliResultMockFour));
-    $this->assertEquals("<img src=data/test.png></img>", $f->getImageEmbed($db, 6));
+    $this->assertEquals("<img id=meme src=data/test.png></img>", $f->getImageEmbed($db, 6));
   }
 
   /**
