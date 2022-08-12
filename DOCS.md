@@ -10,12 +10,12 @@ The core of the entire project. It contains the entire workflow as code in the J
 
 #### The *dev* branch
 
-This is the first part that starts whenever changes are pushed to the *dev* branch of the repository. It first performs tests and static code analysis, then creates a SonarQube report of them (with coverage); creates documentation with Doxygen; immediately after, it creates a Docker image out of the current version of the website, assuming any changes were made since the last time it did so; the Docker image is then pushed into Docker Hub with a SEMVER-compliant version number as well as *latest* tag.
+This is the first part that starts whenever changes are pushed to the *dev* branch of the repository. It first performs tests and static code analysis, then creates a SonarQube report of them (with coverage); immediately after, it creates a Docker image out of the current version of the website, assuming any changes were made since the last time it did so; the Docker image is then pushed into Docker Hub with a SEMVER-compliant version number as well as *latest* tag.
 After that is done, Terraform is used to create the required architecture on the AWS cloud, the website is deployed into the test environment and a smoke test is performed. If it passes, the *dev* branch is merged into *prod*. The test environment is kept online for no-downtime purposes.
 
 #### The *prod* branch
 
-This is the second part that runs when changes are made to the *prod* branch of the repository. It tags the Docker image as *stable*, deploys a stable version of the website to AWS, then undeploys the test version. For showcase purposes, it also deletes the entire architecture after manual approval is given.
+This is the second part that runs when changes are made to the *prod* branch of the repository. It tags the Docker image as *stable*, deploys a stable version of the website to AWS, then undeploys the test version. It creates documentation for the stable version of the site and deploys it to GitHub Pages. For showcase purposes, it also deletes the entire architecture after manual approval is given.
 
 ## Docker
 
