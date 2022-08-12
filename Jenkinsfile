@@ -198,9 +198,11 @@ pipeline {
               cp -r ../website/docs/** .
               git config user.email "remigiusz.donczyk@globallogic.com"
               git config user.name "Remigiusz Dończyk"
-              git add .
-              git commit -m "AUTO: Updated Documentation"
-              git push https://$TOKEN@github.com/remigiusz-donczyk/final-project.git docs
+              git add -A
+              if ! git diff-index --quiet HEAD; then
+                git commit -m "AUTO: Updated Documentation"
+                git push https://$TOKEN@github.com/remigiusz-donczyk/final-project.git docs
+              fi
             '''
           }
         }
