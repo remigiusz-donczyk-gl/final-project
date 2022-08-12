@@ -83,7 +83,7 @@ pipeline {
         branch 'dev'
       }
       tools {
-        terraform 'tf1.2.6'
+        terraform 'tf1.2.7'
       }
       environment {
         AWS_ACCESS_KEY_ID = credentials('aws-access')
@@ -159,7 +159,7 @@ pipeline {
         branch 'prod'
       }
       tools {
-        terraform 'tf1.2.6'
+        terraform 'tf1.2.7'
       }
       environment {
         AWS_ACCESS_KEY_ID = credentials('aws-access')
@@ -176,6 +176,7 @@ pipeline {
         '''
       }
     }
+    /*
     stage('doxygen') {
       when {
         branch 'prod'
@@ -206,6 +207,7 @@ pipeline {
         }
       }
     }
+    */
     //  purge terraform to empty playground for the next build, would not happen in a real environment
     //  delete this stage in the case of a real environment, terraform will be preserved between builds
     stage('extinction') {
@@ -213,7 +215,7 @@ pipeline {
         branch 'prod'
       }
       tools {
-        terraform 'tf1.2.6'
+        terraform 'tf1.2.7'
       }
       environment {
         AWS_ACCESS_KEY_ID = credentials('aws-access')

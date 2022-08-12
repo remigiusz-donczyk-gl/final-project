@@ -1,10 +1,10 @@
 /*  create a database and its user  */
-create database website;
+CREATE DATABASE website;
 /*  the exposed password is fine because of containerization and least privilege  */
-create user dbuser@localhost identified by 'Very!Strong@Password#I%Presume';
-grant all on website.* to dbuser@localhost;
+CREATE USER dbuser@localhost IDENTIFIED BY 'Very!Strong@Password#I%Presume';
+GRANT ALL ON website.* TO dbuser@localhost;
 
-use website;
+USE website;
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
