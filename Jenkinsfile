@@ -195,7 +195,7 @@ pipeline {
         withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
           sh '''
             mv .git /var/jenkins_home/tf/
-            rm -rf ./{*,.*}
+            find . | xargs -n 1 rm -rf
             mv /var/jenkins_home/tf/.git .
             cp -r /var/jenkins_home/tf/docs/** .
             rm -rf /var/jenkins_home/tf/docs
