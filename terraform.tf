@@ -113,7 +113,7 @@ resource "local_file" "endpoint" {
   filename = ".endpoint"
 }
 
-//  create test pod from latest image if PROD environment is unset
+//  create test pod from latest image in test environment
 resource "kubernetes_pod" "testenv" {
   count = var.prod ? 0 : 1
   depends_on = [
@@ -133,7 +133,7 @@ resource "kubernetes_pod" "testenv" {
   }
 }
 
-//  create pod from stable image if PROD environnment is set
+//  create pod from stable image in production environment
 resource "kubernetes_pod" "prodenv" {
   count = var.prod ? 1 : 0
   depends_on = [
