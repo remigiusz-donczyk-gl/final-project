@@ -187,24 +187,22 @@ pipeline {
         dir('website') {
           sh '''
             doxygen Doxyfile
-            mv docs /var/jenkins_home/tf/
+            mkdir ../docs-branch
           '''
         }
-        //  get into the docs branch and replace documentation
-        git branch: 'docs', credentialsId: 'github-account', url: 'https://github.com/remigiusz-donczyk/final-project'
-        withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
-          sh '''
-            mv .git /var/jenkins_home/tf/
-            find . -not -name . | xargs -n 1 rm -rf
-            mv /var/jenkins_home/tf/.git .
-            cp -r /var/jenkins_home/tf/docs/** .
-            rm -rf /var/jenkins_home/tf/docs
-            git config user.email "remigiusz.donczyk@globallogic.com"
-            git config user.name "Remigiusz Dończyk"
-            git add .
-            git commit -m "AUTO: Updated Documentation"
-            git push https://$TOKEN@github.com/remigiusz-donczyk/final-project.git docs
-          '''
+        dir('docs-branch') {
+          //  get into the docs branch and replace documentation
+          git branch: 'docs', credentialsId: 'github-account', url: 'https://github.com/remigiusz-donczyk/final-project'
+          withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
+            sh '''
+              cp -r ../website/docs/** .
+              git config user.email "remigiusz.donczyk@globallogic.com"
+              git config user.name "Remigiusz Dończyk"
+              git add .
+              git commit -m "AUTO: Updated Documentation"
+              git push https://$TOKEN@github.com/remigiusz-donczyk/final-project.git docs
+            '''
+          }
         }
       }
     }
