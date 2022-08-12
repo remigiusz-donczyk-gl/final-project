@@ -6,7 +6,7 @@ pipeline {
   }
   environment {
     //  set up the current version with SEMVER <major>.<minor>.<build-number-in-current-version>
-    VERSION = "2.2.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 23 || [ $? -eq 1 ] && true')}"
+    VERSION = "2.3.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 38 || [ $? -eq 1 ] && true')}"
   }
   stages {
     stage('cleanup') {
@@ -176,7 +176,6 @@ pipeline {
         '''
       }
     }
-    /*
     stage('doxygen') {
       when {
         branch 'prod'
@@ -207,7 +206,6 @@ pipeline {
         }
       }
     }
-    */
     //  purge terraform to empty playground for the next build, would not happen in a real environment
     //  delete this stage in the case of a real environment, terraform will be preserved between builds
     stage('extinction') {
