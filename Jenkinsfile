@@ -187,16 +187,16 @@ pipeline {
       steps {
         dir('website') {
           sh '''
-            doxygen Doxyfile
-            mkdir ../docs-branch
+            doxygen
+            mkdir docs-branch
           '''
         }
-        dir('docs-branch') {
+        dir('website/docs-branch') {
           //  get into the docs branch and replace documentation
           git branch: 'docs', credentialsId: 'github-account', url: 'https://github.com/remigiusz-donczyk/final-project'
           withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
             sh '''
-              cp -r ../website/docs/** .
+              cp -r ../docs/** .
               git config user.email "remigiusz.donczyk@globallogic.com"
               git config user.name "Remigiusz Dończyk"
               git add -A
