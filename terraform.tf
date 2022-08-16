@@ -14,6 +14,10 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = "2.12.1"
     }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "2.6.0"
+    }
     null = {
       source  = "hashicorp/null"
       version = "3.1.1"
@@ -51,6 +55,14 @@ provider "kubernetes" {
   host                   = data.aws_eks_cluster.eks.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.eks.token
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = data.aws_eks_cluster.eks.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
+    token                  = data.aws_eks_cluster_auth.eks.token
+  }
 }
 
 //  create VPC, subnets, route tables, gateways & EIP
@@ -91,10 +103,41 @@ module "eks" {
   }
 }
 
-//  deploy website on a public endpoint
-resource "kubernetes_service" "deploy" {
+//  install prometheus and grafana
+resource "helm_release" "prometheus" {
+  name       = "kube-prometheus-stack"
+  repository = "https://prometheus-community.github.io/helm-charts"
+  chart      = "kube-prometheus-stack"
+  version    = "39.6.0"
+}
+
+//  deploy grafana on a public endpoint
+resource "kubernetes_service" "grafana" {
   metadata {
-    name = "deploy"
+    name = "grafana"
+  }
+  spec {
+    type = "LoadBalancer"
+    selector = {
+      "app.kubernetes.io/instance" = "kube-prometheus-stack"
+      "app.kubernetes.io/name"     = "grafana"
+    }
+    port {
+      port        = 80
+      target_port = 3000
+    }
+  }
+}
+
+resource "local_file" "grafana-endpoint" {
+  content  = kubernetes_service.grafana.status[0].load_balancer[0].ingress[0].hostname
+  filename = ".grafana-endpoint"
+}
+
+//  deploy website on a public endpoint
+resource "kubernetes_service" "app" {
+  metadata {
+    name = "app"
   }
   spec {
     type = "LoadBalancer"
@@ -108,17 +151,14 @@ resource "kubernetes_service" "deploy" {
   }
 }
 
-resource "local_file" "endpoint" {
-  content  = kubernetes_service.deploy.status[0].load_balancer[0].ingress[0].hostname
+resource "local_file" "app-endpoint" {
+  content  = kubernetes_service.app.status[0].load_balancer[0].ingress[0].hostname
   filename = ".endpoint"
 }
 
 //  create test pod from latest image in test environment
 resource "kubernetes_pod" "testenv" {
   count = var.prod ? 0 : 1
-  depends_on = [
-    module.eks
-  ]
   metadata {
     name = "testenv"
     labels = {
@@ -136,9 +176,6 @@ resource "kubernetes_pod" "testenv" {
 //  create pod from stable image in production environment
 resource "kubernetes_pod" "prodenv" {
   count = var.prod ? 1 : 0
-  depends_on = [
-    module.eks
-  ]
   metadata {
     name = "prodenv"
     labels = {

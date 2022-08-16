@@ -108,8 +108,9 @@ pipeline {
         branch 'dev'
       }
       steps {
+        sh 'echo -e "Grafana: $(cat .grafana-endpoint)\nWebsite: $(cat .endpoint)"'
         sleep 30
-        //  send a request to the generated endpoint and fail if unreachable - smoke test
+        //  smoke test - fail if endpoint is unreachable
         sh 'test $(echo $(curl -sLo /dev/null -w "%{http_code}" $(cat .endpoint)) | cut -c 1) -eq 2 || exit 1'
       }
     }
