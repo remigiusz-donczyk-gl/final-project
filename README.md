@@ -1,31 +1,29 @@
-# A CI/CD pipeline
+## Pipeline Status
 ![Build Status](https://jenkins-gl.bluecom.dev/buildStatus/icon?job=FinalProject%2Fdev)
-![SonarQube Coverage](https://sonarqube-gl.bluecom.dev/api/project_badges/measure?project=remigiusz-donczyk_final-project&metric=alert_status)
+![Sonar Coverage](https://sonarqube-gl.bluecom.dev/api/project_badges/measure?project=remigiusz-donczyk_final-project&metric=alert_status)
 
-This is part of a DevOps academy I am taking part in. A simple project with a pipeline to go with it.
+## Documentation
+[![Written Docs](https://img.shields.io/badge/Manual-Documentation-2a4?logo=readthedocs&logoColor=2a4)](DOCS.md)
+[![Doxygen Docs](https://img.shields.io/badge/Doxygen-Documentation-9cf?logo=readthedocs&logoColor=9cf)](https://remigiusz-donczyk.github.io/final-project)
 
-[Docker Hub repository](https://hub.docker.com/repository/docker/remigiuszdonczyk/final-project/tags)
+## General Info
+[![Docker Images](https://img.shields.io/badge/Docker%20Hub-Image%20Repository-blue?logo=docker)](https://hub.docker.com/repository/docker/remigiuszdonczyk/final-project/tags)
 
-Doxygen documentation is hosted as a [GitHub Page](https://remigiusz-donczyk.github.io/final-project).
-
-Check out a more detailed description [here](DOCS.md)!
+This is part of a DevOps academy I am taking part in. A pipeline with a simple website to go with it.
 
 - [x] webapp
   - [x] database
-  - [x] frontend
   - [x] stateful
-- [x] Jenkins (branch dev)
-  - [x] PHP unit tests (+ coverage)
+  - [x] looks somewhat good
+
+- [x] pipeline (Jenkins)
+  - [x] PHPUnit tests with coverage
   - [x] static code analysis
-  - [x] Doxygen documentation
-  - [x] make Docker image > Docker Hub
-  - [x] Terraform EKS
-  - [x] deploy test env
-  - [x] smoke test
-  - [x] Docker Hub (:stable)
-  - [x] GitHub merge to prod
-- [x] Jenkins (branch prod)
-  - [x] deploy prod env
-  - [x] undeploy test env
-  - [ ] monitor health
+  - [x] build and tag Docker image
+  - [x] push to Docker Hub
+  - [x] Terraform the AWS cloud
+  - [x] smoke test just in case
+  - [x] mark as stable automatically
+  - [x] generate documentation
+  - [x] monitor the app
 

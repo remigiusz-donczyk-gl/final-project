@@ -2,7 +2,7 @@
 
 This is a project that intends to show my familiarity with DevOps tools. It showcases many technologies used commonly in functional products.
 
-The main purpose is its focus on combining multiple tools into a coherent pipeline; the website being deployed (a stateful database of DevOps & IT memes) is only for showcase purposes, and thus of secondary importance.
+The main purpose is its focus on combining multiple tools into a coherent pipeline; the website being deployed (a stateful database of DevOps and IT memes) is only for showcase purposes, and thus of secondary importance.
 
 ## Jenkins
 
@@ -10,26 +10,38 @@ The core of the entire project. It contains the entire workflow as code in the J
 
 #### The *dev* branch
 
-This is the first part that starts whenever changes are pushed to the *dev* branch of the repository. It first performs tests and static code analysis, then creates a SonarQube report of them (with coverage); immediately after, it creates a Docker image out of the current version of the website, assuming any changes were made since the last time it did so; the Docker image is then pushed into Docker Hub with a SEMVER-compliant version number as well as *latest* tag.
+This is the first part that starts whenever changes are pushed to the *dev* branch of the repository. It first performs tests, a coverage report and then uses SonarQube to perform static analysis and make a report of the results. Immediately after, it creates a Docker image out of the current version of the website, assuming any changes were made since the last time it did so; the Docker image is then pushed into Docker Hub with a SEMVER-compliant version number as well as the *latest* tag.
 After that is done, Terraform is used to create the required architecture on the AWS cloud, the website is deployed into the test environment and a smoke test is performed. If it passes, the *dev* branch is merged into *prod*. The test environment is kept online for no-downtime purposes.
 
 #### The *prod* branch
 
-This is the second part that runs when changes are made to the *prod* branch of the repository. It tags the Docker image as *stable*, deploys a stable version of the website to AWS, then undeploys the test version. It creates documentation for the stable version of the site and deploys it to GitHub Pages. For showcase purposes, it also deletes the entire architecture after manual approval is given.
+This is the second part that runs when changes are made to the *prod* branch of the repository. It tags the Docker image as *stable*, deploys a stable version of the website to AWS, then removes the test version. It creates documentation for the stable version of the site and deploys it to GitHub Pages. For showcase purposes, it also deletes the entire architecture after manual approval is given.
+
+## PHPUnit
+
+The tool of choice for executing tests. It runs all the unit tests and analyzes code coverage, which is later used by SonarQube.
+
+## SonarQube
+
+A static code analysis tool also used for quality measurement and reports. It notifies of any bugs, vulnerabilities, security risks and bad choices encountered in code. It also displays the collected coverage reports in a simple-to-visualize manner.
 
 ## Docker
 
-The first tool used by Jenkins to complete the entire process. It depends on the Dockerfile and other files present in the website folder to create an image based on Debian, containing supervisord, nginx, php and mariadb. It places all the files in the correct folders, and initializes the database. The completed image is then tagged and pushed into Docker Hub.
+Depends on the Dockerfile and other files present in the website folder to create an image based on Debian, containing supervisord, nginx, PHP and mariadb. It places all the configuration and website files in the correct folders and initializes the database. The completed image is then tagged and pushed into Docker Hub.
 
 ## Terraform
 
-The second, and the most important, tool that Jenkins uses. It uses the AWS tokens specified securely in Jenkins credentials to access AWS and set up all of the architecture needed to deploy a Docker image inside EKS. It creates a total of \~50 resources within the cloud, including such highlights as the VPC, gateways, security rules, EKS and a kubernetes service that allows the website to be accessed publicly.
+The most important tool that Jenkins uses. It uses the AWS tokens specified securely as Jenkins credentials to access AWS and set up all the architecture needed to deploy a Docker image inside EKS. It creates 50+ resources within the cloud, including such highlights as the VPC, gateways, security rules, EKS and a Kubernetes service that allows the website to be accessed publicly.
+
+## Doxygen
+
+Generates the documentation by reading annotated code. In addition to this manually-written documentation, it provides a basis for understanding the project's design.
+
+## Prometheus and Grafana
+
+Tools used to monitor the state of the services deployed to EKS. Implemented with the use of kube-prometheus-stack, a ready-to-use Helm Chart.
 
 ## Git
 
-Honorable mentions for git, which is used within the pipeline to merge the *dev* branch into *prod* automatically. This is also the only way for the prod branch can be updated, ensuring that it can never contain an environment which is faulty.
-
-## Planned
-
-- Monitoring
+Honorable mentions for git, which is used within the pipeline to merge the *dev* branch into *prod* automatically. This is also the only expected way for the prod branch to be updated, to ensure that it always contains the latest working version of the repository.
 
