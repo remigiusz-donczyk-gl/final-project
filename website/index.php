@@ -1,9 +1,7 @@
 <?php declare(strict_types=1);
-  include_once "Functions.php";
   include_once "Website.php";
-  $f = new Functions();
   $w = new Website();
-  $msg = $w->run($f);
+  $msg = $w->run();
 ?>
 <!doctype html>
 <html lang=en>

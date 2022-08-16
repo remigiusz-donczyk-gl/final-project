@@ -11,7 +11,6 @@
   <testsuites>
     <testsuite
       name="all">
-      <file>FunctionsTest.php</file>
       <file>WebsiteTest.php</file>
     </testsuite>
   </testsuites>
@@ -20,8 +19,6 @@
     processUncoveredFiles="true"
     pathCoverage="true">
     <include>
-      <file>FunctionsTest.php</file>
-      <file>../Functions.php</file>
       <file>WebsiteTest.php</file>
       <file>../Website.php</file>
     </include>
