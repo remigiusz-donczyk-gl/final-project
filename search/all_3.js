@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['run_10',['run',['../classWebsite.html#a9788b729bd07f814330b0636d562b9be',1,'Website']]]
+  ['updateclientdata_10',['updateClientData',['../classWebsite.html#a286d20dcc38aa4e865656b9e41b05ce7',1,'Website']]]
 ];

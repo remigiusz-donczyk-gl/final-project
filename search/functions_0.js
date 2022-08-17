@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['connecttodatabase_15',['connectToDatabase',['../classFunctions.html#a7dbbad88df47886de782b78b335de61f',1,'Functions']]],
-  ['countsetbits_16',['countSetBits',['../classFunctions.html#a51ed1a89214ec0c4e73fa76277d905f5',1,'Functions']]],
-  ['createclientdata_17',['createClientData',['../classFunctions.html#a2a3b9637f3de2b0eb3ff65b46f44a68c',1,'Functions']]]
+  ['connecttodatabase_13',['connectToDatabase',['../classWebsite.html#a489d327408d74129427a0e44e0325fce',1,'Website']]],
+  ['countsetbits_14',['countSetBits',['../classWebsite.html#a0a4368ec4397443002bb7f26f5edbe19',1,'Website']]],
+  ['createclientdata_15',['createClientData',['../classWebsite.html#a2f8f8ddd383a42202c19f8153ca556ae',1,'Website']]]
 ];

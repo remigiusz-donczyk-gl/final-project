@@ -70,26 +70,125 @@ $(function() {
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
 <div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="classWebsite.html">    9</a></span>&#160;<span class="keyword">class </span><a class="code" href="classWebsite.html">Website</a> {</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="classWebsite.html#a9788b729bd07f814330b0636d562b9be">   16</a></span>&#160;  <span class="keyword">function</span> <a class="code" href="classWebsite.html#a9788b729bd07f814330b0636d562b9be">run</a>(<a class="code" href="classFunctions.html">Functions</a> $f): array {</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    $ip = $f-&gt;getRealClientIP();</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    $db = $f-&gt;connectToDatabase();</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    $memes = $f-&gt;getMemeAmount($db);</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    $random = rand(1, $memes);</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    $olddata = $f-&gt;getClientData($db, $ip);</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    $data = $f-&gt;updateClientData($olddata, $random);</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordflow">return</span> array(</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;      <span class="stringliteral">&quot;count&quot;</span> =&gt; $f-&gt;getCountMessage($data[<span class="stringliteral">&quot;Seen&quot;</span>], $memes),</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;      <span class="stringliteral">&quot;try&quot;</span>   =&gt; $f-&gt;getTryMessage($data[<span class="stringliteral">&quot;Tries&quot;</span>]),</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;      <span class="stringliteral">&quot;image&quot;</span> =&gt; $f-&gt;getImageEmbed($db, $random)</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    );</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  }</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;}</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;?&gt;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="ttc" id="aclassFunctions_html"><div class="ttname"><a href="classFunctions.html">Functions</a></div><div class="ttdoc">A class implementing functions for database interaction.</div><div class="ttdef"><b>Definition:</b> <a href="Functions_8php_source.html#l00006">Functions.php:6</a></div></div>
-<div class="ttc" id="aclassWebsite_html"><div class="ttname"><a href="classWebsite.html">Website</a></div><div class="ttdoc">The main entrypoint class, which runs all commands.</div><div class="ttdef"><b>Definition:</b> <a href="Website_8php_source.html#l00009">Website.php:9</a></div></div>
-<div class="ttc" id="aclassWebsite_html_a9788b729bd07f814330b0636d562b9be"><div class="ttname"><a href="classWebsite.html#a9788b729bd07f814330b0636d562b9be">Website\run</a></div><div class="ttdeci">run(Functions $f)</div><div class="ttdoc">The main entrypoint method.</div><div class="ttdef"><b>Definition:</b> <a href="Website_8php_source.html#l00016">Website.php:16</a></div></div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classWebsite.html#a288089a0b426c267c229ce0cc6a40e46">   18</a></span>&#160;  <span class="keyword">function</span> <a class="code" href="classWebsite.html#a288089a0b426c267c229ce0cc6a40e46">run</a>(): array {</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    $ip = $this-&gt;<a class="code" href="classWebsite.html#a671f1bbfb0ab7e9cb81b615d64359441">getRealClientIP</a>();</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    $db = $this-&gt;<a class="code" href="classWebsite.html#a489d327408d74129427a0e44e0325fce">connectToDatabase</a>();</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    $memes = $this-&gt;<a class="code" href="classWebsite.html#a35af8f4196f79fc0cf940a949864d9a3">getMemeAmount</a>($db);</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    $random = rand(1, $memes);</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    $olddata = $this-&gt;<a class="code" href="classWebsite.html#af92829d9c75e3555d4b3b4ed7fc44104">getClientData</a>($db, $ip);</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    $data = $this-&gt;<a class="code" href="classWebsite.html#a286d20dcc38aa4e865656b9e41b05ce7">updateClientData</a>($olddata, $random);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordflow">return</span> array(</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;      <span class="stringliteral">&quot;count&quot;</span> =&gt; $this-&gt;<a class="code" href="classWebsite.html#ad418c7491c0d0e0494eff80f6a84abf4">getCountMessage</a>($data[<span class="stringliteral">&quot;Seen&quot;</span>], $memes),</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;      <span class="stringliteral">&quot;try&quot;</span>   =&gt; $this-&gt;<a class="code" href="classWebsite.html#a34463c9b222521abcc49ee2b6090699a">getTryMessage</a>($data[<span class="stringliteral">&quot;Tries&quot;</span>]),</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;      <span class="stringliteral">&quot;image&quot;</span> =&gt; $this-&gt;<a class="code" href="classWebsite.html#a5fc6f3208f0616b514868b22cbce3a24">getImageEmbed</a>($db, $random)</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    );</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  }</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classWebsite.html#a489d327408d74129427a0e44e0325fce">   39</a></span>&#160;  <span class="keyword">function</span> <a class="code" href="classWebsite.html#a489d327408d74129427a0e44e0325fce">connectToDatabase</a>(): mysqli {</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    return new mysqli(<span class="stringliteral">&quot;localhost&quot;</span>, <span class="stringliteral">&quot;dbuser&quot;</span>, ini_get(<span class="stringliteral">&quot;mysqli.default_pw&quot;</span>), <span class="stringliteral">&quot;website&quot;</span>);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  }</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="classWebsite.html#a0a4368ec4397443002bb7f26f5edbe19">   53</a></span>&#160;  <span class="keyword">function</span> <a class="code" href="classWebsite.html#a0a4368ec4397443002bb7f26f5edbe19">countSetBits</a>(<span class="keywordtype">int</span> $n): int {</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    $count = 0;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordflow">while</span> ($n) {</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;      $count += $n &amp; 1;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;      $n &gt;&gt;= 1;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    }</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keywordflow">return</span> $count;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  }</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="classWebsite.html#a35af8f4196f79fc0cf940a949864d9a3">   69</a></span>&#160;  <span class="keyword">function</span> <a class="code" href="classWebsite.html#a35af8f4196f79fc0cf940a949864d9a3">getMemeAmount</a>(mysqli $db): int {</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    $query = <span class="stringliteral">&quot;SELECT * FROM memes&quot;</span>;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    $all = $db-&gt;query($query);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keywordflow">return</span> $all-&gt;num_rows;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  }</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
+<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="classWebsite.html#a671f1bbfb0ab7e9cb81b615d64359441">   82</a></span>&#160;  <span class="keyword">function</span> <a class="code" href="classWebsite.html#a671f1bbfb0ab7e9cb81b615d64359441">getRealClientIP</a>(): string {</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    if (!empty($_SERVER[<span class="stringliteral">&quot;HTTP_CLIENT_IP&quot;</span>])) {</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;         $ip = $_SERVER[<span class="stringliteral">&quot;HTTP_CLIENT_IP&quot;</span>];</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    } elseif (!empty($_SERVER[<span class="stringliteral">&quot;HTTP_X_FORWARDED_FOR&quot;</span>])) {</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;               $ip = $_SERVER[<span class="stringliteral">&quot;HTTP_X_FORWARDED_FOR&quot;</span>];</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;      $ip = $_SERVER[<span class="stringliteral">&quot;REMOTE_ADDR&quot;</span>];</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    }</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordflow">return</span> $ip;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  }</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
+<div class="line"><a name="l00103"></a><span class="lineno"><a class="line" href="classWebsite.html#a2f8f8ddd383a42202c19f8153ca556ae">  103</a></span>&#160;  <span class="keyword">function</span> <a class="code" href="classWebsite.html#a2f8f8ddd383a42202c19f8153ca556ae">createClientData</a>(mysqli $db, <span class="keywordtype">string</span> $ip): array {</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    $query = <span class="stringliteral">&quot;INSERT INTO userdata (IP) VALUES (&#39;&quot;</span> . $ip . <span class="stringliteral">&quot;&#39;)&quot;</span>;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    $db-&gt;query($query);</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <span class="keywordflow">return</span> array(</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;      <span class="stringliteral">&quot;Database&quot;</span> =&gt; $db,</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;      <span class="stringliteral">&quot;IP&quot;</span>       =&gt; $ip,</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;      <span class="stringliteral">&quot;Seen&quot;</span>     =&gt; 0,</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;      <span class="stringliteral">&quot;Tries&quot;</span>    =&gt; 0</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    );</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  }</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
+<div class="line"><a name="l00122"></a><span class="lineno"><a class="line" href="classWebsite.html#af92829d9c75e3555d4b3b4ed7fc44104">  122</a></span>&#160;  <span class="keyword">function</span> <a class="code" href="classWebsite.html#af92829d9c75e3555d4b3b4ed7fc44104">getClientData</a>(mysqli $db, <span class="keywordtype">string</span> $ip): array {</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    $query = <span class="stringliteral">&quot;SELECT Seen, Tries FROM userdata WHERE IP=&#39;&quot;</span> . $ip . <span class="stringliteral">&quot;&#39;&quot;</span>;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    $userdata = $db-&gt;query($query);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="keywordflow">if</span> ($userdata-&gt;num_rows == 0) {</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;      <span class="keywordflow">return</span> $this-&gt;createClientData($db, $ip);</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    }</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="keywordflow">return</span> array_merge(array(</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;      <span class="stringliteral">&quot;Database&quot;</span> =&gt; $db,</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;      <span class="stringliteral">&quot;IP&quot;</span>       =&gt; $ip,</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    ), $userdata-&gt;fetch_array());</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;  }</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160; </div>
+<div class="line"><a name="l00144"></a><span class="lineno"><a class="line" href="classWebsite.html#a286d20dcc38aa4e865656b9e41b05ce7">  144</a></span>&#160;  <span class="keyword">function</span> <a class="code" href="classWebsite.html#a286d20dcc38aa4e865656b9e41b05ce7">updateClientData</a>(array $data, <span class="keywordtype">int</span> $meme): array {</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    $newseen = $data[<span class="stringliteral">&quot;Seen&quot;</span>] | (1 &lt;&lt; ($meme - 1));</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    $newtries = $data[<span class="stringliteral">&quot;Tries&quot;</span>] + 1;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    <span class="keywordflow">if</span> ($newtries &gt; 999) {</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;      $newtries = 999;</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    }</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    $query = <span class="stringliteral">&quot;UPDATE userdata SET Seen=&quot;</span> . $newseen . <span class="stringliteral">&quot;, Tries=&quot;</span> . $newtries . <span class="stringliteral">&quot; WHERE IP=&#39;&quot;</span> . $data[<span class="stringliteral">&quot;IP&quot;</span>] . <span class="stringliteral">&quot;&#39;&quot;</span>;</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    $data[<span class="stringliteral">&quot;Database&quot;</span>]-&gt;query($query);</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="keywordflow">return</span> array(</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;      <span class="stringliteral">&quot;Database&quot;</span> =&gt; $data[<span class="stringliteral">&quot;Database&quot;</span>],</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;      <span class="stringliteral">&quot;IP&quot;</span>       =&gt; $data[<span class="stringliteral">&quot;IP&quot;</span>],</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;      <span class="stringliteral">&quot;Seen&quot;</span>     =&gt; $newseen,</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;      <span class="stringliteral">&quot;Tries&quot;</span>    =&gt; $newtries</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    );</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;  }</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
+<div class="line"><a name="l00168"></a><span class="lineno"><a class="line" href="classWebsite.html#a5fc6f3208f0616b514868b22cbce3a24">  168</a></span>&#160;  <span class="keyword">function</span> <a class="code" href="classWebsite.html#a5fc6f3208f0616b514868b22cbce3a24">getImageEmbed</a>(mysqli $db, <span class="keywordtype">int</span> $n): string {</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    $query = <span class="stringliteral">&quot;SELECT Path FROM memes WHERE Id=&quot;</span> . $n;</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    $img = $db-&gt;query($query)-&gt;fetch_array()[<span class="stringliteral">&quot;Path&quot;</span>];</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    <span class="keywordflow">return</span> <span class="stringliteral">&quot;&lt;img id=meme src=data/&quot;</span> . $img . <span class="stringliteral">&quot;&gt;&lt;/img&gt;&quot;</span>;</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;  }</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
+<div class="line"><a name="l00183"></a><span class="lineno"><a class="line" href="classWebsite.html#ad418c7491c0d0e0494eff80f6a84abf4">  183</a></span>&#160;  <span class="keyword">function</span> <a class="code" href="classWebsite.html#ad418c7491c0d0e0494eff80f6a84abf4">getCountMessage</a>(<span class="keywordtype">int</span> $seen, <span class="keywordtype">int</span> $total): string {</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    $seenbit = $this-&gt;countSetBits($seen);</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    <span class="keywordflow">if</span> ($seenbit == $total) {</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;      <span class="keywordflow">return</span> <span class="stringliteral">&quot;&lt;p&gt;You have seen all of the memes!&lt;/p&gt;&quot;</span>;</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    }</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    <span class="keywordflow">return</span> <span class="stringliteral">&quot;&lt;p&gt;You have seen &quot;</span> . $seenbit . <span class="stringliteral">&quot;/&quot;</span> . $total . <span class="stringliteral">&quot; memes so far!&lt;/p&gt;&quot;</span>;</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;  }</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
+<div class="line"><a name="l00199"></a><span class="lineno"><a class="line" href="classWebsite.html#a34463c9b222521abcc49ee2b6090699a">  199</a></span>&#160;  <span class="keyword">function</span> <a class="code" href="classWebsite.html#a34463c9b222521abcc49ee2b6090699a">getTryMessage</a>(<span class="keywordtype">int</span> $tries): string {</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;    if ($tries &gt;= 999) {</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;      <span class="keywordflow">return</span> <span class="stringliteral">&quot;&lt;p&gt;You have tried &lt;i&gt;too many&lt;/i&gt; times, seriously.&lt;/p&gt;&quot;</span>;</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    }</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    <span class="keywordflow">return</span> <span class="stringliteral">&quot;&lt;p&gt;You have tried &quot;</span> . $tries . <span class="stringliteral">&quot; times so far.&lt;/p&gt;&quot;</span>;</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;  }</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;}</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;?&gt;</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
+<div class="ttc" id="aclassWebsite_html"><div class="ttname"><a href="classWebsite.html">Website</a></div><div class="ttdoc">All the functions used by the website.</div><div class="ttdef"><b>Definition:</b> <a href="Website_8php_source.html#l00009">Website.php:9</a></div></div>
+<div class="ttc" id="aclassWebsite_html_a0a4368ec4397443002bb7f26f5edbe19"><div class="ttname"><a href="classWebsite.html#a0a4368ec4397443002bb7f26f5edbe19">Website\countSetBits</a></div><div class="ttdeci">countSetBits(int $n)</div><div class="ttdoc">Counts set bits in an int.</div><div class="ttdef"><b>Definition:</b> <a href="Website_8php_source.html#l00053">Website.php:53</a></div></div>
+<div class="ttc" id="aclassWebsite_html_a286d20dcc38aa4e865656b9e41b05ce7"><div class="ttname"><a href="classWebsite.html#a286d20dcc38aa4e865656b9e41b05ce7">Website\updateClientData</a></div><div class="ttdeci">updateClientData(array $data, int $meme)</div><div class="ttdoc">Updates client data with the newly-seen meme.</div><div class="ttdef"><b>Definition:</b> <a href="Website_8php_source.html#l00144">Website.php:144</a></div></div>
+<div class="ttc" id="aclassWebsite_html_a288089a0b426c267c229ce0cc6a40e46"><div class="ttname"><a href="classWebsite.html#a288089a0b426c267c229ce0cc6a40e46">Website\run</a></div><div class="ttdeci">run()</div><div class="ttdoc">The main entrypoint method.</div><div class="ttdef"><b>Definition:</b> <a href="Website_8php_source.html#l00018">Website.php:18</a></div></div>
+<div class="ttc" id="aclassWebsite_html_a2f8f8ddd383a42202c19f8153ca556ae"><div class="ttname"><a href="classWebsite.html#a2f8f8ddd383a42202c19f8153ca556ae">Website\createClientData</a></div><div class="ttdeci">createClientData(mysqli $db, string $ip)</div><div class="ttdoc">Creates a client object in the database.</div><div class="ttdef"><b>Definition:</b> <a href="Website_8php_source.html#l00103">Website.php:103</a></div></div>
+<div class="ttc" id="aclassWebsite_html_a34463c9b222521abcc49ee2b6090699a"><div class="ttname"><a href="classWebsite.html#a34463c9b222521abcc49ee2b6090699a">Website\getTryMessage</a></div><div class="ttdeci">getTryMessage(int $tries)</div><div class="ttdoc">Gets the amount of tries message.</div><div class="ttdef"><b>Definition:</b> <a href="Website_8php_source.html#l00199">Website.php:199</a></div></div>
+<div class="ttc" id="aclassWebsite_html_a35af8f4196f79fc0cf940a949864d9a3"><div class="ttname"><a href="classWebsite.html#a35af8f4196f79fc0cf940a949864d9a3">Website\getMemeAmount</a></div><div class="ttdeci">getMemeAmount(mysqli $db)</div><div class="ttdoc">Gets the length of the meme table.</div><div class="ttdef"><b>Definition:</b> <a href="Website_8php_source.html#l00069">Website.php:69</a></div></div>
+<div class="ttc" id="aclassWebsite_html_a489d327408d74129427a0e44e0325fce"><div class="ttname"><a href="classWebsite.html#a489d327408d74129427a0e44e0325fce">Website\connectToDatabase</a></div><div class="ttdeci">connectToDatabase()</div><div class="ttdoc">Creates a connection to the database.</div><div class="ttdef"><b>Definition:</b> <a href="Website_8php_source.html#l00039">Website.php:39</a></div></div>
+<div class="ttc" id="aclassWebsite_html_a5fc6f3208f0616b514868b22cbce3a24"><div class="ttname"><a href="classWebsite.html#a5fc6f3208f0616b514868b22cbce3a24">Website\getImageEmbed</a></div><div class="ttdeci">getImageEmbed(mysqli $db, int $n)</div><div class="ttdoc">Gets the image to display.</div><div class="ttdef"><b>Definition:</b> <a href="Website_8php_source.html#l00168">Website.php:168</a></div></div>
+<div class="ttc" id="aclassWebsite_html_a671f1bbfb0ab7e9cb81b615d64359441"><div class="ttname"><a href="classWebsite.html#a671f1bbfb0ab7e9cb81b615d64359441">Website\getRealClientIP</a></div><div class="ttdeci">getRealClientIP()</div><div class="ttdoc">Gets the IP of a user.</div><div class="ttdef"><b>Definition:</b> <a href="Website_8php_source.html#l00082">Website.php:82</a></div></div>
+<div class="ttc" id="aclassWebsite_html_ad418c7491c0d0e0494eff80f6a84abf4"><div class="ttname"><a href="classWebsite.html#ad418c7491c0d0e0494eff80f6a84abf4">Website\getCountMessage</a></div><div class="ttdeci">getCountMessage(int $seen, int $total)</div><div class="ttdoc">Gets the count of seen memes message.</div><div class="ttdef"><b>Definition:</b> <a href="Website_8php_source.html#l00183">Website.php:183</a></div></div>
+<div class="ttc" id="aclassWebsite_html_af92829d9c75e3555d4b3b4ed7fc44104"><div class="ttname"><a href="classWebsite.html#af92829d9c75e3555d4b3b4ed7fc44104">Website\getClientData</a></div><div class="ttdeci">getClientData(mysqli $db, string $ip)</div><div class="ttdoc">Gets client data from the database.</div><div class="ttdef"><b>Definition:</b> <a href="Website_8php_source.html#l00122">Website.php:122</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
