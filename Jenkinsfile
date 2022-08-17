@@ -108,7 +108,6 @@ pipeline {
         branch 'dev'
       }
       steps {
-        sh 'echo -e "Grafana: $(cat .grafana-endpoint)\nWebsite: $(cat .endpoint)"'
         sleep 30
         //  smoke test - fail if endpoint is unreachable
         sh 'test $(echo $(curl -sLo /dev/null -w "%{http_code}" $(cat .endpoint)) | cut -c 1) -eq 2 || exit 1'
@@ -175,6 +174,7 @@ pipeline {
           terraform apply -auto-approve
           mv terraform.tfstate /var/jenkins_home/tf/
         '''
+        sh 'echo "Website: $(cat .endpoint)\nGrafana: $(cat .grafana-endpoint)"'
       }
     }
     stage('doxygen') {

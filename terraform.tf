@@ -105,6 +105,7 @@ module "eks" {
 
 //  install prometheus and grafana
 resource "helm_release" "prometheus" {
+  count = var.prod ? 1 : 0
   name       = "kube-prometheus-stack"
   repository = "https://prometheus-community.github.io/helm-charts"
   chart      = "kube-prometheus-stack"
@@ -113,6 +114,7 @@ resource "helm_release" "prometheus" {
 
 //  deploy grafana on a public endpoint
 resource "kubernetes_service" "grafana" {
+  count = var.prod ? 1 : 0
   metadata {
     name = "grafana"
   }
@@ -130,6 +132,7 @@ resource "kubernetes_service" "grafana" {
 }
 
 resource "local_file" "grafana-endpoint" {
+  count = var.prod ? 1 : 0
   content  = kubernetes_service.grafana.status[0].load_balancer[0].ingress[0].hostname
   filename = ".grafana-endpoint"
 }
