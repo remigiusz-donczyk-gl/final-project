@@ -199,7 +199,7 @@ final class WebsiteTest extends TestCase {
     $w->expects($this->exactly(1))
       ->method("getMemeAmount")
       ->with($db)
-      ->willReturnValue(10);
+      ->willReturn(10);
 
     $olddataparam = array(
       "Database" => $db,
