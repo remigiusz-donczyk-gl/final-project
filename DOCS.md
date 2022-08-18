@@ -15,7 +15,7 @@ After that is done, Terraform is used to create the required architecture on the
 
 #### The *prod* branch
 
-This is the second part that runs when changes are made to the *prod* branch of the repository. It tags the Docker image as *stable*, deploys a stable version of the website to AWS, then removes the test version. It creates documentation for the stable version of the site and deploys it to GitHub Pages. For showcase purposes, it also deletes the entire architecture after manual approval is given.
+This is the second part that runs when changes are made to the *prod* branch of the repository. It tags the Docker image as *stable*, deploys a stable version of the website to AWS as well as monitoring tools, then removes the test version. It creates documentation for the stable version of the site and deploys it to GitHub Pages. For showcase purposes, it also deletes the entire architecture after manual approval is given.
 
 ## PHPUnit
 
@@ -27,11 +27,11 @@ A static code analysis tool also used for quality measurement and reports. It no
 
 ## Docker
 
-Depends on the Dockerfile and other files present in the website folder to create an image based on Debian, containing supervisord, nginx, PHP and mariadb. It places all the configuration and website files in the correct folders and initializes the database. The completed image is then tagged and pushed into Docker Hub.
+Depends on the Dockerfile and other files present in the website folder to create an image based on Debian, containing supervisord, nginx, PHP and mariadb. It places all the configuration and website files in the correct folders and initializes the database. The completed image is then tagged appropriately and pushed into Docker Hub.
 
 ## Terraform
 
-The most important tool that Jenkins uses. It uses the AWS tokens specified securely as Jenkins credentials to access AWS and set up all the architecture needed to deploy a Docker image inside EKS. It creates 50+ resources within the cloud, including such highlights as the VPC, gateways, security rules, EKS and a Kubernetes service that allows the website to be accessed publicly.
+The most important tool specified in the pipeline. It uses the AWS tokens contained securely as Jenkins credentials to access AWS and set up all the architecture needed to deploy a Docker image inside EKS. It creates 50+ resources within the cloud, including such highlights as the VPC, gateways, security rules, EKS and a Kubernetes service that allows the website to be accessed publicly.
 
 ## Doxygen
 
@@ -39,9 +39,9 @@ Generates the documentation by reading annotated code. In addition to this manua
 
 ## Prometheus and Grafana
 
-Tools used to monitor the state of the services deployed to EKS. Implemented with the use of kube-prometheus-stack, a ready-to-use Helm Chart.
+Tools used to monitor the state of the services deployed to EKS. Implemented with the use of kube-prometheus-stack, a ready-to-use Helm chart.
 
 ## Git
 
-Honorable mentions for git, which is used within the pipeline to merge the *dev* branch into *prod* automatically. This is also the only expected way for the prod branch to be updated, to ensure that it always contains the latest working version of the repository.
+Honorable mentions for git, which is used within the pipeline to merge the *dev* branch into *prod* automatically and update documentation. This is also the only expected way for the protected branches to be updated, to ensure that it always contains the latest working version of the repository.
 

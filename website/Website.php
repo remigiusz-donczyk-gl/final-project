@@ -158,7 +158,7 @@ class Website {
   }
 
   /**
-   * @brief Gets the image to display.
+   * @brief Gets the meme to display.
    * @param[in] $db The database to access.
    * @param[in] $n  Index to the meme to fetch.
    * @return    img The image tag with the correct path.
