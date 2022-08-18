@@ -9,6 +9,7 @@ pipeline {
     VERSION = "2.3.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 38 || [ $? -eq 1 ] && true')}"
   }
   stages {
+    ////  ANY BRANCH / PULL REQUEST
     stage('cleanup') {
       steps {
         //  clean up previous build and checkout manually
@@ -19,8 +20,8 @@ pipeline {
     stage('phpunit-tests') {
       when {
         allOf {
-          branch 'dev';
-          changeset 'website/**'
+          not { branch 'prod' }
+          changeset 'website/*'
         }
       }
       steps {
@@ -33,11 +34,12 @@ pipeline {
         }
       }
     }
+    ////  THE DEV BRANCH
     stage('static-analysis') {
       when {
         allOf {
           branch 'dev';
-          changeset 'website/**'
+          changeset 'website/*'
         }
       }
       steps {
@@ -53,7 +55,7 @@ pipeline {
       when {
         allOf {
           branch 'dev';
-          changeset 'website/**'
+          changeset 'website/*'
         }
       }
       tools {
@@ -131,6 +133,7 @@ pipeline {
         }
       }
     }
+    ////  THE PROD BRANCH
     stage('mark-stable') {
       when {
         branch 'prod'
@@ -174,6 +177,7 @@ pipeline {
           terraform apply -auto-approve
           mv terraform.tfstate /var/jenkins_home/tf/
         '''
+        //  print the endpoints to easily access them
         sh 'echo "Website: $(cat .endpoint)\nGrafana: $(cat .grafana-endpoint)"'
       }
     }
@@ -211,6 +215,7 @@ pipeline {
     }
     //  purge terraform to empty playground for the next build, would not happen in a real environment
     //  delete this stage in the case of a real environment, terraform will be preserved between builds
+    //  this is necessary because cloudguru playground is deleted every 5 hours, which invalidates the tfstate
     stage('extinction') {
       when {
         branch 'prod'
