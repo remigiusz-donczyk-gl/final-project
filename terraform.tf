@@ -133,7 +133,7 @@ resource "kubernetes_service" "grafana" {
 
 resource "local_file" "grafana-endpoint" {
   count = var.prod ? 1 : 0
-  content  = kubernetes_service.grafana.status[0].load_balancer[0].ingress[0].hostname
+  content  = one(kubernetes_service.grafana[*].status[0].load_balancer[0].ingress[0].hostname)
   filename = ".grafana-endpoint"
 }
 
