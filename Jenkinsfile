@@ -142,6 +142,38 @@ pipeline {
       }
     }
     ////  THE PROD BRANCH
+    stage('doxygen') {
+      when {
+        branch 'prod'
+      }
+      tools {
+        git 'gitDefault'
+      }
+      steps {
+        dir('website') {
+          sh '''
+            doxygen
+            mkdir docs-branch
+          '''
+        }
+        dir('website/docs-branch') {
+          //  get into the docs branch and replace documentation
+          git branch: 'docs', credentialsId: 'github-account', url: 'https://github.com/remigiusz-donczyk/final-project'
+          withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
+            sh '''
+              cp -r ../docs/** .
+              git config user.email "remigiusz.donczyk@globallogic.com"
+              git config user.name "Remigiusz Dończyk"
+              git add -A
+              if ! git diff-index --quiet HEAD; then
+                git commit -m "AUTO: Updated Documentation"
+                git push https://$TOKEN@github.com/remigiusz-donczyk/final-project.git docs
+              fi
+            '''
+          }
+        }
+      }
+    }
     stage('mark-stable') {
       when {
         branch 'prod'
@@ -185,38 +217,6 @@ pipeline {
         }
         //  print the endpoints to easily access them
         sh 'echo "Website: $(cat .endpoint)\nGrafana: $(cat .grafana-endpoint)"'
-      }
-    }
-    stage('doxygen') {
-      when {
-        branch 'prod'
-      }
-      tools {
-        git 'gitDefault'
-      }
-      steps {
-        dir('website') {
-          sh '''
-            doxygen
-            mkdir docs-branch
-          '''
-        }
-        dir('website/docs-branch') {
-          //  get into the docs branch and replace documentation
-          git branch: 'docs', credentialsId: 'github-account', url: 'https://github.com/remigiusz-donczyk/final-project'
-          withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
-            sh '''
-              cp -r ../docs/** .
-              git config user.email "remigiusz.donczyk@globallogic.com"
-              git config user.name "Remigiusz Dończyk"
-              git add -A
-              if ! git diff-index --quiet HEAD; then
-                git commit -m "AUTO: Updated Documentation"
-                git push https://$TOKEN@github.com/remigiusz-donczyk/final-project.git docs
-              fi
-            '''
-          }
-        }
       }
     }
     //  purge Terraform to empty playground for the next build, would not happen in a real environment
