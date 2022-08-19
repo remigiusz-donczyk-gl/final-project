@@ -19,9 +19,12 @@ pipeline {
     }
     stage('phpunit-tests') {
       when {
-        allOf {
-          not { branch 'prod' }
-          changeset 'website/*'
+        anyOf {
+          allOf {
+            not { branch 'prod' }
+            changeset 'website/*'
+          };
+          changeRequest target: 'dev'
         }
       }
       steps {
