@@ -27,6 +27,15 @@ terraform {
       version = "3.4.0"
     }
   }
+  //  use s3 to store the tfstate, requires setup to run first
+  backend "s3" {
+    bucket         = "remigiuszdonczyk-tfstate-bucket"
+    key            = "terraform.tfstate"
+    region         = "us-east-1"
+    encrypt        = true
+    kms_key_id     = "alias/tfstate-bucket-key"
+    dynamodb_table = "tfstate-lock"
+  }
 }
 
 //  set the environment type
@@ -105,7 +114,7 @@ module "eks" {
 
 //  install prometheus and grafana
 resource "helm_release" "prometheus" {
-  count = var.prod ? 1 : 0
+  count      = var.prod ? 1 : 0
   name       = "kube-prometheus-stack"
   repository = "https://prometheus-community.github.io/helm-charts"
   chart      = "kube-prometheus-stack"
@@ -132,7 +141,7 @@ resource "kubernetes_service" "grafana" {
 }
 
 resource "local_file" "grafana-endpoint" {
-  count = var.prod ? 1 : 0
+  count    = var.prod ? 1 : 0
   content  = one(kubernetes_service.grafana[*].status[0].load_balancer[0].ingress[0].hostname)
   filename = ".grafana-endpoint"
 }

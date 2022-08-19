@@ -71,11 +71,11 @@ pipeline {
       }
       steps {
         dir('website') {
-          //  login into docker to be allowed to push
+          //  login into Docker to be allowed to push
           withCredentials([usernamePassword(credentialsId: 'docker-account', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
             sh 'echo $PASS | docker login -u $USER --password-stdin'
           }
-          //  build the website and push it to dockerhub
+          //  build the website and push it to Docker Hub
           sh '''
             docker build --no-cache --tag remigiuszdonczyk/final-project .
             docker tag remigiuszdonczyk/final-project remigiuszdonczyk/final-project:$VERSION
@@ -100,17 +100,12 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret')
       }
       steps {
-        //  create terraform infrastructure as well as the testing environment
-        //  if a tfstate file exists, copy it to update the infrastructure instead of creating from scratch
-        sh '''
-          [ -f /var/jenkins_home/tf/terraform.tfstate ] && mv /var/jenkins_home/tf/terraform.tfstate .
-          terraform init
-        '''
+        //  create terraform infrastructure with the testing environment
         //  apply sometimes times out, which causes an error but will finish correctly if given the chance
+        sh 'terraform init'
         retry(1) {
           sh 'terraform apply -auto-approve'
         }
-        sh 'mv terraform.tfstate /var/jenkins_home/tf/'
       }
     }
     stage('test') {
@@ -178,13 +173,11 @@ pipeline {
         TF_VAR_prod = true
       }
       steps {
-        //  deploy the prod env, if a tfstate exists only update
-        sh '''
-          [ -f /var/jenkins_home/tf/terraform.tfstate ] && mv /var/jenkins_home/tf/terraform.tfstate .
-          terraform init
-          terraform apply -auto-approve
-          mv terraform.tfstate /var/jenkins_home/tf/
-        '''
+        //  deploy the prod env
+        sh 'terraform init'
+        retry(1) {
+          sh 'terraform apply -auto-approve'
+        }
         //  print the endpoints to easily access them
         sh 'echo "Website: $(cat .endpoint)\nGrafana: $(cat .grafana-endpoint)"'
       }
@@ -221,9 +214,9 @@ pipeline {
         }
       }
     }
-    //  purge terraform to empty playground for the next build, would not happen in a real environment
-    //  delete this stage in the case of a real environment, terraform will be preserved between builds
-    //  this is necessary because cloudguru playground is deleted every 5 hours, which invalidates the tfstate
+    //  purge Terraform to empty playground for the next build, would not happen in a real environment
+    //  delete this stage in the case of a real environment, tfstate will be preserved between builds
+    //  this is only for testing purposes when changing Terraform's code
     stage('extinction') {
       when {
         branch 'prod'
@@ -239,7 +232,6 @@ pipeline {
       steps {
         input message: 'Confirm extinction?', ok: 'Send a meteor'
         sh '''
-          [ -f /var/jenkins_home/tf/terraform.tfstate ] && mv /var/jenkins_home/tf/terraform.tfstate .
           terraform init
           terraform destroy -auto-approve
         '''
