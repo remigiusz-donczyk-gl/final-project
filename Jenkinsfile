@@ -39,7 +39,9 @@ pipeline {
         changeRequest target: 'dev'
       }
       steps {
-        echo 'Hello, World!'
+        withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
+          sh "curl -X PUT -H \"Accept: application/vnd.github+json\" -H \"Authorization: token $TOKEN\" https://api.github.com/repos/remigiusz-donczyk/final-project/pulls/$CHANGE_ID/merge"
+        }
       }
     }
     ////  THE DEV BRANCH
