@@ -36,12 +36,7 @@ pipeline {
     }
     stage('merge-dev') {
       when {
-        script {
-          if (env.CHANGE_ID && pullRequest.base == 'dev') {
-              return true
-          }
-          return false
-        }
+        changeRequest target: 'dev'
       }
       steps {
         echo 'Hello, World!'
