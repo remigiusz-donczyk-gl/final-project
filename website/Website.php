@@ -168,7 +168,7 @@ class Website {
   function getImageEmbed(mysqli $db, int $n): string {
     $query = "SELECT Path FROM memes WHERE Id=" . $n;
     $img = $db->query($query)->fetch_array()["Path"];
-    return "<img id=meme sr=data/" . $img . "></img>";
+    return "<img id=meme src=data/" . $img . "></img>";
   }
 
   /**
