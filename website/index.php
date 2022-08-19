@@ -7,14 +7,14 @@
 <html lang=en>
   <head>
     <meta charset=UTF-8>
-    <!-- use a nice font -->
+    <!-- use a nice font and CSS magic -->
     <link rel=stylesheet href=http://fonts.cdnfonts.com/css/renogare>
     <link rel=stylesheet href=style.css>
     <title>Meme DB</title>
   </head>
   <body>
     <div id=txtcontainer>
-      <!-- #roundleft and #roundright are CSS magic to make rounded inside corners -->
+      <!-- #roundleft and #roundright are used to make rounded inside corners -->
       <div id=roundleft></div>
       <div id=roundright></div>
       <p id=title>Here is your random meme.</p>
