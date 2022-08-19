@@ -34,6 +34,19 @@ pipeline {
         }
       }
     }
+    stage('merge-dev') {
+      when {
+        script {
+          if (env.CHANGE_ID && pullRequest.base == 'dev') {
+              return true
+          }
+          return false
+        }
+      }
+      steps {
+        echo 'Hello, World!'
+      }
+    }
     ////  THE DEV BRANCH
     stage('static-analysis') {
       when {
