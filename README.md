@@ -1,6 +1,6 @@
 ### Pipeline Status
-[![Build Status](https://jenkins-gl.bluecom.dev/buildStatus/icon?job=FinalProject%2Fdev)](https://jenkins-gl.bluecom.dev/job/FinalProject/job/dev/)
-[![Sonar Coverage](https://sonarqube-gl.bluecom.dev/api/project_badges/measure?project=remigiusz-donczyk_final-project&metric=alert_status)](https://sonarqube-gl.bluecom.dev/dashboard?id=remigiusz-donczyk_final-project)
+[![Build Status](https://jenkins-gl.aonodensetsu.me/buildStatus/icon?job=FinalProject%2Fdev)](https://jenkins-gl.bluecom.dev/job/FinalProject/job/dev/)
+[![Sonar Coverage](https://sonarqube-gl.aonodensetsu.me/api/project_badges/measure?project=remigiusz-donczyk_final-project&metric=alert_status)](https://sonarqube-gl.bluecom.dev/dashboard?id=remigiusz-donczyk_final-project)
 
 ### Documentation
 [![Written Docs](https://img.shields.io/badge/Manual-Documentation-2a4?logo=readthedocs&logoColor=2a4)](DOCS.md)
