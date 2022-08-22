@@ -1,5 +1,5 @@
 #!/bin/sh
-sleep 3
+sleep 30
 if [ ! -d /var/lib/mysql ] || [ "$(find /var/lib/mysql -type d -empty -exec echo yes \;)" = 'yes' ]; then
   [ ! -d /var/lib/mysql ] && mkdir /var/lib/mysql
   cp -r /var/tmp/mysql-initial/** /var/lib/mysql/
