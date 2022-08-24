@@ -4,9 +4,10 @@ use PHPUnit\Framework\TestCase;
 include_once "Website.php";
 
 /**
- * for whatever reason phpunit needs to know that the test class
- * is using its own functions to run tests, pretty stupid
  * @uses WebsiteTest
+ *
+ * phpunit needs to know that the test class
+ * is using its own functions to run tests
  */
 final class WebsiteTest extends TestCase {
 
@@ -15,7 +16,7 @@ final class WebsiteTest extends TestCase {
    */
   public function testCountSetBits(): void {
     $w = new Website();
-    // no chance of passing this test randomly on such a large int
+    // no chance of passing this test by accident on such a large int
     $this->assertEquals(30, $w->countSetBits(12750421999));
   }
 
@@ -38,8 +39,7 @@ final class WebsiteTest extends TestCase {
    */
   public function testGetRealClientIP(): void {
     $w = new Website();
-    // try in the order that will override less important values
-    // try the default value
+    // try the default variable
     $_SERVER['REMOTE_ADDR'] = "127.0.0.1";
     $this->assertEquals("127.0.0.1", $w->getRealClientIP());
     // try X_Forwarded_For, which overrides default

@@ -1,30 +1,31 @@
 pipeline {
   agent any
-  //  don't checkout scm declaratively
+  //  don't checkout SCM declaratively
   options {
     skipDefaultCheckout(true)
   }
   environment {
-    //  set up the current version with SEMVER <major>.<minor>.<build-number-in-current-version>
-    VERSION = "2.3.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 38 || [ $? -eq 1 ] && true')}"
+    //  set up the current version <major>.<minor>.<build-number-in-current-version>
+    VERSION = "2.4.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 55 || [ $? -eq 1 ] && true')}"
   }
   stages {
     ////  ANY BRANCH / PULL REQUEST
     stage('cleanup') {
       steps {
-        //  clean up previous build and checkout manually
+        //  clean up previous build and checkout SCM manually
         cleanWs()
         checkout scm
       }
     }
     stage('phpunit-tests') {
       when {
+        //  test all pull requests and any branch that changed website files
         anyOf {
+          changeRequest();
           allOf {
             not { branch 'prod' }
             changeset 'website/*'
-          };
-          changeRequest target: 'dev'
+          }
         }
       }
       steps {
@@ -78,10 +79,9 @@ pipeline {
         dir('website') {
           //  login into Docker to be allowed to push
           withCredentials([usernamePassword(credentialsId: 'docker-account', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-            sh 'echo $PASS | docker login -u $USER --password-stdin'
+            sh "echo $PASS | docker login -u $USER --password-stdin"
           }
-          //  build the website and push it to Docker Hub
-          sh '''
+          sh """
             docker build --no-cache --tag remigiuszdonczyk/final-project .
             docker tag remigiuszdonczyk/final-project remigiuszdonczyk/final-project:$VERSION
             docker push remigiuszdonczyk/final-project:$VERSION
@@ -89,7 +89,7 @@ pipeline {
             docker image rm remigiuszdonczyk/final-project:$VERSION
             docker image rm remigiuszdonczyk/final-project
             docker logout
-          '''
+          """
         }
       }
     }
@@ -106,7 +106,7 @@ pipeline {
       }
       steps {
         //  create terraform infrastructure with the testing environment
-        //  apply sometimes times out, which causes an error but will finish correctly if given the chance
+        //  apply sometimes times out but will finish correctly if given the chance
         sh 'terraform init'
         retry(1) {
           sh 'terraform apply -auto-approve'
@@ -119,7 +119,7 @@ pipeline {
       }
       steps {
         sleep 30
-        //  smoke test - fail if endpoint is unreachable
+        //  test if the request response status is in the 2** range - smoke test
         sh 'test $(echo $(curl -sLo /dev/null -w "%{http_code}" $(cat .endpoint)) | cut -c 1) -eq 2 || exit 1'
       }
     }
@@ -134,13 +134,14 @@ pipeline {
         //  get into the prod branch and merge dev since it is stable
         git branch: 'prod', credentialsId: 'github-account', url: 'https://github.com/remigiusz-donczyk/final-project'
         withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
-          sh '''
+          sh """
             git merge --squash origin/dev
             git config user.email "remigiusz.donczyk@globallogic.com"
             git config user.name "Remigiusz Dończyk"
             git commit -m "AUTO: Merged dev"
+            git tag v$VERSION
             git push https://$TOKEN@github.com/remigiusz-donczyk/final-project.git prod
-          '''
+          """
         }
       }
     }
@@ -160,19 +161,20 @@ pipeline {
           '''
         }
         dir('website/docs-branch') {
-          //  get into the docs branch and replace documentation
+          //  get into the docs branch and replace documentation if it has changed
           git branch: 'docs', credentialsId: 'github-account', url: 'https://github.com/remigiusz-donczyk/final-project'
           withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
-            sh '''
+            sh """
               cp -r ../docs/** .
               git config user.email "remigiusz.donczyk@globallogic.com"
               git config user.name "Remigiusz Dończyk"
               git add -A
               if ! git diff-index --quiet HEAD; then
                 git commit -m "AUTO: Updated Documentation"
-                git push https://$TOKEN@github.com/remigiusz-donczyk/final-project.git docs
+                git tag -a v$VERSION-doc -m "AUTO: Documentation for version $VERSION"
+                git push --atomic https://$TOKEN@github.com/remigiusz-donczyk/final-project.git docs v$VERSION-doc
               fi
-            '''
+            """
           }
         }
       }
@@ -187,9 +189,9 @@ pipeline {
       steps {
         //  login to docker to be allowed to push
         withCredentials([usernamePassword(credentialsId: 'docker-account', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-          sh 'echo $PASS | docker login -u $USER --password-stdin'
+          sh "echo $PASS | docker login -u $USER --password-stdin"
         }
-        //  mark the latest tag as stable since it is deployed to production
+        //  mark the latest tag as stable since it is getting deployed to production
         sh '''
           docker pull remigiuszdonczyk/final-project
           docker tag remigiuszdonczyk/final-project remigiuszdonczyk/final-project:stable
@@ -213,7 +215,6 @@ pipeline {
         TF_VAR_prod = true
       }
       steps {
-        //  deploy the prod env
         sh 'terraform init'
         retry(1) {
           sh 'terraform apply -auto-approve'

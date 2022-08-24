@@ -23,6 +23,13 @@ p {
   font-family: 'Renogare', sans-serif;
   text-align: center;
 }
+#roundleft, #roundright {
+  height: 5vh;
+  aspect-ratio: 1;
+  background: inherit;
+  position: absolute;
+  bottom: 0;
+}
 #txtcontainer {
   width: fit-content;
   padding: 0 20px;
@@ -53,13 +60,6 @@ p {
 #meme {
   max-height: 100%;
   max-width: 100%;
-}
-#roundleft, #roundright {
-  height: 5vh;
-  aspect-ratio: 1;
-  background: inherit;
-  position: absolute;
-  bottom: 0;
 }
 #roundleft {
   left: -5vh;

@@ -38,8 +38,8 @@ terraform {
   }
 }
 
-//  set the environment type
-variable "prod" {
+//  set the environment type, dev by default
+variable "production" {
   type    = bool
   default = false
 }
@@ -89,7 +89,7 @@ module "vpc" {
   single_nat_gateway   = true
   enable_dns_hostnames = true
   public_subnet_tags = {
-    "kubernetes.io/role/elb"        = "1"
+    "kubernetes.io/role/elb" = "1"
   }
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = "1"
@@ -114,40 +114,6 @@ module "eks" {
   }
 }
 
-//  install prometheus and grafana (production only)
-resource "helm_release" "prometheus" {
-  count      = var.prod ? 1 : 0
-  name       = "kube-prometheus-stack"
-  repository = "https://prometheus-community.github.io/helm-charts"
-  chart      = "kube-prometheus-stack"
-  version    = "39.6.0"
-}
-
-//  create public endpoint for grafana (production only)
-resource "kubernetes_service" "grafana" {
-  count = var.prod ? 1 : 0
-  metadata {
-    name = "grafana"
-  }
-  spec {
-    type = "LoadBalancer"
-    selector = {
-      "app.kubernetes.io/instance" = "kube-prometheus-stack"
-      "app.kubernetes.io/name"     = "grafana"
-    }
-    port {
-      port        = 80
-      target_port = 3000
-    }
-  }
-}
-
-resource "local_file" "grafana_endpoint" {
-  count    = var.prod ? 1 : 0
-  content  = one(kubernetes_service.grafana[*].status[0].load_balancer[0].ingress[0].hostname)
-  filename = ".grafana-endpoint"
-}
-
 //  create public endpoint for website
 resource "kubernetes_service" "app" {
   metadata {
@@ -170,9 +136,10 @@ resource "local_file" "app_endpoint" {
   filename = ".endpoint"
 }
 
-//  create test pod from latest image when running dev
+////  DEVELOPMENT ENVIRONMENT
+//  create development pod from latest image
 resource "kubernetes_pod" "testenv" {
-  count = var.prod ? 0 : 1
+  count = var.production ? 0 : 1
   metadata {
     name = "testenv"
     labels = {
@@ -187,9 +154,44 @@ resource "kubernetes_pod" "testenv" {
   }
 }
 
-//  create pod from stable image when running prod
+////  PRODUCTION ENVIRONMENT
+//  install prometheus and grafana
+resource "helm_release" "prometheus" {
+  count      = var.production ? 1 : 0
+  name       = "kube-prometheus-stack"
+  repository = "https://prometheus-community.github.io/helm-charts"
+  chart      = "kube-prometheus-stack"
+  version    = "39.6.0"
+}
+
+//  create public endpoint for grafana
+resource "kubernetes_service" "grafana" {
+  count = var.production ? 1 : 0
+  metadata {
+    name = "grafana"
+  }
+  spec {
+    type = "LoadBalancer"
+    selector = {
+      "app.kubernetes.io/instance" = "kube-prometheus-stack"
+      "app.kubernetes.io/name"     = "grafana"
+    }
+    port {
+      port        = 80
+      target_port = 3000
+    }
+  }
+}
+
+resource "local_file" "grafana_endpoint" {
+  count    = var.production ? 1 : 0
+  content  = one(kubernetes_service.grafana[*].status[0].load_balancer[0].ingress[0].hostname)
+  filename = ".grafana-endpoint"
+}
+
+//  create production pod from stable image
 resource "kubernetes_pod" "prodenv" {
-  count = var.prod ? 1 : 0
+  count = var.production ? 1 : 0
   depends_on = [
     helm_release.prometheus
   ]
