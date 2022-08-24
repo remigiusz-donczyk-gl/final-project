@@ -6,7 +6,7 @@ pipeline {
   }
   environment {
     //  set up the current version <major>.<minor>.<build-number-in-current-version>
-    VERSION = "2.4.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 55 || [ $? -eq 1 ] && true')}"
+    VERSION = "2.4.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 56 || [ $? -eq 1 ] && true')}"
   }
   stages {
     ////  ANY BRANCH / PULL REQUEST
