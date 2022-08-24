@@ -44,7 +44,7 @@ pipeline {
       }
       steps {
         withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
-          sh "curl -X PUT -H \"Authorization: token $TOKEN\" -H \"Accept: application/vnd.github+json\" -d '{\"merge_method\": \"squash\"}' https://api.github.com/repos/remigiusz-donczyk/final-project/pulls/$CHANGE_ID/merge"
+          sh 'curl -X PUT -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github+json" -d \'{"merge_method": "squash"}\' https://api.github.com/repos/remigiusz-donczyk/final-project/pulls/$CHANGE_ID/merge'
         }
       }
     }
@@ -79,9 +79,9 @@ pipeline {
         dir('website') {
           //  login into Docker to be allowed to push
           withCredentials([usernamePassword(credentialsId: 'docker-account', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-            sh "echo $PASS | docker login -u $USER --password-stdin"
+            sh 'echo $PASS | docker login -u $USER --password-stdin'
           }
-          sh """
+          sh '''
             docker build --no-cache --tag remigiuszdonczyk/final-project .
             docker tag remigiuszdonczyk/final-project remigiuszdonczyk/final-project:$VERSION
             docker push remigiuszdonczyk/final-project:$VERSION
@@ -89,7 +89,7 @@ pipeline {
             docker image rm remigiuszdonczyk/final-project:$VERSION
             docker image rm remigiuszdonczyk/final-project
             docker logout
-          """
+          '''
         }
       }
     }
@@ -134,14 +134,14 @@ pipeline {
         //  get into the prod branch and merge dev since it is stable
         git branch: 'prod', credentialsId: 'github-account', url: 'https://github.com/remigiusz-donczyk/final-project'
         withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
-          sh """
+          sh '''
             git merge --squash origin/dev
             git config user.email "remigiusz.donczyk@globallogic.com"
             git config user.name "Remigiusz Dończyk"
             git commit -m "AUTO: Merged dev"
             git tag v$VERSION
             git push https://$TOKEN@github.com/remigiusz-donczyk/final-project.git prod
-          """
+          '''
         }
       }
     }
@@ -164,7 +164,7 @@ pipeline {
           //  get into the docs branch and replace documentation if it has changed
           git branch: 'docs', credentialsId: 'github-account', url: 'https://github.com/remigiusz-donczyk/final-project'
           withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
-            sh """
+            sh '''
               cp -r ../docs/** .
               git config user.email "remigiusz.donczyk@globallogic.com"
               git config user.name "Remigiusz Dończyk"
@@ -174,7 +174,7 @@ pipeline {
                 git tag -a v$VERSION-doc -m "AUTO: Documentation for version $VERSION"
                 git push --atomic https://$TOKEN@github.com/remigiusz-donczyk/final-project.git docs v$VERSION-doc
               fi
-            """
+            '''
           }
         }
       }
@@ -189,7 +189,7 @@ pipeline {
       steps {
         //  login to docker to be allowed to push
         withCredentials([usernamePassword(credentialsId: 'docker-account', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-          sh "echo $PASS | docker login -u $USER --password-stdin"
+          sh 'echo $PASS | docker login -u $USER --password-stdin'
         }
         //  mark the latest tag as stable since it is getting deployed to production
         sh '''
