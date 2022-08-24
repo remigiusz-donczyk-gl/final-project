@@ -43,7 +43,7 @@ pipeline {
       }
       steps {
         withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
-          sh "curl -X PUT -H \"Accept: application/vnd.github+json\" -H \"Authorization: token $TOKEN\" https://api.github.com/repos/remigiusz-donczyk/final-project/pulls/$CHANGE_ID/merge"
+          sh "curl -X PUT -H \"Authorization: token $TOKEN\" -H \"Accept: application/vnd.github+json\" -d '{\"merge_method\": \"squash\"}' https://api.github.com/repos/remigiusz-donczyk/final-project/pulls/$CHANGE_ID/merge"
         }
       }
     }
@@ -135,7 +135,10 @@ pipeline {
         git branch: 'prod', credentialsId: 'github-account', url: 'https://github.com/remigiusz-donczyk/final-project'
         withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
           sh '''
-            git merge origin/dev
+            git merge --squash origin/dev
+            git config user.email "remigiusz.donczyk@globallogic.com"
+            git config user.name "Remigiusz Dończyk"
+            git commit -m "AUTO: Merged dev"
             git push https://$TOKEN@github.com/remigiusz-donczyk/final-project.git prod
           '''
         }
