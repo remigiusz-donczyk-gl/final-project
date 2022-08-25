@@ -65,34 +65,6 @@ pipeline {
         }
       }
     }
-    stage('dockerize') {
-      when {
-        allOf {
-          branch 'dev';
-          changeset 'website/*'
-        }
-      }
-      tools {
-        dockerTool 'docker19.3'
-      }
-      steps {
-        dir('website') {
-          //  login into Docker to be allowed to push
-          withCredentials([usernamePassword(credentialsId: 'docker-account', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-            sh 'echo $PASS | docker login -u $USER --password-stdin'
-          }
-          sh '''
-            docker build --no-cache --tag remigiuszdonczyk/final-project .
-            docker tag remigiuszdonczyk/final-project remigiuszdonczyk/final-project:$VERSION
-            docker push remigiuszdonczyk/final-project:$VERSION
-            docker push remigiuszdonczyk/final-project
-            docker image rm remigiuszdonczyk/final-project:$VERSION
-            docker image rm remigiuszdonczyk/final-project
-            docker logout
-          '''
-        }
-      }
-    }
     stage('terraform') {
       when {
         branch 'dev'
@@ -177,29 +149,6 @@ pipeline {
             '''
           }
         }
-      }
-    }
-    stage('mark-stable') {
-      when {
-        branch 'prod'
-      }
-      tools {
-        dockerTool 'docker19.3'
-      }
-      steps {
-        //  login to docker to be allowed to push
-        withCredentials([usernamePassword(credentialsId: 'docker-account', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-          sh 'echo $PASS | docker login -u $USER --password-stdin'
-        }
-        //  mark the latest tag as stable since it is getting deployed to production
-        sh '''
-          docker pull remigiuszdonczyk/final-project
-          docker tag remigiuszdonczyk/final-project remigiuszdonczyk/final-project:stable
-          docker push remigiuszdonczyk/final-project:stable
-          docker image rm remigiuszdonczyk/final-project:stable
-          docker image rm remigiuszdonczyk/final-project
-          docker logout
-        '''
       }
     }
     stage('deploy') {

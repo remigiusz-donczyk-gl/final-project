@@ -69,6 +69,34 @@ resource "aws_dynamodb_table" "tfstate-lock" {
 }
 
 resource "aws_ecr_repository" "docker_repo" {
-  name = "docker-repo"
+  name = "final-project"
+}
+
+resource "aws_ecr_repository_policy" "docker-repo" {
+  repository = aws_ecr_repository.docker_repo.name
+  policy     = <<-EOP
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "Allow Repo Access",
+        "Effect": "Allow",
+        "Principal": "*",
+        "Action": [
+          "ecr:UntagResource",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "ecr:CompleteLayerUpload",
+          "ecr:TagResource",
+          "ecr:UploadLayerPart",
+          "ecr:InitiateLayerUpload",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetLifecyclePolicy",
+          "ecr:PutImage"
+        ]
+      }
+    ]
+  }
+  EOP
 }
 

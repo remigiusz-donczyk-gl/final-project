@@ -28,14 +28,14 @@ terraform {
     }
   }
   //  use s3 to store the tfstate, requires setup to run first
-  //backend "s3" {
-  //  bucket         = "remigiuszdonczyk-tfstate-bucket"
-  //  key            = "terraform.tfstate"
-  //  region         = "us-east-1"
-  //  encrypt        = true
-  //  kms_key_id     = "alias/tfstate-bucket-key"
-  //  dynamodb_table = "tfstate-lock"
-  //}
+  backend "s3" {
+    bucket         = "remigiuszdonczyk-tfstate-bucket"
+    key            = "terraform.tfstate"
+    region         = "us-east-1"
+    encrypt        = true
+    kms_key_id     = "alias/tfstate-bucket-key"
+    dynamodb_table = "tfstate-lock"
+  }
 }
 
 //  set the environment type, dev by default
@@ -78,11 +78,16 @@ provider "helm" {
   }
 }
 
-//  push built images into ECR
-resource "null_resource" "exec" {
+//  build docker and push into ECR
+resource "null_resource" "docker" {
   provisioner "local-exec" {
-    command = <<-EOC
+    working_dir = "${path.root}/website"
+    command     = <<-EOC
       echo ${data.aws_ecr_authorization_token.token.password} | docker login -u ${data.aws_ecr_authorization_token.token.user_name} --password-stdin ${data.aws_ecr_authorization_token.token.proxy_endpoint}
+      docker build --no-cache -t ${replace(data.aws_ecr_authorization_token.token.proxy_endpoint, "https://", "")}/final-project .
+      docker push ${replace(data.aws_ecr_authorization_token.token.proxy_endpoint, "https://", "")}/final-project
+      docker image rm ${replace(data.aws_ecr_authorization_token.token.proxy_endpoint, "https://", "")}/final-project
+      docker logout
     EOC
   }
 }
@@ -125,6 +130,79 @@ module "eks" {
   }
 }
 
+resource "kubernetes_secret" "docker" {
+  metadata {
+    name = "docker-login"
+  }
+  data = {
+    ".dockerconfigjson" = jsonencode({
+      auths = {
+        "${data.aws_ecr_authorization_token.token.proxy_endpoint}" = {
+          auth = "${data.aws_ecr_authorization_token.token.authorization_token}"
+        }
+      }
+    })
+  }
+  type = "kubernetes.io/dockerconfigjson"
+}
+
+resource "kubernetes_pod" "db" {
+  metadata {
+    name = "appdb"
+    labels = {
+      app = "db"
+    }
+  }
+  spec {
+    container {
+      name  = "db"
+      image = "mariadb:10.9.2-jammy"
+      env {
+        name = "MYSQL_USER"
+        value = "dbuser"
+      }
+      env {
+        name = "MYSQL_HOST"
+        value = "%"
+      }
+      env {
+        name = "MYSQL_PASSWORD"
+        value = file("${path.root}/website/pw.conf")
+      }
+      env {
+        name = "MYSQL_RANDOM_ROOT_PASSWORD"
+        value = true
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "app_db" {
+  count = var.production ? 0 : 1
+  metadata {
+    name = "appdb"
+  }
+  spec {
+    type = "NodePort"
+    selector = {
+      app = "db"
+    }
+    port {
+      port = 3306
+    }
+  }
+}
+
+
+////  FOR MANUAL TESTS
+resource "null_resource" "kubectl" {
+  depends_on = [
+    module.eks
+  ]
+  provisioner "local-exec" {
+    command = "aws eks --region us-east-1 update-kubeconfig --kubeconfig .kube --name ${module.eks.cluster_id}"
+  }
+}
 ////  DEVELOPMENT ENVIRONMENT
 //  create public endpoint for development environment
 resource "kubernetes_service" "dev_app" {
@@ -147,7 +225,7 @@ resource "kubernetes_service" "dev_app" {
 
 resource "local_file" "dev_endpoint" {
   count    = var.production ? 0 : 1
-  content  = one(kubernetes_service.app[*].status[0].load_balancer[0].ingress[0].hostname)
+  content  = one(kubernetes_service.dev_app[*].status[0].load_balancer[0].ingress[0].hostname)
   filename = ".dev-endpoint"
 }
 
@@ -155,7 +233,7 @@ resource "local_file" "dev_endpoint" {
 resource "kubernetes_pod" "devenv" {
   count = var.production ? 0 : 1
   depends_on = [
-    null_resource.exec
+    null_resource.docker
   ]
   metadata {
     name = "devenv"
@@ -165,9 +243,12 @@ resource "kubernetes_pod" "devenv" {
     }
   }
   spec {
+    image_pull_secrets {
+      name = "docker-login"
+    }
     container {
       name  = "website"
-      image = "remigiuszdonczyk/final-project:latest"
+      image = "${replace(data.aws_ecr_authorization_token.token.proxy_endpoint, "https://", "")}/final-project"
     }
   }
 }
@@ -228,7 +309,7 @@ resource "kubernetes_service" "prod_app" {
 
 resource "local_file" "prod_endpoint" {
   count    = var.production ? 1 : 0
-  content  = kubernetes_service.app.status[0].load_balancer[0].ingress[0].hostname
+  content  = one(kubernetes_service.prod_app[*].status[0].load_balancer[0].ingress[0].hostname)
   filename = ".prod-endpoint"
 }
 
@@ -237,7 +318,7 @@ resource "kubernetes_pod" "prodenv" {
   count = var.production ? 1 : 0
   depends_on = [
     helm_release.prometheus,
-    null_resource.exec
+    null_resource.docker
   ]
   metadata {
     name = "prodenv"
@@ -247,9 +328,12 @@ resource "kubernetes_pod" "prodenv" {
     }
   }
   spec {
+    image_pull_secrets {
+      name = "docker-login"
+    }
     container {
       name  = "website"
-      image = "remigiuszdonczyk/final-project:stable"
+      image = "${replace(data.aws_ecr_authorization_token.token.proxy_endpoint, "https://", "")}/final-project"
     }
   }
 }
