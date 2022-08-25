@@ -120,7 +120,7 @@ pipeline {
       steps {
         sleep 30
         //  test if the request response status is in the 2** range - smoke test
-        sh 'test $(echo $(curl -sLo /dev/null -w "%{http_code}" $(cat .endpoint)) | cut -c 1) -eq 2 || exit 1'
+        sh 'test $(echo $(curl -sLo /dev/null -w "%{http_code}" $(cat .dev-endpoint)) | cut -c 1) -eq 2 || exit 1'
       }
     }
     stage('merge-prod') {
@@ -220,7 +220,7 @@ pipeline {
           sh 'terraform apply -auto-approve'
         }
         //  print the endpoints to easily access them
-        sh 'echo "Website: $(cat .endpoint)\nGrafana: $(cat .grafana-endpoint)"'
+        sh 'echo "Production Environment: $(cat .prod-endpoint)\nGrafana: $(cat .grafana-endpoint)"'
       }
     }
     //  purge Terraform to empty playground for the next build, would not happen in a real environment

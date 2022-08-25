@@ -56,12 +56,7 @@ final class WebsiteTest extends TestCase {
   public function testCreateClientData(): void {
     $w = new Website();
     $db = $this->createMock(mysqli::class);
-    $this->assertEquals(array(
-      "Database" => $db,
-      "IP"       => "127.0.0.1",
-      "Seen"     => 0,
-      "Tries"    => 0
-    ), $w->createClientData($db, "127.0.0.1"));
+    $this->assertObjectsEqual(new UserData($db, "127.0.0.1", 0, 0), $w->createClientData($db, "127.0.0.1"));
   }
 
   /**
@@ -86,19 +81,9 @@ final class WebsiteTest extends TestCase {
          null
        );
     // try with an existing user IP
-    $this->assertEquals(array(
-      "Database" => $db,
-      "IP"       => "127.0.0.1",
-      "Seen"     => 85,
-      "Tries"    => 4
-    ), $w->getClientData($db, "127.0.0.1"));
+    $this->assertObjectsEqual(new UserData($db, "127.0.0.1", 85, 4), $w->getClientData($db, "127.0.0.1"));
     // try without an existing user IP -> calls createClientData
-    $this->assertEquals(array(
-      "Database" => $db,
-      "IP"       => "127.0.0.1",
-      "Seen"     => 0,
-      "Tries"    => 0
-    ), $w->getClientData($db, "127.0.0.1"));
+    $this->assertObjectsEqual(new UserData($db, "127.0.0.1", 0, 0), $w->getClientData($db, "127.0.0.1"));
   }
 
   /**
@@ -114,31 +99,11 @@ final class WebsiteTest extends TestCase {
          [$this->equalTo("UPDATE userdata SET Seen=93, Tries=999 WHERE IP='127.0.0.1'")]
        );
     // try with less than 999 `tries`, adds one to tries
-    $data = array(
-      "Database" => $db,
-      "IP" => "127.0.0.1",
-      "Seen" => 85,
-      "Tries" => 4
-    );
-    $this->assertEquals(array(
-      "Database" => $db,
-      "IP" => "127.0.0.1",
-      "Seen" => 117,
-      "Tries" => 5
-    ), $w->updateClientData($data, 6));
+    $data = new UserData($db, "127.0.0.1", 85, 4);
+    $this->assertObjectsEqual(new UserData($db, "127.0.0.1", 117, 5), $w->updateClientData($data, 6));
     // try with 999 or more `tries`, does not add one
-    $data = array(
-      "Database" => $db,
-      "IP" => "127.0.0.1",
-      "Seen" => 85,
-      "Tries" => 999
-    );
-    $this->assertEquals(array(
-      "Database" => $db,
-      "IP" => "127.0.0.1",
-      "Seen" => 93,
-      "Tries" => 999
-    ), $w->updateClientData($data, 4));
+    $data = new UserData($db, "127.0.0.1", 85, 999);
+    $this->assertObjectsEqual(new UserData($db, "127.0.0.1", 93, 999), $w->updateClientData($data, 4));
   }
 
   /**
@@ -201,25 +166,13 @@ final class WebsiteTest extends TestCase {
       ->with($db)
       ->willReturn(10);
 
-    $olddataparam = array(
-      "Database" => $db,
-      "IP"       => "127.0.0.1",
-      "Seen"     => 3,
-      "Tries"    => 2
-    );
-
+    $olddataparam = new UserData($db, "127.0.0.1", 3, 2);
     $w->expects($this->exactly(1))
       ->method("getClientData")
       ->with($db, "127.0.0.1")
       ->willReturn($olddataparam);
 
-    $newdataparam = array(
-      "Database" => $db,
-      "IP"       => "127.0.0.1",
-      "Seen"     => 7,
-      "Tries"    => 3
-    );
-
+    $newdataparam = new UserData($db, "127.0.0.1", 7, 3);
     $w->expects($this->exactly(1))
       ->method("updateClientData")
       ->with($olddataparam, $this->callback(function($random) {

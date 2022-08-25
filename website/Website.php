@@ -203,6 +203,13 @@ class UserData {
     $this->Seen = $seen;
     $this->Tries = $tries;
   }
+  function equals(self $other): bool {
+    if ($this->Database !== $other->Database) return false;
+    if ($this->IP       !== $other->IP)       return false;
+    if ($this->Seen     !== $other->Seen)     return false;
+    if ($this->Tries    !== $other->Tries)    return false;
+    return true;
+  }
 }
 
 ?>

@@ -82,8 +82,7 @@ module "vpc" {
   version              = "3.14.2"
   name                 = "vpc"
   cidr                 = "10.0.0.0/16"
-  //azs                  = data.aws_availability_zones.az.names
-  azs                  = ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d", "us-east-1f"]
+  azs                  = data.aws_availability_zones.az.names
   private_subnets      = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
   public_subnets       = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
   enable_nat_gateway   = true
@@ -115,15 +114,18 @@ module "eks" {
   }
 }
 
-//  create public endpoint for website
-resource "kubernetes_service" "app" {
+////  DEVELOPMENT ENVIRONMENT
+//  create public endpoint for development environment
+resource "kubernetes_service" "dev_app" {
+  count = var.production ? 0 : 1
   metadata {
-    name = "app"
+    name = "devapp"
   }
   spec {
     type = "LoadBalancer"
     selector = {
       app = "website"
+      env = "dev"
     }
     port {
       port        = 80
@@ -132,19 +134,20 @@ resource "kubernetes_service" "app" {
   }
 }
 
-resource "local_file" "app_endpoint" {
-  content  = kubernetes_service.app.status[0].load_balancer[0].ingress[0].hostname
-  filename = ".endpoint"
+resource "local_file" "dev_endpoint" {
+  count = var.production ? 0 : 1
+  content  = one(kubernetes_service.app[*].status[0].load_balancer[0].ingress[0].hostname)
+  filename = ".dev-endpoint"
 }
 
-////  DEVELOPMENT ENVIRONMENT
 //  create development pod from latest image
-resource "kubernetes_pod" "testenv" {
+resource "kubernetes_pod" "devenv" {
   count = var.production ? 0 : 1
   metadata {
-    name = "testenv"
+    name = "devenv"
     labels = {
       app = "website"
+      env = "dev"
     }
   }
   spec {
@@ -158,7 +161,7 @@ resource "kubernetes_pod" "testenv" {
 ////  PRODUCTION ENVIRONMENT
 //  install prometheus and grafana
 resource "helm_release" "prometheus" {
-  count      = var.production ? 1 : 0
+  count = var.production ? 1 : 0
   name       = "kube-prometheus-stack"
   repository = "https://prometheus-community.github.io/helm-charts"
   chart      = "kube-prometheus-stack"
@@ -185,9 +188,34 @@ resource "kubernetes_service" "grafana" {
 }
 
 resource "local_file" "grafana_endpoint" {
-  count    = var.production ? 1 : 0
+  count = var.production ? 1 : 0
   content  = one(kubernetes_service.grafana[*].status[0].load_balancer[0].ingress[0].hostname)
   filename = ".grafana-endpoint"
+}
+
+//  create public endpoint for production environment
+resource "kubernetes_service" "prod_app" {
+  count = var.production ? 1 : 0
+  metadata {
+    name = "prodapp"
+  }
+  spec {
+    type = "LoadBalancer"
+    selector = {
+      app = "website"
+      env = "prod"
+    }
+    port {
+      port        = 80
+      target_port = 80
+    }
+  }
+}
+
+resource "local_file" "prod_endpoint" {
+  count = var.production ? 1 : 0
+  content  = kubernetes_service.app.status[0].load_balancer[0].ingress[0].hostname
+  filename = ".prod-endpoint"
 }
 
 //  create production pod from stable image
@@ -200,6 +228,7 @@ resource "kubernetes_pod" "prodenv" {
     name = "prodenv"
     labels = {
       app = "website"
+      env = "prod"
     }
   }
   spec {
