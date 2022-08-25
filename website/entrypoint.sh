@@ -1,9 +1,6 @@
-#!/bin/sh
-sleep 10
-if [ ! -d /var/lib/mysql ] || [ "$(find /var/lib/mysql -type d -empty -exec echo yes \;)" = 'yes' ]; then
-  [ ! -d /var/lib/mysql ] && mkdir /var/lib/mysql
-  cp -r /var/tmp/mysql-initial/** /var/lib/mysql/
-  chown mysql:mysql /var/lib/mysql -R
+#!/bin/bash
+sleep 3
+if ! mysql -p$(cat /pw.conf) -u dbuser -h appdb -e "show databases;" | grep website; then
+  mysql -p$(cat /pw.conf) -u dbuser -h appdb </tmp/setup.sql
 fi
 exec /usr/bin/supervisord -c /etc/supervisord.conf
-

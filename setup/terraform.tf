@@ -68,3 +68,7 @@ resource "aws_dynamodb_table" "tfstate-lock" {
   }
 }
 
+resource "aws_ecr_repository" "docker_repo" {
+  name = "docker-repo"
+}
+

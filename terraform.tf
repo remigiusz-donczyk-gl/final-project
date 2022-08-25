@@ -57,6 +57,8 @@ data "aws_eks_cluster_auth" "eks" {
   name = module.eks.cluster_id
 }
 
+data "aws_ecr_authorization_token" "token" {}
+
 //  set up providers
 provider "aws" {
   region = "us-east-1"
@@ -73,6 +75,15 @@ provider "helm" {
     host                   = data.aws_eks_cluster.eks.endpoint
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
     token                  = data.aws_eks_cluster_auth.eks.token
+  }
+}
+
+//  push built images into ECR
+resource "null_resource" "exec" {
+  provisioner "local-exec" {
+    command = <<-EOC
+      echo ${data.aws_ecr_authorization_token.token.password} | docker login -u ${data.aws_ecr_authorization_token.token.user_name} --password-stdin ${data.aws_ecr_authorization_token.token.proxy_endpoint}
+    EOC
   }
 }
 
@@ -135,7 +146,7 @@ resource "kubernetes_service" "dev_app" {
 }
 
 resource "local_file" "dev_endpoint" {
-  count = var.production ? 0 : 1
+  count    = var.production ? 0 : 1
   content  = one(kubernetes_service.app[*].status[0].load_balancer[0].ingress[0].hostname)
   filename = ".dev-endpoint"
 }
@@ -143,6 +154,9 @@ resource "local_file" "dev_endpoint" {
 //  create development pod from latest image
 resource "kubernetes_pod" "devenv" {
   count = var.production ? 0 : 1
+  depends_on = [
+    null_resource.exec
+  ]
   metadata {
     name = "devenv"
     labels = {
@@ -161,7 +175,7 @@ resource "kubernetes_pod" "devenv" {
 ////  PRODUCTION ENVIRONMENT
 //  install prometheus and grafana
 resource "helm_release" "prometheus" {
-  count = var.production ? 1 : 0
+  count      = var.production ? 1 : 0
   name       = "kube-prometheus-stack"
   repository = "https://prometheus-community.github.io/helm-charts"
   chart      = "kube-prometheus-stack"
@@ -188,7 +202,7 @@ resource "kubernetes_service" "grafana" {
 }
 
 resource "local_file" "grafana_endpoint" {
-  count = var.production ? 1 : 0
+  count    = var.production ? 1 : 0
   content  = one(kubernetes_service.grafana[*].status[0].load_balancer[0].ingress[0].hostname)
   filename = ".grafana-endpoint"
 }
@@ -213,7 +227,7 @@ resource "kubernetes_service" "prod_app" {
 }
 
 resource "local_file" "prod_endpoint" {
-  count = var.production ? 1 : 0
+  count    = var.production ? 1 : 0
   content  = kubernetes_service.app.status[0].load_balancer[0].ingress[0].hostname
   filename = ".prod-endpoint"
 }
@@ -222,7 +236,8 @@ resource "local_file" "prod_endpoint" {
 resource "kubernetes_pod" "prodenv" {
   count = var.production ? 1 : 0
   depends_on = [
-    helm_release.prometheus
+    helm_release.prometheus,
+    null_resource.exec
   ]
   metadata {
     name = "prodenv"
