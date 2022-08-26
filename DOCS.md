@@ -16,7 +16,7 @@ Pull requests initialized from any branch to the *dev branch* will be squashed a
 
 #### The *dev* branch
 
-As with any branch, it first performs tests; unlike other branches however, it also performs a coverage report and then uses SonarQube to perform static analysis and makes a report of the results. It then creates a Docker image out of the current version of the website, assuming any changes were made since the last time it did so; the resulting Docker image is pushed into Docker Hub with a version number based on SEMVER as well as the *latest* tag. After that is done, Terraform is used to create all the architecture on the AWS cloud, the website is deployed into the test environment and a smoke test is performed. If it passes, the *dev* branch is merged into *prod*. The test environment is kept online for no-downtime purposes.
+As with any branch, it first performs tests; unlike other branches however, it also performs a coverage report and then uses SonarQube to perform static analysis and makes a report of the results. It then creates a Docker image out of the current version of the website, assuming any changes were made since the last time it did so; the resulting Docker image is pushed into ECR. After that is done, Terraform is used to create all the architecture on the AWS cloud, the website is deployed into the test environment and a smoke test is performed. If it passes, the *dev* branch is merged into *prod*. The test environment is kept online for no-downtime purposes.
 
 #### The *prod* branch
 
@@ -32,7 +32,7 @@ A static code analysis tool also used for quality measurement and reports. It no
 
 ## Docker
 
-Depends on the Dockerfile and other files present in the website folder to create an image based on Debian, containing supervisord, nginx, PHP and mariadb. It places all the configuration and website files in the correct folders and initializes the database. The completed image is then tagged appropriately and pushed into Docker Hub for use by Terraform.
+Part of the Terraform's process. Depends on the Dockerfile and other files present in the website folder to create an image based on Debian, containing supervisord, nginx, PHP and a database client. The completed image is then tagged appropriately and pushed into ECR for use in later stages.
 
 ## Terraform
 

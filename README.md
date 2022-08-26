@@ -7,8 +7,6 @@
 [![Doxygen Docs](https://img.shields.io/badge/Doxygen-Documentation-9cf?logo=readthedocs&logoColor=9cf)](https://remigiusz-donczyk.github.io/final-project)
 
 ### General Info
-[![Docker Images](https://img.shields.io/badge/Docker%20Hub-Image%20Repository-blue?logo=docker)](https://hub.docker.com/repository/docker/remigiuszdonczyk/final-project/tags)
-
 This project is part of an Academy I am taking part in. It uses common DevOps tools to create a sample pipeline in order to learn in practice how such a process works.
 
 - [x] Web app
