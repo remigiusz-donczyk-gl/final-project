@@ -37,7 +37,9 @@ class Website {
    * with the default mysqli password (set in the ini file). Returns a mysqli object.
    */
   function connectToDatabase(): mysqli {
-    return new mysqli("appdb", "dbuser", file_get_contents("/pw.conf"), "website");
+    //  log in as root as a quick fix
+    return new mysqli("appdb", "root", "", "website");
+    //return new mysqli("appdb", "dbuser", file_get_contents("/pw.conf"), "website");
   }
 
   /**

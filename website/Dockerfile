@@ -7,8 +7,8 @@ RUN echo 'nameserver 192.168.0.1' > /etc/resolv.conf && \
 ADD supervisord.conf /etc/
 ADD php-fpm.conf php.ini /etc/php/7.4/fpm/
 ADD nginx.conf /etc/nginx/
-ADD entrypoint.sh pw.conf /
 ADD setup.sql /tmp/
+ADD entrypoint.sh pw.conf /
 ADD data /var/www/html/data
 ADD Website.php index.php script.js style.css /var/www/html/
 
