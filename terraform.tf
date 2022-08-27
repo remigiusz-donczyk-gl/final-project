@@ -158,8 +158,8 @@ resource "kubernetes_pod" "db" {
       name  = "db"
       image = "mariadb:10.9.2-jammy"
       env {
-        name = "MARIADB_ALLOW_EMPTY_ROOT_PASSWORD"
-        value = true
+        name = "MARIADB_ROOT_PASSWORD"
+        value = file("${path.root}/website/pw.conf")
       }
     }
   }
