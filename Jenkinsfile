@@ -111,7 +111,7 @@ pipeline {
           sh '''
             git config user.email "remigiusz.donczyk@globallogic.com"
             git config user.name "Remigiusz Dończyk"
-            git merge --theirs --squash origin/dev
+            git merge -X theirs --squash origin/dev
             git commit -m "AUTO: Merged dev"
             git tag v$VERSIONDEV
             git push https://$TOKEN@github.com/remigiusz-donczyk/final-project.git prod
