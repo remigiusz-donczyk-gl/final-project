@@ -56,7 +56,7 @@ final class WebsiteTest extends TestCase {
   public function testCreateClientData(): void {
     $w = new Website();
     $db = $this->createMock(mysqli::class);
-    $this->assertObjectEquals(new UserData($db, "127.0.0.1", 0, 0), $w->createClientData($db, "127.0.0.1"));
+    $this->assertEquals(new UserData($db, "127.0.0.1", 0, 0), $w->createClientData($db, "127.0.0.1"));
   }
 
   /**
@@ -81,9 +81,9 @@ final class WebsiteTest extends TestCase {
          null
        );
     // try with an existing user IP
-    $this->assertObjectEquals(new UserData($db, "127.0.0.1", 85, 4), $w->getClientData($db, "127.0.0.1"));
+    $this->assertEquals(new UserData($db, "127.0.0.1", 85, 4), $w->getClientData($db, "127.0.0.1"));
     // try without an existing user IP -> calls createClientData
-    $this->assertObjectEquals(new UserData($db, "127.0.0.1", 0, 0), $w->getClientData($db, "127.0.0.1"));
+    $this->assertEquals(new UserData($db, "127.0.0.1", 0, 0), $w->getClientData($db, "127.0.0.1"));
   }
 
   /**
@@ -100,10 +100,10 @@ final class WebsiteTest extends TestCase {
        );
     // try with less than 999 `tries`, adds one to tries
     $data = new UserData($db, "127.0.0.1", 85, 4);
-    $this->assertObjectEquals(new UserData($db, "127.0.0.1", 117, 5), $w->updateClientData($data, 6));
+    $this->assertEquals(new UserData($db, "127.0.0.1", 117, 5), $w->updateClientData($data, 6));
     // try with 999 or more `tries`, does not add one
     $data = new UserData($db, "127.0.0.1", 85, 999);
-    $this->assertObjectEquals(new UserData($db, "127.0.0.1", 93, 999), $w->updateClientData($data, 4));
+    $this->assertEquals(new UserData($db, "127.0.0.1", 93, 999), $w->updateClientData($data, 4));
   }
 
   /**
