@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "4.25.0"
+      version = "4.27.0"
     }
     cloudinit = {
       source  = "hashicorp/cloudinit"
@@ -38,14 +38,16 @@ terraform {
   }
 }
 
-//  set the environment type
-variable "prod" {
+//  set the environment type, dev by default
+variable "production" {
   type    = bool
   default = false
 }
 
 //  get the required data values as they're needed
-data "aws_availability_zones" "available" {}
+data "aws_availability_zones" "az" {
+  state = "available"
+}
 
 data "aws_eks_cluster" "eks" {
   name = module.eks.cluster_id
@@ -54,6 +56,8 @@ data "aws_eks_cluster" "eks" {
 data "aws_eks_cluster_auth" "eks" {
   name = module.eks.cluster_id
 }
+
+data "aws_ecr_authorization_token" "token" {}
 
 //  set up providers
 provider "aws" {
@@ -74,13 +78,27 @@ provider "helm" {
   }
 }
 
+//  build docker and push into ECR
+resource "null_resource" "docker" {
+  provisioner "local-exec" {
+    working_dir = "${path.root}/website"
+    command     = <<-EOC
+      echo ${data.aws_ecr_authorization_token.token.password} | docker login -u ${data.aws_ecr_authorization_token.token.user_name} --password-stdin ${data.aws_ecr_authorization_token.token.proxy_endpoint}
+      docker build --no-cache -t ${replace(data.aws_ecr_authorization_token.token.proxy_endpoint, "https://", "")}/final-project .
+      docker push ${replace(data.aws_ecr_authorization_token.token.proxy_endpoint, "https://", "")}/final-project
+      docker image rm ${replace(data.aws_ecr_authorization_token.token.proxy_endpoint, "https://", "")}/final-project
+      docker logout
+    EOC
+  }
+}
+
 //  create VPC, subnets, route tables, gateways & EIP
 module "vpc" {
   source               = "terraform-aws-modules/vpc/aws"
   version              = "3.14.2"
   name                 = "vpc"
   cidr                 = "10.0.0.0/16"
-  azs                  = data.aws_availability_zones.available.names
+  azs                  = data.aws_availability_zones.az.names
   private_subnets      = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
   public_subnets       = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
   enable_nat_gateway   = true
@@ -97,7 +115,7 @@ module "vpc" {
 //  create node groups, iam roles, openid provider, cluster & cloudwatch log
 module "eks" {
   source                          = "terraform-aws-modules/eks/aws"
-  version                         = "18.27.1"
+  version                         = "18.28.0"
   cluster_name                    = "cluster"
   cluster_version                 = "1.22"
   cluster_endpoint_private_access = true
@@ -112,18 +130,119 @@ module "eks" {
   }
 }
 
+resource "kubernetes_secret" "docker" {
+  metadata {
+    name = "docker-login"
+  }
+  data = {
+    ".dockerconfigjson" = jsonencode({
+      auths = {
+        "${data.aws_ecr_authorization_token.token.proxy_endpoint}" = {
+          auth = "${data.aws_ecr_authorization_token.token.authorization_token}"
+        }
+      }
+    })
+  }
+  type = "kubernetes.io/dockerconfigjson"
+}
+
+resource "kubernetes_pod" "db" {
+  metadata {
+    name = "appdb"
+    labels = {
+      app = "db"
+    }
+  }
+  spec {
+    container {
+      name  = "db"
+      image = "mariadb:10.9.2-jammy"
+      env {
+        name = "MARIADB_ALLOW_EMPTY_ROOT_PASSWORD"
+        value = true
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "app_db" {
+  metadata {
+    name = "appdb"
+  }
+  spec {
+    type = "NodePort"
+    selector = {
+      app = "db"
+    }
+    port {
+      port = 3306
+    }
+  }
+}
+
+////  DEVELOPMENT ENVIRONMENT
+//  create public endpoint for development environment
+resource "kubernetes_service" "dev_app" {
+  count = var.production ? 0 : 1
+  metadata {
+    name = "devapp"
+  }
+  spec {
+    type = "LoadBalancer"
+    selector = {
+      app = "website"
+      env = "dev"
+    }
+    port {
+      port        = 80
+      target_port = 80
+    }
+  }
+}
+
+resource "local_file" "dev_endpoint" {
+  count    = var.production ? 0 : 1
+  content  = one(kubernetes_service.dev_app[*].status[0].load_balancer[0].ingress[0].hostname)
+  filename = ".dev-endpoint"
+}
+
+//  create development pod from latest image
+resource "kubernetes_pod" "devenv" {
+  count = var.production ? 0 : 1
+  depends_on = [
+    null_resource.docker
+  ]
+  metadata {
+    name = "devenv"
+    labels = {
+      app = "website"
+      env = "dev"
+    }
+  }
+  spec {
+    image_pull_secrets {
+      name = "docker-login"
+    }
+    container {
+      name  = "website"
+      image = "${replace(data.aws_ecr_authorization_token.token.proxy_endpoint, "https://", "")}/final-project"
+    }
+  }
+}
+
+////  PRODUCTION ENVIRONMENT
 //  install prometheus and grafana
 resource "helm_release" "prometheus" {
-  count      = var.prod ? 1 : 0
+  count      = var.production ? 1 : 0
   name       = "kube-prometheus-stack"
   repository = "https://prometheus-community.github.io/helm-charts"
   chart      = "kube-prometheus-stack"
   version    = "39.6.0"
 }
 
-//  deploy grafana on a public endpoint
+//  create public endpoint for grafana
 resource "kubernetes_service" "grafana" {
-  count = var.prod ? 1 : 0
+  count = var.production ? 1 : 0
   metadata {
     name = "grafana"
   }
@@ -140,21 +259,23 @@ resource "kubernetes_service" "grafana" {
   }
 }
 
-resource "local_file" "grafana-endpoint" {
-  count    = var.prod ? 1 : 0
+resource "local_file" "grafana_endpoint" {
+  count    = var.production ? 1 : 0
   content  = one(kubernetes_service.grafana[*].status[0].load_balancer[0].ingress[0].hostname)
   filename = ".grafana-endpoint"
 }
 
-//  deploy website on a public endpoint
-resource "kubernetes_service" "app" {
+//  create public endpoint for production environment
+resource "kubernetes_service" "prod_app" {
+  count = var.production ? 1 : 0
   metadata {
-    name = "app"
+    name = "prodapp"
   }
   spec {
     type = "LoadBalancer"
     selector = {
       app = "website"
+      env = "prod"
     }
     port {
       port        = 80
@@ -163,41 +284,33 @@ resource "kubernetes_service" "app" {
   }
 }
 
-resource "local_file" "app-endpoint" {
-  content  = kubernetes_service.app.status[0].load_balancer[0].ingress[0].hostname
-  filename = ".endpoint"
+resource "local_file" "prod_endpoint" {
+  count    = var.production ? 1 : 0
+  content  = one(kubernetes_service.prod_app[*].status[0].load_balancer[0].ingress[0].hostname)
+  filename = ".prod-endpoint"
 }
 
-//  create test pod from latest image in test environment
-resource "kubernetes_pod" "testenv" {
-  count = var.prod ? 0 : 1
-  metadata {
-    name = "testenv"
-    labels = {
-      app = "website"
-    }
-  }
-  spec {
-    container {
-      name  = "website"
-      image = "remigiuszdonczyk/final-project:latest"
-    }
-  }
-}
-
-//  create pod from stable image in production environment
+//  create production pod from stable image
 resource "kubernetes_pod" "prodenv" {
-  count = var.prod ? 1 : 0
+  count = var.production ? 1 : 0
+  depends_on = [
+    helm_release.prometheus,
+    null_resource.docker
+  ]
   metadata {
     name = "prodenv"
     labels = {
       app = "website"
+      env = "prod"
     }
   }
   spec {
+    image_pull_secrets {
+      name = "docker-login"
+    }
     container {
       name  = "website"
-      image = "remigiuszdonczyk/final-project:stable"
+      image = "${replace(data.aws_ecr_authorization_token.token.proxy_endpoint, "https://", "")}/final-project"
     }
   }
 }
