@@ -71,6 +71,7 @@ pipeline {
       }
       tools {
         terraform 'tf1.2.7'
+        dockerTool 'docker19.3'
       }
       environment {
         AWS_ACCESS_KEY_ID = credentials('aws-access')

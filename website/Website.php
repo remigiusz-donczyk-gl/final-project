@@ -38,7 +38,7 @@ class Website {
    */
   function connectToDatabase(): mysqli {
     //  log in as root as a quick fix
-    return new mysqli("appdb", "root", file_get_contents("/pw.conf"), "website");
+    return new mysqli("appdb", "root", "", "website");
   }
 
   /**
