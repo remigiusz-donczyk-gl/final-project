@@ -113,7 +113,7 @@ pipeline {
             git config user.name "Remigiusz Dończyk"
             git merge -X theirs --squash origin/dev
             git commit -m "AUTO: Merged dev"
-            git tag v$VERSIONDEV
+            git tag -a v$VERSIONDEV -m "AUTO: Merged production to version $VERSIONDEV"
             for i in prod v$VERSIONDEV; do
               git push https://$TOKEN@github.com/remigiusz-donczyk/final-project.git $i
             done
