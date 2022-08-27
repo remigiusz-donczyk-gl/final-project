@@ -107,9 +107,9 @@ pipeline {
         git branch: 'prod', credentialsId: 'github-account', url: 'https://github.com/remigiusz-donczyk/final-project'
         withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
           sh '''
-            git merge --squash origin/dev
             git config user.email "remigiusz.donczyk@globallogic.com"
             git config user.name "Remigiusz Dończyk"
+            git merge --squash origin/dev
             git commit -m "AUTO: Merged dev"
             git tag v$VERSION
             git push https://$TOKEN@github.com/remigiusz-donczyk/final-project.git prod
@@ -137,9 +137,9 @@ pipeline {
           git branch: 'docs', credentialsId: 'github-account', url: 'https://github.com/remigiusz-donczyk/final-project'
           withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
             sh '''
-              cp -r ../docs/** .
               git config user.email "remigiusz.donczyk@globallogic.com"
               git config user.name "Remigiusz Dończyk"
+              cp -r ../docs/** .
               git add -A
               if ! git diff-index --quiet HEAD; then
                 git commit -m "AUTO: Updated Documentation"

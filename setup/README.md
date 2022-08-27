@@ -1,1 +1,1 @@
-WIP: Files to set up the required environment for builds will be stored here.
+Files to set up the required environment for builds will be stored here. This section is WIP.

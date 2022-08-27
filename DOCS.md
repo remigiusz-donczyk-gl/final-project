@@ -12,15 +12,15 @@ Any code change to the repository will prompt Jenkins to test the code with a se
 
 #### Pull requests
 
-Pull requests initialized from any branch to the *dev branch* will be squashed and merged automatically, assuming tests have passed on the source branch.
+Pull requests initialized from any branch to the *dev branch* will be squashed and merged automatically, assuming they pass tests.
 
 #### The *dev* branch
 
-As with any branch, it first performs tests; unlike other branches however, it also performs a coverage report and then uses SonarQube to perform static analysis and makes a report of the results. It then creates a Docker image out of the current version of the website, assuming any changes were made since the last time it did so; the resulting Docker image is pushed into ECR. After that is done, Terraform is used to create all the architecture on the AWS cloud, the website is deployed into the test environment and a smoke test is performed. If it passes, the *dev* branch is merged into *prod*. The test environment is kept online for no-downtime purposes.
+As with any branch, it first performs tests; unlike other branches however, it also performs a coverage report and then uses SonarQube to perform static analysis and makes a report of the results. It then creates a Docker image out of the current version of the website; the resulting Docker image is pushed into ECR. After that is done, Terraform is used to create all the architecture on the AWS cloud, the website is deployed into the testing environment and a smoke test is performed. If it passes, the *dev* branch is merged into *prod*. The test environment is kept online for no-downtime purposes.
 
 #### The *prod* branch
 
-It tags the Docker image as *stable*, deploys the stable version of the website to AWS as well as monitoring tools, then removes the test environment. It creates documentation for the stable version of the site and deploys it to GitHub Pages. For showcase purposes, after manual approval is given, it also deletes the entire architecture to allow an immediate clean rerun of the pipeline.
+It deploys the new stable version of the website to AWS along with monitoring tools, then removes the test environment. It creates documentation for the stable version of the site and deploys it to GitHub Pages. For showcase purposes, after manual approval is given, it also deletes the entire architecture to allow an immediate clean rerun of the pipeline.
 
 ## PHPUnit
 
@@ -32,11 +32,11 @@ A static code analysis tool also used for quality measurement and reports. It no
 
 ## Docker
 
-Part of the Terraform's process. Depends on the Dockerfile and other files present in the website folder to create an image based on Debian, containing supervisord, nginx, PHP and a database client. The completed image is then tagged appropriately and pushed into ECR for use in later stages.
+Part of the Terraform's process. Depends on the [Dockerfile](website/Dockerfile) and other files present in the website folder to create an image based on Debian, containing supervisord, nginx, PHP and a database client. The completed image is then tagged appropriately and pushed into ECR for use in later stages.
 
 ## Terraform
 
-The most important tool specified in the pipeline. It uses the AWS tokens contained securely as Jenkins credentials to access AWS and set up all the architecture needed to deploy a Docker image inside EKS. It creates 50+ resources within the cloud, including the VPC, gateways, security rules, EKS, a Kubernetes service (and more) that allow the website to be accessed publicly.
+The most important tool specified in the pipeline. It uses the AWS tokens contained securely as Jenkins credentials to access AWS and set up all the architecture needed to deploy a Docker image inside EKS. It creates 50+ resources within the cloud, including the VPC, gateways, security rules, EKS, a Kubernetes service, a database pod (and more) that allow the website to be accessed publicly.
 
 ## Doxygen
 
@@ -50,3 +50,6 @@ Tools used to monitor the state of the services deployed to EKS. Implemented wit
 
 Used within the pipeline to perform any merges to *prod* and documentation. This is also the only expected way for the protected branches to be updated, to ensure that they always contain a working version of the repository.
 
+## Mend Bolt
+
+A tool installed as a repository app that monitors security of the code and licenses used.
