@@ -132,7 +132,7 @@ pipeline {
       steps {
         dir('website') {
           sh '''
-            doxygen
+            (cat Doxyfile ; echo PROJECT_NUMBER=$VERSIONPROD) | doxygen -
             mkdir docs-branch
           '''
         }
