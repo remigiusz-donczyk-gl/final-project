@@ -158,19 +158,7 @@ resource "kubernetes_pod" "db" {
       name  = "db"
       image = "mariadb:10.9.2-jammy"
       env {
-        name = "MYSQL_USER"
-        value = "dbuser"
-      }
-      env {
-        name = "MYSQL_HOST"
-        value = "%"
-      }
-      env {
-        name = "MYSQL_PASSWORD"
-        value = file("${path.root}/website/pw.conf")
-      }
-      env {
-        name = "MYSQL_RANDOM_ROOT_PASSWORD"
+        name = "MARIADB_ALLOW_EMPTY_ROOT_PASSWORD"
         value = true
       }
     }
@@ -178,7 +166,6 @@ resource "kubernetes_pod" "db" {
 }
 
 resource "kubernetes_service" "app_db" {
-  count = var.production ? 0 : 1
   metadata {
     name = "appdb"
   }
@@ -193,16 +180,6 @@ resource "kubernetes_service" "app_db" {
   }
 }
 
-
-////  FOR MANUAL TESTS
-resource "null_resource" "kubectl" {
-  depends_on = [
-    module.eks
-  ]
-  provisioner "local-exec" {
-    command = "aws eks --region us-east-1 update-kubeconfig --kubeconfig .kube --name ${module.eks.cluster_id}"
-  }
-}
 ////  DEVELOPMENT ENVIRONMENT
 //  create public endpoint for development environment
 resource "kubernetes_service" "dev_app" {
