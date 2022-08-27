@@ -51,6 +51,7 @@ final class WebsiteTest extends TestCase {
   }
 
   /**
+   * @uses UserData::__construct
    * @covers Website::createClientData
    */
   public function testCreateClientData(): void {
@@ -60,6 +61,7 @@ final class WebsiteTest extends TestCase {
   }
 
   /**
+   * @uses UserData::__construct
    * @uses MysqliResultMockTwo
    * @uses MysqliResultMockThree
    * @uses Website::createClientData
@@ -87,6 +89,7 @@ final class WebsiteTest extends TestCase {
   }
 
   /**
+   * @uses UserData::__construct
    * @covers Website::updateClientData
    */
   public function testUpdateClientData(): void {
@@ -144,6 +147,7 @@ final class WebsiteTest extends TestCase {
   }
 
   /**
+   * @uses UserData::__construct
    * @covers Website
    */
   public function testRun(): void {
