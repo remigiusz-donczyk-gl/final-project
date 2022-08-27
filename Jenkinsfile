@@ -6,7 +6,8 @@ pipeline {
   }
   environment {
     //  set up the current version <major>.<minor>.<build-number-in-current-version>
-    VERSION = "2.4.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 56 || [ $? -eq 1 ] && true')}"
+    VERSIONDEV = "2.4.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 59 || [ $? -eq 1 ] && true').trim()}"
+    VERSIONPROD = "2.4.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 23 || [ $? -eq 1 ] && true').trim()}"
   }
   stages {
     ////  ANY BRANCH / PULL REQUEST
@@ -112,7 +113,7 @@ pipeline {
             git config user.name "Remigiusz Dończyk"
             git merge --squash origin/dev
             git commit -m "AUTO: Merged dev"
-            git tag v$VERSION
+            git tag v$VERSIONDEV
             git push https://$TOKEN@github.com/remigiusz-donczyk/final-project.git prod
           '''
         }
@@ -144,8 +145,8 @@ pipeline {
               git add -A
               if ! git diff-index --quiet HEAD; then
                 git commit -m "AUTO: Updated Documentation"
-                git tag -a v$VERSION-doc -m "AUTO: Documentation for version $VERSION"
-                git push --atomic https://$TOKEN@github.com/remigiusz-donczyk/final-project.git docs v$VERSION-doc
+                git tag -a v$VERSIONPROD-doc -m "AUTO: Documentation for version $VERSIONPROD"
+                git push --atomic https://$TOKEN@github.com/remigiusz-donczyk/final-project.git docs v$VERSIONPROD-doc
               fi
             '''
           }
