@@ -114,7 +114,9 @@ pipeline {
             git merge -X theirs --squash origin/dev
             git commit -m "AUTO: Merged dev"
             git tag v$VERSIONDEV
-            git push https://$TOKEN@github.com/remigiusz-donczyk/final-project.git prod
+            for i in prod v$VERSIONDEV; do
+              git push https://$TOKEN@github.com/remigiusz-donczyk/final-project.git $i
+            done
           '''
         }
       }
