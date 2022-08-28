@@ -15,7 +15,7 @@ pipeline {
       steps {
         //  clean up previous build and checkout SCM manually
         cleanWs()
-        checkout scm
+        sh 'git clone https://github.com/remigiusz-donczyk/final-project .'
       }
     }
     stage('phpunit-tests') {
