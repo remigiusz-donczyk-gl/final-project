@@ -1,9 +1,5 @@
 pipeline {
   agent any
-  //  don't checkout SCM declaratively
-  //options {
-  //  skipDefaultCheckout(true)
-  //}
   environment {
     //  set up the current version <major>.<minor>.<build-number-in-current-version>
     VERSIONDEV = "2.4.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 59 || [ $? -eq 1 ] && true').trim()}"
@@ -13,7 +9,8 @@ pipeline {
     ////  ANY BRANCH / PULL REQUEST
     stage('cleanup') {
       steps {
-        //  clean up Jenkins' stupid and checkout SCM manually
+        //  clean up previous builds and Jenkins' detached checkout and checkout entire repo manually
+        //  Jenkins needs to
         cleanWs()
         sh 'git clone https://github.com/remigiusz-donczyk/final-project .'
       }
@@ -111,7 +108,7 @@ pipeline {
           sh '''
             git config user.email "remigiusz.donczyk@globallogic.com"
             git config user.name "Remigiusz Dończyk"
-            git clean -fd
+            git clean -ffd
             git merge --ff-only $(git commit-tree -m "AUTO: Rewritten with dev" -p HEAD -p dev dev^{tree})
             git commit -m "AUTO: Merged dev"
             git tag -a v$VERSIONDEV -m "AUTO: Merged production to version $VERSIONDEV"
