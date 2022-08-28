@@ -33,8 +33,7 @@ class Website {
    * @brief Creates a connection to the database.
    * @return mysqli The database object to access.
    *
-   * Creates a connection to a 'website' local database as user 'dbuser',
-   * with the default mysqli password (set in the ini file). Returns a mysqli object.
+   * Creates a connection to the database - temporarily with no password because of a weird permission problem I encountered.
    */
   function connectToDatabase(): mysqli {
     //  log in as root as a quick fix
