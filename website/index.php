@@ -1,5 +1,5 @@
 <?php declare(strict_types=1);
-  include_once "Website.php";
+  include "Website.php";
   $w = new Website();
   $msg = $w->run();
 ?>

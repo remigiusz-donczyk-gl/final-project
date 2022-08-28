@@ -1,5 +1,8 @@
 pipeline {
   agent any
+  options {
+    skipDefaultCheckout(true)
+  }
   environment {
     //  set up the current version <major>.<minor>.<build-number-in-current-version>
     VERSIONDEV = "2.4.${sh(returnStdout: true, script: 'expr $BUILD_NUMBER - 59 || [ $? -eq 1 ] && true').trim()}"
@@ -9,9 +12,11 @@ pipeline {
     ////  ANY BRANCH / PULL REQUEST
     stage('cleanup') {
       steps {
-        //  clean up previous builds and Jenkins' detached checkout and checkout entire repo manually
-        //  Jenkins needs to
+        //  checkout SCM with jenkins to get the changelist
+        checkout scm
+        //  clean previous builds and Jenkins' checkout
         cleanWs()
+        //  checkout manually to have entire repo instead of detached commit
         sh 'git clone https://github.com/remigiusz-donczyk/final-project .'
       }
     }
