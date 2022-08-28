@@ -111,7 +111,7 @@ pipeline {
           sh '''
             git config user.email "remigiusz.donczyk@globallogic.com"
             git config user.name "Remigiusz Dończyk"
-            git merge -X theirs --squash origin/dev
+            git merge origin/dev
             git commit -m "AUTO: Merged dev"
             git tag -a v$VERSIONDEV -m "AUTO: Merged production to version $VERSIONDEV"
             for i in prod v$VERSIONDEV; do
@@ -153,27 +153,6 @@ pipeline {
             '''
           }
         }
-      }
-    }
-    stage('deploy') {
-      when {
-        branch 'prod'
-      }
-      tools {
-        terraform 'tf1.2.7'
-      }
-      environment {
-        AWS_ACCESS_KEY_ID = credentials('aws-access')
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret')
-        TF_VAR_prod = true
-      }
-      steps {
-        sh 'terraform init'
-        retry(1) {
-          sh 'terraform apply -auto-approve'
-        }
-        //  print the endpoints to easily access them
-        sh 'echo "Production Environment: $(cat .prod-endpoint)\nGrafana: $(cat .grafana-endpoint)"'
       }
     }
     stage('deploy') {

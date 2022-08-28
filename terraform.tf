@@ -179,16 +179,6 @@ resource "kubernetes_service" "app_db" {
   }
 }
 
-////  TEST
-resource "null_resource" "kubeconfig" {
-  depends_on = [
-    module.eks
-  ]
-  provisioner "local-exec" {
-    command = "aws eks --region us-east-1 update-kubeconfig --kubeconfig .kube --name ${module.eks.cluster_id}"
-  }
-}
-
 ////  DEVELOPMENT ENVIRONMENT
 //  create public endpoint for development environment
 resource "kubernetes_service" "dev_app" {
