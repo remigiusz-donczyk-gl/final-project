@@ -110,7 +110,6 @@ pipeline {
             git config user.name "Remigiusz Dończyk"
             git clean -ffd
             git merge --ff-only $(git commit-tree -m "AUTO: Rewritten with dev" -p HEAD -p dev dev^{tree})
-            git commit -m "AUTO: Merged dev"
             git tag -a v$VERSIONDEV -m "AUTO: Merged production to version $VERSIONDEV"
             for i in prod v$VERSIONDEV; do
               git push https://$TOKEN@github.com/remigiusz-donczyk/final-project.git $i
