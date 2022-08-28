@@ -111,7 +111,7 @@ pipeline {
           sh '''
             git config user.email "remigiusz.donczyk@globallogic.com"
             git config user.name "Remigiusz Dończyk"
-            git merge -X theirs --squash origin/dev
+            git merge origin/dev
             git commit -m "AUTO: Merged dev"
             git tag -a v$VERSIONDEV -m "AUTO: Merged production to version $VERSIONDEV"
             for i in prod v$VERSIONDEV; do
