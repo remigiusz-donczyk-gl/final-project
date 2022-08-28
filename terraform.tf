@@ -170,13 +170,22 @@ resource "kubernetes_service" "app_db" {
     name = "appdb"
   }
   spec {
-    type = "NodePort"
     selector = {
       app = "db"
     }
     port {
       port = 3306
     }
+  }
+}
+
+////  TEST
+resource "null_resource" "kubeconfig" {
+  depends_on = [
+    module.eks
+  ]
+  provisioner "local-exec" {
+    command = "aws eks --region us-east-1 update-kubeconfig --kubeconfig .kube --name ${module.eks.cluster_id}"
   }
 }
 
@@ -210,7 +219,8 @@ resource "local_file" "dev_endpoint" {
 resource "kubernetes_pod" "devenv" {
   count = var.production ? 0 : 1
   depends_on = [
-    null_resource.docker
+    null_resource.docker,
+    kubernetes_pod.db
   ]
   metadata {
     name = "devenv"
@@ -295,7 +305,8 @@ resource "kubernetes_pod" "prodenv" {
   count = var.production ? 1 : 0
   depends_on = [
     helm_release.prometheus,
-    null_resource.docker
+    null_resource.docker,
+    kubernetes_pod.db
   ]
   metadata {
     name = "prodenv"
