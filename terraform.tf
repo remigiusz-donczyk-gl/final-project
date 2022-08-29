@@ -28,14 +28,14 @@ terraform {
     }
   }
   //  use s3 to store the tfstate, requires setup to run first
-  backend "s3" {
-    bucket         = "remigiuszdonczyk-tfstate-bucket"
-    key            = "terraform.tfstate"
-    region         = "us-east-1"
-    encrypt        = true
-    kms_key_id     = "alias/tfstate-bucket-key"
-    dynamodb_table = "tfstate-lock"
-  }
+  //backend "s3" {
+  //  bucket         = "remigiuszdonczyk-tfstate-bucket"
+  //  key            = "terraform.tfstate"
+  //  region         = "us-east-1"
+  //  encrypt        = true
+  //  kms_key_id     = "alias/tfstate-bucket-key"
+  //  dynamodb_table = "tfstate-lock"
+  //}
 }
 
 //  set the environment type, dev by default
