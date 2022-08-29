@@ -73,7 +73,7 @@ pipeline {
         branch 'dev'
       }
       tools {
-        terraform 'tf1.2.7'
+        terraform 'tf1.2.8'
         dockerTool 'docker19.3'
       }
       environment {
@@ -162,7 +162,7 @@ pipeline {
         branch 'prod'
       }
       tools {
-        terraform 'tf1.2.7'
+        terraform 'tf1.2.8'
       }
       environment {
         AWS_ACCESS_KEY_ID = credentials('aws-access')
@@ -186,7 +186,7 @@ pipeline {
         branch 'prod'
       }
       tools {
-        terraform 'tf1.2.7'
+        terraform 'tf1.2.8'
       }
       environment {
         AWS_ACCESS_KEY_ID = credentials('aws-access')

@@ -1,10 +1,10 @@
 //  specify required versions explicitly, update this every so often
 terraform {
-  required_version = "1.2.7"
+  required_version = "1.2.8"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "4.27.0"
+      version = "4.28.0"
     }
     cloudinit = {
       source  = "hashicorp/cloudinit"
@@ -12,7 +12,7 @@ terraform {
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.12.1"
+      version = "2.13.0"
     }
     helm = {
       source  = "hashicorp/helm"
@@ -98,7 +98,8 @@ module "vpc" {
   version              = "3.14.2"
   name                 = "vpc"
   cidr                 = "10.0.0.0/16"
-  azs                  = data.aws_availability_zones.az.names
+  //azs                  = data.aws_availability_zones.az.names
+  azs                  = ["us-east-1a", "us-east-1b", "us-east-1c"]
   private_subnets      = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
   public_subnets       = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
   enable_nat_gateway   = true
@@ -115,7 +116,7 @@ module "vpc" {
 //  create node groups, iam roles, openid provider, cluster & cloudwatch log
 module "eks" {
   source                          = "terraform-aws-modules/eks/aws"
-  version                         = "18.28.0"
+  version                         = "18.29.0"
   cluster_name                    = "cluster"
   cluster_version                 = "1.22"
   cluster_endpoint_private_access = true
