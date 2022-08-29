@@ -1,4 +1,4 @@
-//  specify required versions explicitly, update this every so often
+//  specify required versions explicitly
 terraform {
   required_version = "1.2.8"
   required_providers {
@@ -27,7 +27,7 @@ terraform {
       version = "3.4.0"
     }
   }
-  //  use s3 to store the tfstate, requires setup to run first
+  //  use s3 to store the tfstate, requires setup
   backend "s3" {
     bucket         = "remigiuszdonczyk-tfstate-bucket"
     key            = "terraform.tfstate"
@@ -38,13 +38,13 @@ terraform {
   }
 }
 
-//  set the environment type, dev by default
+//  set the environment type
 variable "production" {
   type    = bool
   default = false
 }
 
-//  get the required data values as they're needed
+//  get the required data values
 data "aws_availability_zones" "az" {
   state = "available"
 }
