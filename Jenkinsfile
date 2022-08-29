@@ -73,7 +73,7 @@ pipeline {
         branch 'dev'
       }
       tools {
-        terraform 'tf1.2.7'
+        terraform 'tf1.2.8'
         dockerTool 'docker19.3'
       }
       environment {
@@ -162,12 +162,12 @@ pipeline {
         branch 'prod'
       }
       tools {
-        terraform 'tf1.2.7'
+        terraform 'tf1.2.8'
       }
       environment {
         AWS_ACCESS_KEY_ID = credentials('aws-access')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret')
-        TF_VAR_prod = true
+        TF_VAR_production = true
       }
       steps {
         sh 'terraform init'
@@ -186,12 +186,12 @@ pipeline {
         branch 'prod'
       }
       tools {
-        terraform 'tf1.2.7'
+        terraform 'tf1.2.8'
       }
       environment {
         AWS_ACCESS_KEY_ID = credentials('aws-access')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret')
-        TF_VAR_prod = true
+        TF_VAR_production = true
       }
       steps {
         input message: 'Confirm extinction?', ok: 'Send a meteor'
