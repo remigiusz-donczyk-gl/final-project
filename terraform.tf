@@ -28,14 +28,14 @@ terraform {
     }
   }
   //  use s3 to store the tfstate, requires setup to run first
-  //backend "s3" {
-  //  bucket         = "remigiuszdonczyk-tfstate-bucket"
-  //  key            = "terraform.tfstate"
-  //  region         = "us-east-1"
-  //  encrypt        = true
-  //  kms_key_id     = "alias/tfstate-bucket-key"
-  //  dynamodb_table = "tfstate-lock"
-  //}
+  backend "s3" {
+    bucket         = "remigiuszdonczyk-tfstate-bucket"
+    key            = "terraform.tfstate"
+    region         = "us-east-1"
+    encrypt        = true
+    kms_key_id     = "alias/tfstate-bucket-key"
+    dynamodb_table = "tfstate-lock"
+  }
 }
 
 //  set the environment type, dev by default
@@ -148,6 +148,9 @@ resource "kubernetes_secret" "docker" {
 }
 
 resource "kubernetes_pod" "db" {
+  depends_on = [
+    module.eks
+  ]
   metadata {
     name = "appdb"
     labels = {
@@ -210,6 +213,7 @@ resource "local_file" "dev_endpoint" {
 resource "kubernetes_pod" "devenv" {
   count = var.production ? 0 : 1
   depends_on = [
+    module.eks,
     null_resource.docker,
     kubernetes_pod.db
   ]
@@ -234,6 +238,9 @@ resource "kubernetes_pod" "devenv" {
 ////  PRODUCTION ENVIRONMENT
 //  install prometheus and grafana
 resource "helm_release" "prometheus" {
+  depends_on = [
+    module.eks
+  ]
   count      = var.production ? 1 : 0
   name       = "kube-prometheus-stack"
   repository = "https://prometheus-community.github.io/helm-charts"
@@ -295,6 +302,7 @@ resource "local_file" "prod_endpoint" {
 resource "kubernetes_pod" "prodenv" {
   count = var.production ? 1 : 0
   depends_on = [
+    module.eks,
     helm_release.prometheus,
     null_resource.docker,
     kubernetes_pod.db
