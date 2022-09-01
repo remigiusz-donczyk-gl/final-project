@@ -1,0 +1,37 @@
+version: "3"
+services:
+  jenkins:
+    build: jenkins_build/
+    container_name: jenkins
+    environment:
+      JENKINS_OPTS: --httpPort=8011
+      PATH: /opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/var/jenkins_home/bin
+    ports:
+    - 8011:8011
+    volumes:
+    - $PROJECT_HOME/jenkins:/var/jenkins_home
+    - $DOCKER_SOCK:/var/run/docker.sock
+    group_add:
+    - $DOCKER_GROUP
+    restart: unless-stopped
+  sonarqube:
+    image: sonarqube:lts-community
+    container_name: sonarqube
+    depends_on:
+    - sonarqubedb
+    ports:
+    - 8012:8012
+    volumes:
+    - $PROJECT_HOME/sonarqube:/opt/sonarqube
+    restart: unless-stopped
+  sonarqubedb:
+    image: postgres:12
+    container_name: sonarqubedb
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB: sonar
+    volumes:
+    - $PROJECT_HOME/sonarqubedb:/var/lib/postgresql/data
+    restart: unless-stopped
+
