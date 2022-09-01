@@ -22,7 +22,7 @@ export PROJECT_HOME="$HOME/.docker/$COMPOSE_PROJECT_NAME"
 echo -e "export COMPOSE_PROJECT_NAME=\"$COMPOSE_PROJECT_NAME\"\nexport DOCKER_SOCK=\"$DOCKER_SOCK\"\nexport DOCKER_GROUP=\"$DOCKER_GROUP\"\nexport PROJECT_HOME=\"$PROJECT_HOME\"" > app.env
 mkdir -p "$PROJECT_HOME"
 for i in jenkins sonarqube sonarqubedb; do
-  cp "$i" "$PROJECT_HOME"/"$i"
+  cp -r "$i" "$PROJECT_HOME"/"$i"
 done
 docker compose up -d
 

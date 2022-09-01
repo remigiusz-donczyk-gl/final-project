@@ -2,7 +2,6 @@ version: "3"
 services:
   jenkins:
     build: jenkins_build/
-    container_name: jenkins
     environment:
       JENKINS_OPTS: --httpPort=8011
       PATH: /opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/var/jenkins_home/bin
@@ -16,7 +15,6 @@ services:
     restart: unless-stopped
   sonarqube:
     image: sonarqube:lts-community
-    container_name: sonarqube
     depends_on:
     - sonarqubedb
     ports:
@@ -26,7 +24,6 @@ services:
     restart: unless-stopped
   sonarqubedb:
     image: postgres:12
-    container_name: sonarqubedb
     environment:
       POSTGRES_USER: sonar
       POSTGRES_PASSWORD: sonar
