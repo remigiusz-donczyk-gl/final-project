@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Created-By: Maven Archiver 3.5.2
+Build-Jdk-Spec: 11
+Specification-Title: AnsiColor
+Specification-Version: 1.0
+Implementation-Title: AnsiColor
+Implementation-Version: 1.0.2
+Group-Id: org.jenkins-ci.plugins
+Short-Name: ansicolor
+Long-Name: AnsiColor
+Url: https://github.com/jenkinsci/ansicolor-plugin
+Plugin-Version: 1.0.2
+Hudson-Version: 2.289.3
+Jenkins-Version: 2.289.3
+Plugin-Dependencies: workflow-api:1143.v2d42f1e9dea_5;resolution:=option
+ al,workflow-step-api:622.vb_8e7c15b_c95a_;resolution:=optional
+Plugin-Developers: Daniel Doubrovkine:dblock:dblock@dblock.org,Tomek Szm
+ ytka:tszmytka:tszmytka@gmail.com
+Plugin-License-Name: The MIT License
+Plugin-License-Url: https://opensource.org/licenses/MIT
+Plugin-ScmUrl: https://github.com/jenkinsci/ansicolor-plugin
+

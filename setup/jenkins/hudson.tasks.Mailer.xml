@@ -1,0 +1,7 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<hudson.tasks.Mailer_-DescriptorImpl plugin="mailer@435.v79ef3972b_5c7">
+  <defaultSuffix></defaultSuffix>
+  <useSsl>false</useSsl>
+  <useTls>false</useTls>
+  <charset>UTF-8</charset>
+</hudson.tasks.Mailer_-DescriptorImpl>
