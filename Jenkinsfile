@@ -18,6 +18,13 @@ pipeline {
         cleanWs()
         //  checkout manually to have entire repo instead of detached commit
         sh 'git clone https://github.com/remigiusz-donczyk/final-project .'
+        script {
+          if (env.CHANGE_ID) {
+            sh "git checkout $CHANGE_BRANCH"
+          } else {
+            sh "git checkout $BRANCH_NAME"
+          }
+        }
       }
     }
     stage('phpunit-tests') {
