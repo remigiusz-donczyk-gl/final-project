@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "4.28.0"
+      version = "4.29.0"
     }
     cloudinit = {
       source  = "hashicorp/cloudinit"
@@ -12,7 +12,7 @@ terraform {
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.13.0"
+      version = "2.13.1"
     }
     helm = {
       source  = "hashicorp/helm"
@@ -98,10 +98,10 @@ module "vpc" {
   version              = "3.14.2"
   name                 = "vpc"
   cidr                 = "10.0.0.0/16"
-  //azs                  = data.aws_availability_zones.az.names
-  azs                  = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  azs                  = data.aws_availability_zones.az.names
   private_subnets      = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
   public_subnets       = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+  //database_subnets     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24", "10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
   enable_nat_gateway   = true
   single_nat_gateway   = true
   enable_dns_hostnames = true
@@ -130,6 +130,15 @@ module "eks" {
     }
   }
 }
+
+//resource "aws_db_instance" "db" {
+//  allocated_storage     = 1
+//  max_allocated_storage = 2
+//  engine                = "mariadb"
+//  instance_class        = "db.t3.micro"
+//  username              = "dbuser"
+//  password              = "VeryStrongPasswordISuppose"
+//}
 
 resource "kubernetes_secret" "docker" {
   metadata {
@@ -162,7 +171,7 @@ resource "kubernetes_pod" "db" {
       name  = "db"
       image = "mariadb:10.9.2-jammy"
       env {
-        name = "MARIADB_ALLOW_EMPTY_ROOT_PASSWORD"
+        name  = "MARIADB_ALLOW_EMPTY_ROOT_PASSWORD"
         value = true
       }
     }
