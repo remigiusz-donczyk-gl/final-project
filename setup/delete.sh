@@ -9,4 +9,5 @@ fi
 . app.env
 docker compose down
 sudo rm -rf "$PROJECT_HOME"
+rm app.env
 
