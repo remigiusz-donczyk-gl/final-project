@@ -1,6 +1,6 @@
 # Setup
 
-Files to set up the required environment for builds will be stored here. To install the project, make sure you have Docker and Docker Compose (plugin) and run [install.sh](install.sh) after cloning the repo. The installer will ask for your HOME environment variable, and will install into HOME/.docker/final_project (it will assume bash's HOME by default, but you can change it as you wish). It will also ask for DOCKER_SOCK and DOCKER_GROUP, which will be used to set up Jenkins (it uses docker internally). Those will also autodetect the correct values but ask you for approval. The container volume files will be moved into the installation folder, so if you need them here, copy them prior to installation or clone a second time.
+Files to set up the required environment for builds will be stored here. To install the project, make sure you have Docker and Docker Compose (plugin) installed, then run [install.sh](install.sh). The installer will ask for your HOME environment variable, and will install into HOME/.docker/final_project (it will assume bash's HOME by default, but you can change it as you wish). It will also ask for DOCKER_SOCK and DOCKER_GROUP, which will be used to set up Jenkins (it uses docker internally). Those will also autodetect the correct values and ask you for approval. The container volume files will be moved into the installation folder, so if you need them here, copy them prior to installation or clone a second time.
 
 # Uninstall
 
